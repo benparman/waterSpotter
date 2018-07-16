@@ -1,0 +1,22 @@
+{
+  "name": "water-spotter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "test mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benparman/waterSpotter.git"
+  },
+  "author": "Ben Parman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/benparman/waterSpotter/issues"
+  },
+  "homepage": "https://github.com/benparman/waterSpotter#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
