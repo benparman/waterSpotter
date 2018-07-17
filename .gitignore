@@ -1,4 +1,4 @@
-.gitignore
+.gitignoregit pu
 node_modules
 .DS_Store
 seed-data.json

@@ -2,14 +2,52 @@
 
 const express = require('express');
 const app = express();
-app.use(express.static('public'));
+const {Location} = require('./models');
+const {PORT, DATABASE_URL} = require('./config');
+const mongoose = require('mongoose');
 
-if (require.main === module) {
-  app.listen(process.env.PORT || 8080, function() {
-    console.info(`Application is listening on ${this.address().port}`);
+app.use(express.static('public'));
+app.use(express.json());
+
+app.get('/locations', (req, res) => {
+  console.log('Get endpoint working');
+});
+
+let server;
+
+function runServer(databaseUrl, port = PORT) {
+  return new Promise((resolve, reject) => {
+    mongoose.connect(databaseUrl, err => {
+      if(err) {
+        return reject(err);
+      }
+      server = app.listen(port, () => {
+        console.log(`App is listening on ${port}`);
+        resolve();
+      })
+        .on('error', err => {
+          mongoose.disconnect();
+          reject(err);
+        });
+    });
+  });
+}
+function closeServer() {
+  return mongoose.disconnect().then(() => {
+    return new Promise((resolve, reject) => {
+      console.log('Closing server');
+      server.close(err => {
+        if(err) {
+          return reject(err);
+        }
+      });
+    });
   });
 }
 
+if (require.main === module) {
+  runServer(DATABASE_URL).catch(err => console.error(err));
+}
 
-module.exports = app;
-// console.log(process.env.PORT);
+
+module.exports = {app, runServer, closeServer};
