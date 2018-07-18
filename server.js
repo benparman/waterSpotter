@@ -7,7 +7,7 @@ const { PORT, DATABASE_URL } = require('./config');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-// app.use(express.static('public'));
+app.use(express.static('public'));
 app.use(express.json());
 
 app.get('/locations', (req, res) => {
