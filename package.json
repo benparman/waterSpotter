@@ -4,7 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "mocha --exit"
+    "test": "mocha --exit",
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",

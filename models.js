@@ -14,5 +14,20 @@ const locationSchema = mongoose.Schema({
   verified: Boolean
 });
 
-const LocationData = mongoose.model('LocationData', locationSchema);
-module.exports = {LocationData};
+locationSchema.virtual('latLng').get(function() {
+  return `${this.coordinates.lat},${this.coordinates.lon}`;
+});
+
+locationSchema.methods.serialize = function() {
+  return{
+    contributor: this.contributor,
+    coordinates: this.latLng,
+    date_added: this.date_added,
+    id: this._id,
+    type: this.type,
+    verified: this.verified
+  };
+};
+
+const Location = mongoose.model('Location', locationSchema);
+module.exports = { Location };

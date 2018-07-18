@@ -2,15 +2,27 @@
 
 const express = require('express');
 const app = express();
-const {Location} = require('./models');
-const {PORT, DATABASE_URL} = require('./config');
+const { Location } = require('./models');
+const { PORT, DATABASE_URL } = require('./config');
 const mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
-app.use(express.static('public'));
+// app.use(express.static('public'));
 app.use(express.json());
 
 app.get('/locations', (req, res) => {
-  console.log('Get endpoint working');
+  Location
+    .find()
+    .then(locations => {
+      res.json({
+        locations: locations.map(
+          (location) => location.serialize())
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({message: 'Internal server error'});
+    });
 });
 
 let server;
