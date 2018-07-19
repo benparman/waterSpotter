@@ -52,6 +52,7 @@ function closeServer() {
         if(err) {
           return reject(err);
         }
+        resolve();
       });
     });
   });

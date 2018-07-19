@@ -26,6 +26,7 @@ function seedLocationData() {
       verified: faker.random.boolean()
     });
   }
+  console.log(seedData);
   return Location.insertMany(seedData);
 }
 function generateLocationData() {
@@ -50,31 +51,49 @@ function tearDownDb() {
 }
 //------------------------------
 
-describe('HTTP requests to root directory', function(){
-  it('should expose a html document in the \'public\' folder', function(){
-    return chai
-      .request(app)
-      .get('/')
-      .then(function(res){
-        expect(res).to.be.html;
-      });
+
+//------------------------------
+describe('Location API Resource', function() {
+  before(function() {
+    return runServer(TEST_DATABASE_URL);
   });
-  it('should return status 200', function() {
-    return chai
-      .request(app)
-      .get('/')
-      .then(function(res){
-        expect(res).to.have.status(200);
-      });
+  beforeEach(function() {
+    return seedLocationData();
   });
-});
-describe('GET requests made to \'/locations\' endpoint', function() {
-  it('should expose documents in the \'locations\' collection in the database', function() {
-    return chai
-      .request(app)
-      .get('/locations')
-      .then(function(res){
-        expect(res).to.be.json;
-      });
+  afterEach(function() {
+    return tearDownDb();
   });
+  after(function() {
+    return closeServer();
+  });
+  //------------------------------
+  describe('HTTP requests to root directory', function(){
+    it('should expose a html document in the \'public\' folder', function(){
+      return chai
+        .request(app)
+        .get('/')
+        .then(function(res){
+          expect(res).to.be.html;
+        });
+    });
+    it('should return status 200', function() {
+      return chai
+        .request(app)
+        .get('/')
+        .then(function(res){
+          expect(res).to.have.status(200);
+        });
+    });
+  });
+  describe('GET requests made to \'/locations\' endpoint', function() {
+    it('should expose documents in the \'locations\' collection in the database', function() {
+      return chai
+        .request(app)
+        .get('/locations')
+        .then(function(res){
+          expect(res).to.be.json;
+        });
+    });
+  });
+//------------------------------
 });
