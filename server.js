@@ -57,9 +57,9 @@ app.post('/locations', (req, res) => {
       date_added: req.body.date_added,
       id: req.body.id,
       type: req.body.type,
-      veriried: req.body.verified
+      verified: req.body.verified
     })
-    .then(location => res.status(201).json(location))
+    .then(location => res.status(201).json(location.serialize()))
     .catch(err => {
       console.error(err);
       res.status(500).json({ error: 'There was a problem with your request' });

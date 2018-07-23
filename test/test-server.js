@@ -17,10 +17,8 @@ function seedLocationData() {
   for(let i =0; i<10; i++) {
     seedData.push({
       contributor: faker.name.firstName(),
-      coordinates: {
-        lat: faker.random.number(),
-        lon: faker.random.number()
-      },
+      lat: faker.random.number(),
+      lon: faker.random.number(),
       date_added: faker.date.past(),
       type: faker.random.word(),
       verified: faker.random.boolean()
@@ -29,19 +27,17 @@ function seedLocationData() {
   // console.log(seedData);
   return Location.insertMany(seedData);
 }
-// //------ generateLocationData() is for future P?OST endpoint testing!
-// function generateLocationData() {
-//   return {
-//     contributor: faker.name.firstName(),
-//     coordinates: {
-//       lat: faker.random.number(),
-//       lon: faker.random.number()
-//     },
-//     date_added: faker.date.past(),
-//     type: faker.random.word(),
-//     verified: faker.random.boolean()
-//   };
-// }
+//------ generateLocationData() is for future P?OST endpoint testing!
+function generateLocationData() {
+  return {
+    contributor: faker.name.firstName(),
+    lat: faker.random.number(),
+    lon: faker.random.number(),
+    date_added: faker.date.past(),
+    type: faker.random.word(),
+    verified: faker.random.boolean()
+  };
+}
 
 function tearDownDb() {
   return new Promise((resolve, reject) => {
@@ -85,6 +81,36 @@ describe('Location API Resource', function() {
           expect(res.body).to.a('object');
           expect(res).to.have.status(200);
           return Location.count();
+        });
+    });
+  });
+  describe('POST endpoint', function() {
+    it('should add a new location', function() {
+      const newLocation = generateLocationData();
+      return chai.request(app)
+        .post('/locations')
+        .send(newLocation)
+        .then(function(res) {
+          expect(res).to.have.status(201);
+          expect(res).to.be.json;
+          expect(res.body).to.be.a('object');
+          expect(res.body).to.include.keys(
+            'id', 'contributor', 'lat', 'lon', 'type', 'date_added', 'verified');
+          expect(res.body.id).not.be.be.null;
+          expect(res.body.contributor).to.equal(newLocation.contributor);
+          expect(res.body.lat).to.equal(newLocation.lat);
+          expect(res.body.lon).to.equal(newLocation.lon);
+          // expect(res.body.date_added).to.equal(newLocation.date_added);
+          expect(res.body.type).to.equal(newLocation.type);
+          return Location.findById(res.body.id);
+        })
+        .then(function(location) {
+          expect(location.contributor).to.equal(newLocation.contributor);
+          expect(location.lat).to.equal(newLocation.lat);
+          expect(location.lon).to.equal(newLocation.lon);
+          // expect(location.date_added).to.equal(newLocation.date_added);
+          expect(location.type).to.equal(newLocation.type);
+          expect(location.verified).to.equal(newLocation.verified);
         });
     });
   });
