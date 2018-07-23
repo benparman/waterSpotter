@@ -12,7 +12,7 @@ const {TEST_DATABASE_URL} = require('../config');
 chai.use(chaiHttp);
 //------------------------------
 function seedLocationData() {
-  console.info('seeding location data');
+  console.info('Seeding Water Spotter temporary test database!');
   const seedData = [];
   for(let i =0; i<10; i++) {
     seedData.push({
@@ -26,33 +26,31 @@ function seedLocationData() {
       verified: faker.random.boolean()
     });
   }
-  console.log(seedData);
+  // console.log(seedData);
   return Location.insertMany(seedData);
 }
-function generateLocationData() {
-  return {
-    contributor: faker.name.firstName(),
-    coordinates: {
-      lat: faker.random.number(),
-      lon: faker.random.number()
-    },
-    date_added: faker.date.past(),
-    type: faker.random.word(),
-    verified: faker.random.boolean()
-  };
-}
+// //------ generateLocationData() is for future P?OST endpoint testing!
+// function generateLocationData() {
+//   return {
+//     contributor: faker.name.firstName(),
+//     coordinates: {
+//       lat: faker.random.number(),
+//       lon: faker.random.number()
+//     },
+//     date_added: faker.date.past(),
+//     type: faker.random.word(),
+//     verified: faker.random.boolean()
+//   };
+// }
+
 function tearDownDb() {
   return new Promise((resolve, reject) => {
-    console.warn('Deleting database');
+    console.warn('Deleting temporary Water Spotter test database');
     mongoose.connection.dropDatabase()
       .then(result => resolve(result))
       .catch(err => reject(err));
   });
 }
-//------------------------------
-
-
-//------------------------------
 describe('Location API Resource', function() {
   before(function() {
     return runServer(TEST_DATABASE_URL);
@@ -66,7 +64,6 @@ describe('Location API Resource', function() {
   after(function() {
     return closeServer();
   });
-  //------------------------------
   describe('HTTP requests to root directory', function(){
     it('should expose a html document in the \'public\' folder', function(){
       return chai
@@ -74,13 +71,6 @@ describe('Location API Resource', function() {
         .get('/')
         .then(function(res){
           expect(res).to.be.html;
-        });
-    });
-    it('should return status 200', function() {
-      return chai
-        .request(app)
-        .get('/')
-        .then(function(res){
           expect(res).to.have.status(200);
         });
     });
@@ -92,8 +82,10 @@ describe('Location API Resource', function() {
         .get('/locations')
         .then(function(res){
           expect(res).to.be.json;
+          expect(res.body).to.a('object');
+          expect(res).to.have.status(200);
+          return Location.count();
         });
     });
   });
-//------------------------------
 });
