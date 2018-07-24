@@ -31,7 +31,7 @@ app.get('/locations', (req, res) => {
 // app.get('/locations:id', (req, res) => {
 //   Location
 //     .findById(req.params.id)
-//     .then(post => res.json(post.serialize()))
+//     .then(location => res.json(location.serialize()))
 //     .catch(err => {
 //       console.error(err);
 //       res.status(500).json({error: 'There was a problem with your request'});
