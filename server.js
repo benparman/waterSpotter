@@ -40,7 +40,7 @@ app.get('/locations', (req, res) => {
 
 //---------POST---------
 app.post('/locations', (req, res) => {
-  const requiredFields = ['contributor', 'lat', 'lon', 'type'];
+  const requiredFields = ['contributor', 'lat', 'lon', 'type', 'verified'];
   for (let i=0; i<requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
