@@ -66,6 +66,19 @@ app.post('/locations', (req, res) => {
     });
 });
 
+//---------POST---------
+app.delete('/posts/id', (req, res) => {
+  Location
+    .findByIdAndRemove(req.params.id)
+    .then(() => {
+      res.status(204).json({ message: 'Item successfully deleted'});
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({ error: 'Something went wrong, and the item was not deleted'});
+    });
+});
+
 
 
 
