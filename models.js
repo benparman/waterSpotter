@@ -4,8 +4,10 @@ const mongoose = require('mongoose');
 
 const locationSchema = mongoose.Schema({
   contributor: {type: String, required: true},
-  lat: {type: Number, required: true},
-  lon: {type: Number, required: true},
+  coordinates: {
+    lat: {type: Number, required: true},
+    lon: {type: Number, required: true}
+  },
   date_added: Date,
   id: Number,
   type: {type: String, required: true},
@@ -19,8 +21,10 @@ locationSchema.virtual('latLng').get(function() {
 locationSchema.methods.serialize = function() {
   return{
     contributor: this.contributor,
-    lat: this.lat,
-    lon: this.lon,
+    coordinates: {
+      lat: this.coordinates.lat,
+      lon: this.coordinates.lon
+    },
     date_added: this.date_added,
     id: this._id,
     type: this.type,

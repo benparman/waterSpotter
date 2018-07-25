@@ -39,7 +39,7 @@ app.get('/locations/:id', (req, res) => {
 
 //---------POST---------
 app.post('/locations', (req, res) => {
-  const requiredFields = ['contributor', 'lat', 'lon', 'type', 'verified'];
+  const requiredFields = ['contributor', 'coordinates', 'type', 'verified'];
   for (let i=0; i<requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -51,8 +51,10 @@ app.post('/locations', (req, res) => {
   Location
     .create({
       contributor: req.body.contributor,
-      lat: req.body.lat,
-      lon: req.body.lon,
+      coordinates: {
+        lat: req.body.coordinates.lat,
+        lon: req.body.coordinates.lon
+      },
       date_added: req.body.date_added,
       id: req.body.id,
       type: req.body.type,
