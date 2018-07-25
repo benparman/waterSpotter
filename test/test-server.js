@@ -17,8 +17,10 @@ function seedLocationData() {
   for(let i =0; i<10; i++) {
     seedData.push({
       contributor: faker.name.firstName(),
-      lat: faker.random.number(),
-      lon: faker.random.number(),
+      coordinates: {
+        lat: faker.random.number(),
+        lon: faker.random.number()
+      },
       date_added: faker.date.past(),
       type: faker.random.word(),
       verified: faker.random.boolean()
@@ -31,8 +33,10 @@ function seedLocationData() {
 function generateLocationData() {
   return {
     contributor: faker.name.firstName(),
-    lat: faker.random.number(),
-    lon: faker.random.number(),
+    coordinates: {
+      lat: faker.random.number(),
+      lon: faker.random.number()
+    },
     date_added: faker.date.past(),
     type: faker.random.word(),
     verified: faker.random.boolean()
@@ -78,7 +82,7 @@ describe('Location API Resource', function() {
         .get('/locations')
         .then(function(res){
           expect(res).to.be.json;
-          expect(res.body).to.a('object');
+          expect(res.body).to.a('array');
           expect(res).to.have.status(200);
           return Location.count();
         });
@@ -95,7 +99,11 @@ describe('Location API Resource', function() {
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
           expect(res.body).to.include.keys(
-            'id', 'contributor', 'lat', 'lon', 'type', 'date_added', 'verified');
+
+
+            'id', 'contributor', 'coordinates', 'type', 'date_added', 'verified');
+
+
           expect(res.body.id).not.be.be.null;
           expect(res.body.contributor).to.equal(newLocation.contributor);
           expect(res.body.lat).to.equal(newLocation.lat);
