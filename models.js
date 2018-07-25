@@ -8,7 +8,7 @@ const locationSchema = mongoose.Schema({
     lat: {type: Number, required: true},
     lon: {type: Number, required: true}
   },
-  date_added: Date,
+  date_added: {type: Date, default: Date.now},
   id: Number,
   type: {type: String, required: true},
   verified: Boolean

@@ -60,20 +60,24 @@ app.post('/locations', (req, res) => {
       type: req.body.type,
       verified: req.body.verified
     })
-    .then(location => res.status(201).json(location.serialize()))
+    .then(location => {
+      res.status(201).json(location.serialize());
+      console.log('POST to /locations/ was successful.');
+    })
     .catch(err => {
       console.error(err);
       res.status(500).json({ error: 'There was a problem with your request' });
     });
 });
 
-//---------POST---------
+//---------DELETE---------
 app.delete('/locations/:id', (req, res) => {
   Location
     .findByIdAndRemove(req.params.id)
     .then(() => {
-      res.status(204).json({ message: 'Item successfully deleted'});
-      console.log('Item successfully deleted');
+      // console.log('THIS IS THE RESPONSE === ', res);
+      res.status(200).json({message: `Location with ID ${req.params.id} removed successfully!`});
+      console.log(`Location with ID ${req.params.id} removed successfully!`);
     })
     .catch(err => {
       console.error(err);
