@@ -5,21 +5,20 @@ const app = express();
 const { Location } = require('./models');
 const { PORT, DATABASE_URL } = require('./config');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 mongoose.Promise = global.Promise;
 
 app.use(express.static('public'));
 app.use(express.json());
+app.use(morgan('common'));
 
 //---------GET---------
 app.get('/locations', (req, res) => {
   Location
     .find()
     .then(locations => {
-      res.json({
-        locations: locations.map(
-          (location) => location.serialize())
-      });
-      console.log('GET Request sent to /\'locations\' endpoint')
+      res.json(locations.map((location) => location.serialize()));
+      console.log('GET Request sent to /\'locations\' endpoint');
     })
     .catch(err => {
       console.error(err);
@@ -27,16 +26,17 @@ app.get('/locations', (req, res) => {
     });
 });
 
-// //---------GET by ID---------
-// app.get('/locations:id', (req, res) => {
-//   Location
-//     .findById(req.params.id)
-//     .then(location => res.json(location.serialize()))
-//     .catch(err => {
-//       console.error(err);
-//       res.status(500).json({error: 'There was a problem with your request'});
-//     });
-// });
+//---------GET by ID---------
+app.get('/locations/:id', (req, res) => {
+  console.log('REQ on app.get for /locations/:id === ', req);
+  Location
+    .findById(req.params.id)
+    .then(location => res.json(location.serialize()))
+    .catch(err => {
+      console.error(err);
+      res.status(500).json({error: 'There was a problem with your request'});
+    });
+});
 
 //---------POST---------
 app.post('/locations', (req, res) => {
@@ -99,7 +99,7 @@ app.put('/locations:id', (req, res) => {
     .catch(err => res.status(500).json({ message: 'There was a problem with your request'}));
 });
 
-
+app.get('*', (req, res) => res.send('ok'));
 
 let server;
 
