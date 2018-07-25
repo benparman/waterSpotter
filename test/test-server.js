@@ -16,7 +16,9 @@ function seedLocationData() {
   const seedData = [];
   for(let i =0; i<10; i++) {
     seedData.push({
-      contributor: faker.name.firstName(),
+      title: faker.lorem.words(),
+      description: faker.lorem.sentence(),
+      contributor: faker.name.firstName()+' '+faker.name.lastName(),
       coordinates: {
         lat: faker.random.number(),
         lon: faker.random.number()
@@ -29,17 +31,19 @@ function seedLocationData() {
   // console.log(seedData);
   return Location.insertMany(seedData);
 }
-//------ generateLocationData() is for future P?OST endpoint testing!
+
 function generateLocationData() {
   return {
-    contributor: faker.name.firstName(),
+    title: faker.lorem.words(),
+    description: faker.lorem.sentence(),
+    contributor: faker.name.firstName()+' '+faker.name.lastName(),
     coordinates: {
       lat: faker.random.number(),
       lon: faker.random.number()
     },
     date_added: faker.date.past(),
     type: faker.random.word(),
-    verified: faker.random.boolean()
+    verified: false
   };
 }
 
@@ -99,11 +103,7 @@ describe('Location API Resource', function() {
           expect(res).to.be.json;
           expect(res.body).to.be.a('object');
           expect(res.body).to.include.keys(
-
-
-            'id', 'contributor', 'coordinates', 'type', 'date_added', 'verified');
-
-
+            'title', 'description', 'contributor', 'coordinates', 'type', 'date_added', 'verified', 'id');
           expect(res.body.id).not.be.be.null;
           expect(res.body.contributor).to.equal(newLocation.contributor);
           expect(res.body.lat).to.equal(newLocation.lat);

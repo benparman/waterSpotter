@@ -39,7 +39,7 @@ app.get('/locations/:id', (req, res) => {
 
 //---------POST---------
 app.post('/locations', (req, res) => {
-  const requiredFields = ['contributor', 'coordinates', 'type', 'verified'];
+  const requiredFields = ['title', 'description', 'contributor', 'coordinates', 'type'];
   for (let i=0; i<requiredFields.length; i++) {
     const field = requiredFields[i];
     if (!(field in req.body)) {
@@ -50,6 +50,8 @@ app.post('/locations', (req, res) => {
   }
   Location
     .create({
+      title: req.body.title,
+      description: req.body.description,
       contributor: req.body.contributor,
       coordinates: {
         lat: req.body.coordinates.lat,
@@ -58,7 +60,7 @@ app.post('/locations', (req, res) => {
       date_added: req.body.date_added,
       id: req.body.id,
       type: req.body.type,
-      verified: req.body.verified
+      verified: false
     })
     .then(location => {
       res.status(201).json(location.serialize());
