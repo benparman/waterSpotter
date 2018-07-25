@@ -28,7 +28,6 @@ app.get('/locations', (req, res) => {
 
 //---------GET by ID---------
 app.get('/locations/:id', (req, res) => {
-  console.log('REQ on app.get for /locations/:id === ', req);
   Location
     .findById(req.params.id)
     .then(location => res.json(location.serialize()))
@@ -67,11 +66,12 @@ app.post('/locations', (req, res) => {
 });
 
 //---------POST---------
-app.delete('/locations:id', (req, res) => {
+app.delete('/locations/:id', (req, res) => {
   Location
     .findByIdAndRemove(req.params.id)
     .then(() => {
       res.status(204).json({ message: 'Item successfully deleted'});
+      console.log('Item successfully deleted');
     })
     .catch(err => {
       console.error(err);
@@ -80,7 +80,7 @@ app.delete('/locations:id', (req, res) => {
 });
 
 //---------PUT---------
-app.put('/locations:id', (req, res) => {
+app.put('/locations/:id', (req, res) => {
   if(!(req.params.id && req.body.id && req.params.id === req.body.id)) {
     res.status(400).json({
       error: 'Request path id, and request body id must match!'
