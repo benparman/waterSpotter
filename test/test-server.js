@@ -166,7 +166,7 @@ describe('Location API Resource', function() {
             .send(updateData);
         })
         .then(function(res) {
-          expect(res).to.have.status(204);
+          expect(res).to.have.status(200);
           return Location.findById(updateData.id);
         })
         .then(function(location) {
