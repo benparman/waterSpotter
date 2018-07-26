@@ -26,7 +26,7 @@ function seedLocationData() {
       },
       date_added: parseDate(faker.date.past()),
       type: faker.random.word(),
-      verified: faker.random.boolean()
+      verified: false
     });
   }
   // console.log(seedData);
