@@ -101,9 +101,12 @@ app.put('/locations/:id', (req, res) => {
       updated[field] = req.body[field];
     }
   });
+
   Location
     .findByIdAndUpdate(req.params.id, { $set: updated }, {new: true})
-    .then(updated => res.status(204).end())
+    .then(location => {
+      res.json({'Location successfully updated': {location}});
+    })
     .catch(err => res.status(500).json({ message: 'There was a problem with your request'}));
 });
 
