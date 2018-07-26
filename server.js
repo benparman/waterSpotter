@@ -60,7 +60,7 @@ app.post('/locations', (req, res) => {
       date_added: req.body.date_added,
       id: req.body.id,
       type: req.body.type,
-      verified: false
+      verified: false //This will always start as false, will be verified by other users.
     })
     .then(location => {
       res.status(201).json(location.serialize());
@@ -89,13 +89,13 @@ app.delete('/locations/:id', (req, res) => {
 
 //---------PUT---------
 app.put('/locations/:id', (req, res) => {
-  if(!(req.params.id && req.body.id && req.params.id === req.body.id)) {
+  if(!(req.params.id === req.body.id)) {
     res.status(400).json({
       error: 'Request path id, and request body id must match!'
     });
   }
   const updated = {};
-  const updatedFields = ['contributor', 'date_added', 'type'];
+  const updatedFields = ['title', 'description', 'contributor', 'coordinates', 'type', 'verified'];
   updatedFields.forEach(field => {
     if (field in req.body) {
       updated[field] = req.body[field];
@@ -103,7 +103,7 @@ app.put('/locations/:id', (req, res) => {
   });
   Location
     .findByIdAndUpdate(req.params.id, { $set: updated }, {new: true})
-    .then(updatedPost => res.status(204).end())
+    .then(updated => res.status(204).end())
     .catch(err => res.status(500).json({ message: 'There was a problem with your request'}));
 });
 
