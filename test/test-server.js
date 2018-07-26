@@ -175,4 +175,22 @@ describe('Location API Resource', function() {
         });
     });
   });
+  describe('DELETE endpoint', function() {
+    it('Should remove the location associated with a specified ID', function() {
+      let location;
+      return Location
+        .findOne()
+        .then(function(_location) {
+          location = _location;
+          return chai.request(app).delete(`/locations/${location._id}`);
+        })
+        .then(function(res) {
+          expect(res).to.have.status(200);
+          return Location.findById(location._id);
+        })
+        .then(function(_location) {
+          expect(_location).to.be.null;
+        });
+    });
+  });
 });
