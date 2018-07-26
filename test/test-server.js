@@ -151,26 +151,28 @@ describe('Location API Resource', function() {
     });
   });
   describe('PUT endpoint', function() {
-    const updateData = {
-      description: 'FIRE HOSE IN THE FRONT!',
-      type: 'OUT OF CONTROL FIRE HOSE!'
-    };
+    it('should update locations with new data', function() {
+      const updateData = {
+        description: 'FIRE HOSE IN THE FRONT!',
+        type: 'OUT OF CONTROL FIRE HOSE!'
+      };
 
-    return Location
-      .findOne()
-      .then(function(location) {
-        updateData.id = location.id;
-        return chai.request(app)
-          .put(`/locations/${location.id}`)
-          .send(updateData);
-      })
-      .then(function(res) {
-        expect(res).to.have.status(204);
-        return Location.findById(updateData.id);
-      })
-      .then(function(location) {
-        expect(location.description).to.equal(updateData.description);
-        expect(location.type).to.equal(updateData.type);
-      });
+      return Location
+        .findOne()
+        .then(function(location) {
+          updateData.id = location._id;
+          return chai.request(app)
+            .put(`/locations/${location._id}`)
+            .send(updateData);
+        })
+        .then(function(res) {
+          expect(res).to.have.status(204);
+          return Location.findById(updateData.id);
+        })
+        .then(function(location) {
+          expect(location.description).to.equal(updateData.description);
+          expect(location.type).to.equal(updateData.type);
+        });
+    });
   });
 });
