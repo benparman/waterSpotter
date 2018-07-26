@@ -112,7 +112,7 @@ describe('Location API Resource', function() {
           expect(resLocation.contributor).to.equal(location.contributor);
           expect(resLocation.coordinates.lat).to.equal(location.coordinates.lat);
           expect(resLocation.coordinates.lon).to.equal(location.coordinates.lon);
-          // expect(parseDate(resLocation.date_added)).to.equal(parseDate(location.date_added)); //---Not working, why?
+          expect(parseDate(resLocation.date_added).toString()).to.equal(parseDate(location.date_added).toString()); //---Not working, why?
           // expect(resLocation.id).to.equal(location.id); //---Not working, why?
           expect(resLocation.type).to.equal(location.type);
           expect(resLocation.verified).to.equal(location.verified);
@@ -136,7 +136,7 @@ describe('Location API Resource', function() {
           expect(res.body.contributor).to.equal(newLocation.contributor);
           expect(res.body.lat).to.equal(newLocation.lat);
           expect(res.body.lon).to.equal(newLocation.lon);
-          // expect(res.body.date_added).to.equal(newLocation.date_added); //---Not working, why?
+          expect(parseDate(res.body.date_added).toString()).to.equal(parseDate(newLocation.date_added).toString()); //---Not working, why?
           expect(res.body.type).to.equal(newLocation.type);
           return Location.findById(res.body.id);
         })
@@ -144,7 +144,7 @@ describe('Location API Resource', function() {
           expect(location.contributor).to.equal(newLocation.contributor);
           expect(location.lat).to.equal(newLocation.lat);
           expect(location.lon).to.equal(newLocation.lon);
-          // expect(location.date_added).to.equal(newLocation.date_added); //---Not working, why?
+          expect(parseDate(location.date_added).toString()).to.equal(parseDate(newLocation.date_added).toString()); //---Not working, why?
           expect(location.type).to.equal(newLocation.type);
           expect(location.verified).to.equal(newLocation.verified);
         });
