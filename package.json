@@ -18,11 +18,18 @@
   },
   "homepage": "https://github.com/benparman/waterSpotter#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.0.0",
     "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
     "mongoose": "^5.2.5",
     "morgan": "^1.9.0",
     "npm": "^6.2.0",
-    "parse-date": "^1.1.0"
+    "parse-date": "^1.1.0",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
