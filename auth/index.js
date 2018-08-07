@@ -2,4 +2,6 @@
 const {router} = require('./router');
 const {localStrategy, jwtStrategy} = require('./strategies');
 
-module.exorts = {router, localStrategy, jwtStrategy};
+console.log("This is localStrategy :", localStrategy);
+
+module.exports = {router, localStrategy, jwtStrategy};

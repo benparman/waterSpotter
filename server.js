@@ -1,16 +1,51 @@
 'use strict';
 
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const { Location } = require('./models');
 const { PORT, DATABASE_URL } = require('./config');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const passport = require('passport');
 mongoose.Promise = global.Promise;
 
 app.use(express.static('public'));
 app.use(express.json());
 app.use(morgan('common'));
+//Using destructuring assignment, and renaming veriables from ./users and ./auth
+const {router: usersRouter } = ('./users');
+const {router: authRouter, localStrategy, jwtStrategy} = require('./auth');
+
+console.log('This is LOCAL STRATEGY ', localStrategy);
+
+//**************CORS
+app.use(function(req,res,next) {
+  res.header('Access-Control-Allow-Origin', '*'); //what does the asterisk mean?
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Acces-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+  if (req.method === 'OPTIONS') {
+    return res.send(204);
+  }
+  next();
+});
+
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+
+const jwtAuth = passport.authenticate('jwt', {
+  session: false
+});
+
+//---This is a protected endpoint, just for the sake of testing, not needed for app
+app.get('/api/protected', jwtAuth, (req, res) => {
+  return res.json({
+    data: 'Congratulations, you\'ve hacked into burger king.'
+  });
+});
+
+//******************
+
 
 //---------GET---------
 app.get('/locations', (req, res) => {
@@ -116,7 +151,7 @@ let server;
 
 function runServer(databaseUrl, port = PORT) {
   return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, err => {
+    mongoose.connect(databaseUrl, { useNewUrlParser: true }, err => {
       if(err) {
         return reject(err);
       }
