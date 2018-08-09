@@ -17,7 +17,7 @@ app.use(morgan('common'));
 const {router: usersRouter } = ('./users');
 const {router: authRouter, localStrategy, jwtStrategy} = require('./auth');
 
-console.log('This is LOCAL STRATEGY ', localStrategy);
+console.log('server.js line 20 - This is LOCAL STRATEGY ', localStrategy);
 
 //**************CORS
 app.use(function(req,res,next) {
@@ -150,8 +150,9 @@ app.get('*', (req, res) => res.send('ok'));
 let server;
 
 function runServer(databaseUrl, port = PORT) {
+  console.log('server.js - databaseUrl from line 153: ', databaseUrl);
   return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, { useNewUrlParser: true }, err => {
+    mongoose.connect(databaseUrl, err => {
       if(err) {
         return reject(err);
       }
