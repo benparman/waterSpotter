@@ -39,7 +39,7 @@ router.post('/', jsonParser, (req, res) => {
   //password must not begin or end with whitespace.
   const explicitlyTrimmedFields = ['username', 'password'];
   const nonTrimmedField = explicitlyTrimmedFields.find(
-    field => req.body[field].trim() !== req.body
+    field => req.body[field].trim() !== req.body[field]
   );
 
   if (nonTrimmedField) {

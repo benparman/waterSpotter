@@ -1,5 +1,5 @@
 'use strict';
-global.DATABASE_URL = 'mongodb://localhost/test-water-spotter';
+// global.DATABASE_URL = 'mongodb://localhost/test-water-spotter';
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 
@@ -32,16 +32,8 @@ describe('/api/users', function() {
     return closeServer();
   });
 
-  // beforeEach(function() {});
   beforeEach(function() {
-    return User.hashPassword(password).then(password => 
-      User.create({
-        username,
-        password,
-        firstName,
-        lastName
-      })
-    );
+    return User;
   });
 
   afterEach(function() {
@@ -225,19 +217,17 @@ describe('/api/users', function() {
           .request(app)
           .post('/api/users')
           .send({
-            username: 'exampleUser',
+            username,
             password: ` ${password} `,
             firstName,
             lastName
           })
           .then((res) => {
-            console.log(`**************THIS IS username: , !${username}!`);
             expect(res).to.have.status(422);
             expect(res.body.reason).to.equal('ValidationError');
             expect(res.body.message).to.equal(
               'Cannot start or end with whitespace'
             );
-            console.log('****************res.body - line 237 test-users.js: ',res.body);
             expect(res.body.location).to.equal('password');
           }
           )
