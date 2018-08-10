@@ -154,10 +154,8 @@ app.get('*', (req, res) => res.send('ok'));
 let server;
 
 function runServer(databaseUrl, port = PORT) {
-  console.log('server.js - databaseUrl from line 153: ', databaseUrl);
   return new Promise((resolve, reject) => {
     mongoose.connect(databaseUrl, err => {
-      console.log('**********databaseUrl*********** server.js line 160: ', databaseUrl);
       if(err) {
         return reject(err);
       }

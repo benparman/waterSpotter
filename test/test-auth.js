@@ -65,7 +65,6 @@ describe('Auth endpoints', function() {
           password
         })
         .then((res) => {
-          console.log('SERVER.JS Line 70 - This is res: ', res);
           expect(res).to.have.status(401);
         }
         )
