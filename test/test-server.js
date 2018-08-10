@@ -29,7 +29,6 @@ function seedLocationData() {
       verified: false
     });
   }
-  // console.log(seedData);
   return Location.insertMany(seedData);
 }
 
