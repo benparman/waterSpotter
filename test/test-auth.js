@@ -46,7 +46,6 @@ describe('Auth endpoints', function() {
         .request(app)
         .post('/api/auth/login')
         .then((res) => {
-          console.log(res.status);
           expect(res).to.have.status(400);
         }
         )
@@ -74,8 +73,6 @@ describe('Auth endpoints', function() {
           if (err instanceof chai.AssertionError) {
             throw err;
           }
-          const res = err.response;
-          
         });
     });
     it('Should reject requests with incorrect passwords', function() {
@@ -93,7 +90,6 @@ describe('Auth endpoints', function() {
           if (err instanceof chai.AssertionError) {
             throw err;
           }
-          const res = err.response;
         });
     });
     it('Should return a valid auth token', function() {
@@ -124,16 +120,15 @@ describe('Auth endpoints', function() {
     it('Should reject requests with no credentials', function() {
       return chai
         .request(app)
-        .post('/api/auth/refrehs')
-        .then(() =>
-          expect.fail(null, null, 'Reqeust should not succeed')
+        .post('/api/auth/refresh')
+        .then((res) =>
+          // expect.fail(null, null, 'Reqeust should not succeed')
+          expect(res).to.have.status(401)
         )
         .catch(err => {
           if (err instanceof chai.AssertionError) {
             throw err;
           }
-          const res = err.response;
-          expect(res).to.have.status(401);
         });
     });
     it('Should reject requests with an invalid token', function() {
@@ -153,15 +148,13 @@ describe('Auth endpoints', function() {
         .request(app)
         .post('/api/auth/refresh')
         .set('Authorization', `Bearer ${token}`)
-        .then(() =>
-          expect.fail(null, null, 'Request should not succeed')
+        .then((res) =>
+          expect(res).to.have.status(401)
         )
         .catch(err => {
           if (err instanceof chai.AssertionError) {
             throw err;
           }
-          const res = err.response;
-          expect(res).to.have.status(401);
         });
     });
     it('Should reject requests with an expired token', function() {
@@ -184,15 +177,13 @@ describe('Auth endpoints', function() {
         .request(app)
         .post('api/auth/refresh')
         .set('authorization', `Bearer ${token}`)
-        .then(() =>
-          expect.fail(null, null, 'Request should not succeed')
+        .then((res) =>
+          expect(res).to.have.status(401)
         )
         .catch(err => {
           if (err instanceof chai.AssertionError) {
             throw err;
           }
-          const res = err.response;
-          expect(res).to.have.status(401);
         });
     });
     it('Should return a valid auth token with a newer expiration date', function() {
