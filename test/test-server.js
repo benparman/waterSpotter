@@ -8,6 +8,7 @@ const expect = chai.expect;
 const {Location} = require('../models'); // ".."" moves up one level, out of test and into root
 const {app, runServer, closeServer} = require('../server');
 const {TEST_DATABASE_URL} = require('../config');
+console.log('This is TEST_DATABASE_URL: ', TEST_DATABASE_URL);
 const parseDate = require('parse-date');
 
 chai.use(chaiHttp);

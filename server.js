@@ -5,6 +5,7 @@ const express = require('express');
 const app = express();
 const { Location } = require('./models');
 const { PORT, DATABASE_URL } = require('./config');
+console.log('This is DATABASE_URL in server.js: ',DATABASE_URL);
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const passport = require('passport');
