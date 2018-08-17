@@ -12,20 +12,21 @@ function initMap() {
     center: location
   };
   
-  // The map, centered at 'location'
-  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  // The marker, positioned at 'location'
-  var marker = new google.maps.Marker({position: location, map: map});
+  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  let marker = new google.maps.Marker({position: location, map: map});
   $('#map').show();
 }
 
-function doSomething() {
-  $('#js-location-submit-button').click(event => {
+function listen() {
+  $('#js-location-submit-button').click(function(event) {
     console.log('did something');
     event.preventDefault();
-    
     initMap();
   });
 }
 
-$(document).ready(doSomething);
+
+$(window).on('load', function() {
+  listen();
+  initMap();
+});
