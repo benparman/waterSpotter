@@ -1,6 +1,7 @@
 'use strict';
 
 const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
+const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 let currentLocation={lat: 40.543504, lng: -105.127969};
 
 let getGpsLocation = new Promise((resolve, reject) => {
@@ -18,6 +19,25 @@ let getGpsLocation = new Promise((resolve, reject) => {
   }
 });
 
+function geoCodeLocation(location) {
+  const settings = {
+    url: geoCodingEndpoint,
+    data: {
+      address: location,
+      key: geoCodingApiKey
+    },
+    dataType: 'json',
+    success: function(data) {
+      currentLocation = data.results[0].geometry.location;
+      initMap(currentLocation);
+    },
+    error: function(){
+      console.log('error');
+    }
+  };
+  $.ajax(settings);
+}
+
 function initMap(coords) {
   console.log('initMap ran');
   var location = currentLocation;
@@ -28,7 +48,7 @@ function initMap(coords) {
   };
   
   let map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  let marker = new google.maps.Marker({position: location, map: map});
+  // let marker = new google.maps.Marker({position: location, map: map});
   $('#map').show();
 }
 
@@ -36,16 +56,13 @@ function listen() {
   $('#js-location-submit-button').click(function(event) {
     console.log('did something');
     event.preventDefault();
-    // initMap(currentLocation);
+    geoCodeLocation($('#searchLocation').val() || currentLocation);
   });
-  // initMap();
 }
-
 
 $(window).on('load', function() {
   initMap(currentLocation);
   listen();
-  // initMap(currentLocation);
   getGpsLocation
     .then(console.log('resolved on 49'));
 });
