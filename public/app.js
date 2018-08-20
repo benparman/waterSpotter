@@ -2,7 +2,6 @@
 const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 let currentLocation={lat: 40.543504, lng: -105.127969};
-
 let mockData = {
   'locations': [
     {
@@ -72,8 +71,7 @@ let mockData = {
     }
   ]
 };
-
-console.log('This is the mock data: ', mockData);
+let serverData;
 
 function getLocation() {
   return new Promise((resolve, reject) => {
@@ -111,6 +109,22 @@ function geoCodeLocation(location) {
   $.ajax(settings);
 }
 
+function getServerData(data){
+  const settings = {
+    method: 'GET',
+    url: '/locations',
+    dataType: 'json',
+    contentType: 'application/json',
+    success: function(res){
+      console.log(res);
+    },
+    error: function(err){
+      console.log(err);
+    }
+  }; 
+  $.ajax(settings);
+}
+
 function addMarkersToMap(locations, map) {
   // mapMarkers array is only to needed for logging purposes!
   let mapMarkers = [];
@@ -129,10 +143,10 @@ function addMarkersToMap(locations, map) {
   });
   // this is here to visually inspect data, not necessary
   console.log('These are the map markers :', mapMarkers);
+  getServerData();
 }
 
 function initMap(coords) {
-  // var location = currentLocation;
   const mapOptions = {
     mapTypeId: 'terrain',
     zoom: 14,
@@ -157,4 +171,5 @@ function listen() {
 $(window).on('load', function() {
   initMap(currentLocation);
   listen();
+  
 });
