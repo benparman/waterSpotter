@@ -81,11 +81,11 @@ function getLocation() {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-        resolve(currentLocation);
+        resolve( initMap(currentLocation) );
       });
     }
     else {
-      reject(console.log('Unable to fetch current location!'));
+      reject();
     }
   });
 }
@@ -108,8 +108,8 @@ function geoCodeLocation(location) {
   };
   $.ajax(settings);
 }
-//--------------------------------------------
-function getServerData(){
+
+function getServerData(data){
   const settings = {
     method: 'GET',
     url: '/locations',
@@ -117,7 +117,6 @@ function getServerData(){
     contentType: 'application/json',
     success: function(res){
       console.log(res);
-      serverData = res;
     },
     error: function(err){
       console.log(err);
@@ -125,11 +124,7 @@ function getServerData(){
   }; 
   $.ajax(settings);
 }
-//--------------------------------------------
-// function revisedMarkerMaker(locations, map){
-//   let newMarkers = [];
-// }
-//--------------------------------------------
+
 function addMarkersToMap(locations, map) {
   // mapMarkers array is only to needed for logging purposes!
   let mapMarkers = [];
@@ -150,7 +145,7 @@ function addMarkersToMap(locations, map) {
   console.log('These are the map markers :', mapMarkers);
   getServerData();
 }
-//--------------------------------------------
+
 function initMap(coords) {
   const mapOptions = {
     mapTypeId: 'terrain',
@@ -169,10 +164,7 @@ function listen() {
   });
   $('#myLocation-button').click(function(event){
     event.preventDefault();
-    getLocation()
-      .then(function(userLocation){
-        initMap(userLocation);
-      });
+    getLocation();
   });
 }
 
