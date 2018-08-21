@@ -4,29 +4,21 @@ const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 let defaultLocation={lat: 40.543504, lng: -105.127969};
 let currentLocation;
 //--------------------------------------------
-let getServerData = function() {
-  return new Promise((resolve, reject) => {
-    const settings = {
-      method: 'GET',
-      url: '/locations',
-      dataType: 'json',
-      contentType: 'application/json',
-      success: function(res){
-        if (res) {
-          console.log(res);
-          resolve(res);
-        }
-        else {
-          reject();
-        }
-      },
-      error: function(err){
-        console.log(err);
-      }
-    }; 
-    $.ajax(settings);
-  });
-};
+function getServerData(){
+  const settings = {
+    method: 'GET',
+    url: '/locations',
+    dataType: 'json',
+    contentType: 'application/json',
+    success: function(res){
+      console.log(res);
+    },
+    error: function(err){
+      console.log(err);
+    }
+  }; 
+  return $.ajax(settings);
+}
 //--------------------------------------------
 function getLocation() {
   return new Promise((resolve, reject) => {

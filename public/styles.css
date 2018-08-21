@@ -1,4 +1,27 @@
+.header a {
+  float: right;
+  margin-left: 20px;
+  text-decoration: none; 
+}
+
+.signupForm {
+  display: inline-block;
+  width: 17%
+}
+
 #map {
   height: 600px;  /* The height is 400 pixels */
   width: 95%;  /* The width is the width of the web page */
  }
+
+h1 {
+  font-size: 24px;
+}
+
+h2 {
+  font-size: 18px
+}
+
+h3 {
+  font-size: 14px
+}
