@@ -1,78 +1,33 @@
 'use strict';
 const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
-let currentLocation={lat: 40.543504, lng: -105.127969};
-let mockData = {
-  'locations': [
-    {
-      'title': 'Lakeside Fire Station',
-      'description': 'Faucet on North side of building',
-      'contributor': 'John Doe',
-      'coordinates': {
-        'lat': 40.531654,
-        'lon': -105.162646
+let defaultLocation={lat: 40.543504, lng: -105.127969};
+let currentLocation;
+//--------------------------------------------
+let getServerData = function() {
+  return new Promise((resolve, reject) => {
+    const settings = {
+      method: 'GET',
+      url: '/locations',
+      dataType: 'json',
+      contentType: 'application/json',
+      success: function(res){
+        if (res) {
+          console.log(res);
+          resolve(res);
+        }
+        else {
+          reject();
+        }
       },
-      'date_added': '2018-06-15',
-      'id': 11111111,
-      'type': 'Faucet',
-      'verified': false
-    },
-    {
-      'title': 'Mulholland Canyon Ranch',
-      'description': 'Spigot next to gate at end of driveway',
-      'contributor': 'Billy Bob',
-      'coordinates': {
-        'lat': 40.58,
-        'lon': -105.16
-      },
-      'date_added': '2018-05-15',
-      'id': 11111111,
-      'type': 'Spigot',
-      'verified': false
-    },
-    {
-      'title': 'Monarch Crest Spring',
-      'description': 'Small pipe with natural running spring water on east side of trail',
-      'contributor': 'Sally Stranger',
-      'coordinates': {
-        'lat': 40.55,
-        'lon': -105.17
-      },
-      'date_added': '2018-07-15',
-      'id': 11111111,
-      'type': 'Spring',
-      'verified': false
-    },
-    {
-      'title': 'Salida Downtown Public Restrooms',
-      'description': '',
-      'contributor': 'Franklin Roosevelt',
-      'coordinates': {
-        'lat': 40.53,
-        'lon': -105.16
-      },
-      'date_added': '2018-07-13',
-      'id': 11111111,
-      'type': 'Drinking Fountain',
-      'verified': false
-    },
-    {
-      'title': 'Lakeside Fire Station',
-      'description': '',
-      'contributor': 'Albert Einstein',
-      'coordinates': {
-        'lat': 40.535,
-        'lon': -105.168
-      },
-      'date_added': '2018-07-15',
-      'id': 11111111,
-      'type': 'natural spring',
-      'verified': false
-    }
-  ]
+      error: function(err){
+        console.log(err);
+      }
+    }; 
+    $.ajax(settings);
+  });
 };
-let serverData;
-
+//--------------------------------------------
 function getLocation() {
   return new Promise((resolve, reject) => {
     if (navigator.geolocation) {
@@ -81,16 +36,16 @@ function getLocation() {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-        resolve( initMap(currentLocation) );
+        resolve(currentLocation);
       });
     }
     else {
-      reject();
+      reject(console.log('Unable to fetch current location!'));
     }
   });
 }
-
-function geoCodeLocation(location) {
+//--------------------------------------------
+function geoCodeLocation(location, serverLocationData) {
   const settings = {
     url: geoCodingEndpoint,
     data: {
@@ -100,7 +55,7 @@ function geoCodeLocation(location) {
     dataType: 'json',
     success: function(data) {
       currentLocation = data.results[0].geometry.location;
-      initMap(currentLocation);
+      initMap(currentLocation, serverLocationData);
     },
     error: function(){
       console.log('error');
@@ -108,31 +63,26 @@ function geoCodeLocation(location) {
   };
   $.ajax(settings);
 }
-
-function getServerData(data){
-  const settings = {
-    method: 'GET',
-    url: '/locations',
-    dataType: 'json',
-    contentType: 'application/json',
-    success: function(res){
-      console.log(res);
-    },
-    error: function(err){
-      console.log(err);
-    }
-  }; 
-  $.ajax(settings);
+//--------------------------------------------
+function initMap(coords, markerData) {
+  const mapOptions = {
+    mapTypeId: 'terrain',
+    zoom: 14,
+    center: coords
+  };
+  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  addMarkersToMap(markerData, map);
+  $('#map').show();
 }
-
+//--------------------------------------------
 function addMarkersToMap(locations, map) {
   // mapMarkers array is only to needed for logging purposes!
   let mapMarkers = [];
-  locations.locations.forEach(function(storedPlace) {
+  locations.forEach(function(storedPlace) {
     const marker = new google.maps.Marker({
       position: {
         lat: storedPlace.coordinates.lat,
-        lng: storedPlace.coordinates.lat
+        lng: storedPlace.coordinates.lon
       },
       title: storedPlace.title,
       map: map
@@ -141,35 +91,28 @@ function addMarkersToMap(locations, map) {
     mapMarkers.push(marker);
     return marker;
   });
-  // this is here to visually inspect data, not necessary
+  // Logging here to inspect marker data
   console.log('These are the map markers :', mapMarkers);
-  getServerData();
 }
-
-function initMap(coords) {
-  const mapOptions = {
-    mapTypeId: 'terrain',
-    zoom: 14,
-    center: coords
-  };
-  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  addMarkersToMap(mockData, map);
-  $('#map').show();
-}
-
-function listen() {
+//--------------------------------------------
+function listen(serverLocationData) {
   $('#searchLocation').submit(function(event) {
     event.preventDefault();
-    geoCodeLocation($('.searchTerms').val());
+    geoCodeLocation($('.searchTerms').val(), serverLocationData);
   });
   $('#myLocation-button').click(function(event){
     event.preventDefault();
-    getLocation();
+    getLocation()
+      .then(function(userLocation){
+        initMap(userLocation, serverLocationData);
+      });
   });
 }
-
+//--------------------------------------------
 $(window).on('load', function() {
-  initMap(currentLocation);
-  listen();
-  
+  getServerData()
+    .then(function(serverLocationData){
+      initMap(defaultLocation, serverLocationData);
+      listen(serverLocationData);
+    });
 });
