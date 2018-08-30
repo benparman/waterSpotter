@@ -3,6 +3,7 @@ const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 let defaultLocation={lat: 40.543504, lng: -105.127969};
 let currentLocation;
+
 //--------------------------------------------
 function getServerData(){
   const settings = {
