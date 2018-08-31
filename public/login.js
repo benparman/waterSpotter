@@ -1,22 +1,24 @@
 'use strict';
+
+let JWT = '';
+
 //--------------------------------------------
-function registerUser(username, firsName, lastName, password) {
+function loginUser(username, password) {
   const settings = {
-    url: 'api/users/',
+    url: 'api/auth/login/',
     method: 'POST',
     dataType: 'json',
     contentType: 'application/json',
     data: JSON.stringify({
       username: username,
-      firstName: firsName,
-      lastName: lastName,
       password: password
     }),
-    success: function() {
-      console.log(`The user "${username}" was successfully added to the database`);
+    success: function(res) {
+      console.log(res);
+      JWT = res;
     },
     error: function() {
-      console.log(`ERROR! The user "${username}" was NOT added to the database!`)
+      console.log('Login Failed!');
     }
   };
   console.log(settings.data);
@@ -24,13 +26,12 @@ function registerUser(username, firsName, lastName, password) {
 }
 //--------------------------------------------
 function listen() {
-  $('#signupForm').submit(event => {
+  $('#login-form').submit(event => {
     event.preventDefault();
-    registerUser(
-      $('#signup-username').val(),
-      $('#signup-firstName').val(),
-      $('#signup-lastName').val(),
-      $('#signup-password').val()
+    console.log('clicked');
+    loginUser(
+      $('#login-username').val(),
+      $('#login-password').val()
     );
   });
 }

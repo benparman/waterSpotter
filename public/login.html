@@ -16,19 +16,20 @@
       <h1>Water Spotter</h1>
       <h2>Find your next refill while on the road or trail</h2>
     </section>
-    <section class="signupForm">
+    <section class="login-form" id="login-form">
       <form>
         <fieldset>
-          <label>Username or Email Address</label>
-          <input type="text" class="loginField" placeholder="Username or Eamil Address">
-        </fieldset>
-        <fieldset>
+          <label>Username</label>
+          <input type="text" class="loginField" id="login-username" placeholder="Username or Eamil Address">
+          <br>
           <label>Password</label>
-          <input type="text" class="loginField" placeholder="Password">
+          <input type="text" class="loginField" id="login-password" placeholder="Password">
         </fieldset>
         <button id="loginButton">Log In</button>
       </form>
     </section>
   </section>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="login.js"></script>
 </body>
 </html>
