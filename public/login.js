@@ -14,21 +14,19 @@ function loginUser(username, password) {
       password: password
     }),
     success: function(res) {
-      console.log(res);
-      JWT = res;
+      console.log(res.authToken);
+      JWT = res.authToken;
     },
     error: function() {
       console.log('Login Failed!');
     }
   };
-  console.log(settings.data);
   $.ajax(settings);
 }
 //--------------------------------------------
 function listen() {
   $('#login-form').submit(event => {
     event.preventDefault();
-    console.log('clicked');
     loginUser(
       $('#login-username').val(),
       $('#login-password').val()
