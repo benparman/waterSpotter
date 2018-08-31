@@ -3,7 +3,12 @@ const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 let defaultLocation={lat: 40.543504, lng: -105.127969};
 let currentLocation;
+let JWT = '';
 
+//--------------------------------------------
+//--------------------------------------------
+//----------- index.html functions -----------
+//--------------------------------------------
 //--------------------------------------------
 function getServerData(){
   const settings = {
@@ -102,10 +107,94 @@ function listen(serverLocationData) {
   });
 }
 //--------------------------------------------
+//--------------------------------------------
+//------- End of index.html functions --------
+//--------------------------------------------
+//--------------------------------------------
+
+//--------------------------------------------
+//--------------------------------------------
+//----------- signup.html functions ----------
+//--------------------------------------------
+//--------------------------------------------
+function registerUser(username, firsName, lastName, password) {
+  const settings = {
+    url: 'api/users/',
+    method: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify({
+      username: username,
+      firstName: firsName,
+      lastName: lastName,
+      password: password
+    }),
+    success: function() {
+      console.log(`The user "${username}" was successfully added to the database`);
+    },
+    error: function() {
+      console.log(`ERROR! The user "${username}" was NOT added to the database!`)
+    }
+  };
+  console.log(settings.data);
+  $.ajax(settings);
+}
+//--------------------------------------------
+//--------------------------------------------
+//------- end of signup.html functions -------
+//--------------------------------------------
+//--------------------------------------------
+
+//--------------------------------------------
+//--------------------------------------------
+//----------- login.html functions -----------
+//--------------------------------------------
+//--------------------------------------------
+function loginUser(username, password) {
+  const settings = {
+    url: 'api/auth/login/',
+    method: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify({
+      username: username,
+      password: password
+    }),
+    success: function(res) {
+      console.log(res.authToken);
+      JWT = res.authToken;
+    },
+    error: function() {
+      console.log('Login Failed!');
+    }
+  };
+  $.ajax(settings);
+}
+//--------------------------------------------
+//--------------------------------------------
+//--------- end oflogin.html functions -------
+//--------------------------------------------
+//--------------------------------------------
 $(window).on('load', function() {
   getServerData()
     .then(function(serverLocationData){
       initMap(defaultLocation, serverLocationData);
       listen(serverLocationData);
     });
+  $('#signupForm').submit(event => {
+    event.preventDefault();
+    registerUser(
+      $('#signup-username').val(),
+      $('#signup-firstName').val(),
+      $('#signup-lastName').val(),
+      $('#signup-password').val()
+    );
+  });
+  $('#login-form').submit(event => {
+    event.preventDefault();
+    loginUser(
+      $('#login-username').val(),
+      $('#login-password').val()
+    );
+  });
 });
