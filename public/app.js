@@ -107,15 +107,11 @@ function listen(serverLocationData) {
   });
 }
 //--------------------------------------------
-//--------------------------------------------
 //------- End of index.html functions --------
-//--------------------------------------------
 //--------------------------------------------
 
 //--------------------------------------------
-//--------------------------------------------
 //----------- signup.html functions ----------
-//--------------------------------------------
 //--------------------------------------------
 function registerUser(username, firsName, lastName, password) {
   const settings = {
@@ -140,15 +136,11 @@ function registerUser(username, firsName, lastName, password) {
   $.ajax(settings);
 }
 //--------------------------------------------
-//--------------------------------------------
 //------- end of signup.html functions -------
-//--------------------------------------------
 //--------------------------------------------
 
 //--------------------------------------------
-//--------------------------------------------
 //----------- login.html functions -----------
-//--------------------------------------------
 //--------------------------------------------
 function loginUser(username, password) {
   const settings = {
@@ -168,12 +160,38 @@ function loginUser(username, password) {
       console.log('Login Failed!');
     }
   };
-  $.ajax(settings);
+  return $.ajax(settings);
 }
-//--------------------------------------------
+
+function getProtected(authToken) {
+  const settings = {
+    async: true,
+    crossDomain: true,
+    url: '/api/protected',
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+    success: function(data){
+      console.log(data);
+    },
+    error: function(err){
+      console.log('Error! ', err);
+    }
+  };
+  $.ajax(settings);
+
+  //////// Below is an alternative to console.log inside success /////////
+  // .done(function (response) {
+  //   console.log(response);
+  // });
+}
 //--------------------------------------------
 //--------- end oflogin.html functions -------
 //--------------------------------------------
+
+//--------------------------------------------
+//-------------- Event Listeners -------------
 //--------------------------------------------
 $(window).on('load', function() {
   getServerData()
@@ -195,6 +213,9 @@ $(window).on('load', function() {
     loginUser(
       $('#login-username').val(),
       $('#login-password').val()
-    );
+    )
+      .then(function(JWT) {
+        getProtected(JWT.authToken);
+      }); 
   });
 });
