@@ -78,7 +78,7 @@ app.get('/locations/:id', (req, res) => {
 });
 
 //---------POST---------
-app.post('/locations', (req, res) => {
+app.post('/locations', jwtAuth, (req, res) => {
   const requiredFields = ['title', 'description', 'contributor', 'coordinates', 'type'];
   for (let i=0; i<requiredFields.length; i++) {
     const field = requiredFields[i];

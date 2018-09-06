@@ -1,6 +1,6 @@
 'use strict';
 
-global.DATABASE_URL = 'mongodb://localhost/test-water-spotter';
+global.DATABASE_URL = 'mongodb://ben:password1@ds247852.mlab.com:47852/test-water-spotter';
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const jwt = require('jsonwebtoken');
