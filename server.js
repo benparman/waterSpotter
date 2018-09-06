@@ -34,7 +34,6 @@ app.use(function(req,res,next) {
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-console.log('SERVER.JS LINE 35 - This is usersRouter: ', usersRouter);
 app.use('/api/users/', usersRouter);
 app.use('/api/auth/', authRouter);
 

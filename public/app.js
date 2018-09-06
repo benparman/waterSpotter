@@ -156,6 +156,7 @@ function loginUser(username, password) {
       console.log('AuthToken (JWT): ', res.authToken);
       JWT = res.authToken;
       sessionStorage.accessToken = res.authToken;
+      sessionStorage.currentUser = username;
     },
     error: function() {
       console.log('Login Failed!');
@@ -192,6 +193,38 @@ function getProtected(authToken) {
 //--------------------------------------------
 
 //--------------------------------------------
+//----------- login.html functions -----------
+//--------------------------------------------
+function postLocation(title, description, lat, lon, type) {
+  const settings = {
+    url: '/locations',
+    method: 'POST',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify({
+      title: title,
+      description: description,
+      contributor: sessionStorage.currentUser,
+      coordinates: {
+        lat: lat,
+        lon: lon
+      },
+      type: type
+    }),
+    success: function(res) {
+      console.log('Location added!');
+    },
+    error: function() {
+      console.log('Error, location was not added!');
+    }
+  };
+  return $.ajax(settings);
+}
+//--------------------------------------------
+//--------- end oflogin.html functions -------
+//--------------------------------------------
+
+//--------------------------------------------
 //-------------- Event Listeners -------------
 //--------------------------------------------
 $(window).on('load', function() {
@@ -218,5 +251,15 @@ $(window).on('load', function() {
       .then(function(JWT) {
         getProtected(JWT.authToken);
       }); 
+  });
+  $('#locationForm').submit(event => {
+    event.preventDefault();
+    postLocation(
+      $('#post-title').val(),
+      $('#post-description').val(),
+      $('#post-lat').val(),
+      $('#post-lon').val(),
+      $('#post-type').val()
+    );
   });
 });
