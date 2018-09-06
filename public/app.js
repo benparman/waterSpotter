@@ -129,7 +129,7 @@ function registerUser(username, firsName, lastName, password) {
       console.log(`The user "${username}" was successfully added to the database`);
     },
     error: function() {
-      console.log(`ERROR! The user "${username}" was NOT added to the database!`)
+      console.log(`ERROR! The user "${username}" was NOT added to the database!`);
     }
   };
   console.log(settings.data);
@@ -153,8 +153,9 @@ function loginUser(username, password) {
       password: password
     }),
     success: function(res) {
-      console.log(res.authToken);
+      console.log('AuthToken (JWT): ', res.authToken);
       JWT = res.authToken;
+      sessionStorage.accessToken = res.authToken;
     },
     error: function() {
       console.log('Login Failed!');

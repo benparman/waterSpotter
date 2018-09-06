@@ -46,7 +46,7 @@ const jwtAuth = passport.authenticate('jwt', {
 app.get('/api/protected', jwtAuth, (req, res) => {
   console.log('Congratulations, you\'ve hacked into burger king.');
   return res.json({
-    data: 'Congratulations, you\'ve hacked into burger king.'
+    data: 'Congratulations, you\'ve successfully logged in.'
   });
 });
 
