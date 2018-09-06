@@ -212,10 +212,10 @@ function postLocation(title, description, lat, lon, type) {
       type: type
     }),
     success: function(res) {
-      console.log('Location added!');
+      console.log('Location added!', res);
     },
-    error: function() {
-      console.log('Error, location was not added!');
+    error: function(err) {
+      console.log('Error, location was not added!', err);
     }
   };
   return $.ajax(settings);
