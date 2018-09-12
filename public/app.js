@@ -1,14 +1,30 @@
 'use strict';
+
 const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 let defaultLocation={lat: 40.543504, lng: -105.127969};
 let currentLocation;
 let JWT = '';
+let loginStatus;
 
+checkLoginStatus();
 //--------------------------------------------
 //--------------------------------------------
 //----------- index.html functions -----------
 //--------------------------------------------
+//--------------------------------------------
+function checkLoginStatus() {
+  if (sessionStorage.currentUser) {
+    loginStatus = true;
+    console.log('User Logged In: ', loginStatus);
+    $('.loginStatus').html('<a href="">Log Out</a>');
+  }
+  else {
+    loginStatus = false;
+    console.log('User Logged In: ', loginStatus);
+    $('.loginStatus').html('<a href="login.html">Log In</a>');
+  }
+}
 //--------------------------------------------
 function getServerData(){
   const settings = {
@@ -250,6 +266,7 @@ $(window).on('load', function() {
     )
       .then(function(JWT) {
         getProtected(JWT.authToken);
+        checkLoginStatus();
       }); 
   });
   $('#locationForm').submit(event => {
@@ -261,5 +278,12 @@ $(window).on('load', function() {
       $('#post-lon').val(),
       $('#post-type').val()
     );
+  });
+  $('.loginStatus').click(function(){
+    console.log('loginStatus was Clicked');
+    if (sessionStorage.currentUser) {
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('currentUser');
+    }
   });
 });
