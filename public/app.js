@@ -96,12 +96,24 @@ function initMap(coords, markerData) {
 //--------------------------------------------
 function addMarker(existingMap) {
   let map = existingMap;
-  let marker = new google.maps.Marker({
+  let newMarker = new google.maps.Marker({
     position: map.getCenter(),
-    title:'Hello World!',
+    title:'Test Marker',
     draggable: true
   });
-  marker.setMap(map);
+  newMarker.setMap(map);
+
+  let newMarkerCoords = {
+    lat:'',
+    lng:''
+  };
+
+  google.maps.event.addListener(newMarker,'drag',function() {
+    newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
+    newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
+    $('#newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
+  });   
+
 }
 //--------------------------------------------
 //--------------------------------------------
