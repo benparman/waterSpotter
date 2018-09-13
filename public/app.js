@@ -4,10 +4,12 @@ const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 let defaultLocation={lat: 40.543504, lng: -105.127969};
 let currentLocation;
-let JWT = '';
-let loginStatus;
 let map;
-
+//----------- STATE Variables -----------
+const STATE = {
+  loginStatus: null,
+  newMarkerStatus: false
+};
 checkLoginStatus();
 //--------------------------------------------
 //--------------------------------------------
@@ -16,13 +18,13 @@ checkLoginStatus();
 //--------------------------------------------
 function checkLoginStatus() {
   if (sessionStorage.currentUser) {
-    loginStatus = true;
-    console.log('User Logged In: ', loginStatus);
+    STATE.loginStatus = true;
+    console.log('User Logged In: ', STATE.loginStatus);
     $('.loginStatus').html('<a href="">Log Out</a>');
   }
   else {
-    loginStatus = false;
-    console.log('User Logged In: ', loginStatus);
+    STATE.loginStatus = false;
+    console.log('User Logged In: ', STATE.loginStatus);
     $('.loginStatus').html('<a href="login.html">Log In</a>');
   }
 }
@@ -96,24 +98,24 @@ function initMap(coords, markerData) {
 //--------------------------------------------
 function addMarker(existingMap) {
   let map = existingMap;
-  let newMarker = new google.maps.Marker({
+  let newMarker = new google.maps.Marker({    
     position: map.getCenter(),
     title:'Test Marker',
     draggable: true
   });
-  newMarker.setMap(map);
-
+  if (STATE.newMarkerStatus === false) {
+    STATE.newMarkerStatus = true;
+    newMarker.setMap(map);
+  }
   let newMarkerCoords = {
     lat:'',
     lng:''
   };
-
   google.maps.event.addListener(newMarker,'drag',function() {
     newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
     newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
     $('#newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
   });   
-
 }
 //--------------------------------------------
 //--------------------------------------------
