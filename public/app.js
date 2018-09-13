@@ -95,17 +95,11 @@ function initMap(coords, markerData) {
 //------------New Addmarker Map---------------
 //--------------------------------------------
 function addMarker(existingMap) {
-  
-  var myLatlng = new google.maps.LatLng(40.543557, -105.128058);
-  var mapOptions = {
-    zoom: 4,
-    center: myLatlng
-  };
   let map = existingMap;
-
-  var marker = new google.maps.Marker({
-    position: myLatlng,
-    title:'Hello World!'
+  let marker = new google.maps.Marker({
+    position: map.getCenter(),
+    title:'Hello World!',
+    draggable: true
   });
   marker.setMap(map);
 }
