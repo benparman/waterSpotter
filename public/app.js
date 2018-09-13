@@ -6,6 +6,7 @@ let defaultLocation={lat: 40.543504, lng: -105.127969};
 let currentLocation;
 let JWT = '';
 let loginStatus;
+let map;
 
 checkLoginStatus();
 //--------------------------------------------
@@ -86,9 +87,33 @@ function initMap(coords, markerData) {
   };
   let map = new google.maps.Map(document.getElementById('map'), mapOptions);
   addMarkersToMap(markerData, map);
-  $('#map').show();
+  // $('#map').show();
+}
+
+
+//--------------------------------------------
+//------------New Addmarker Map---------------
+//--------------------------------------------
+function addMarker(coords) {
+  var myLatlng = new google.maps.LatLng(40.543504, -105.127969);
+  var mapOptions = {
+    zoom: 4,
+    center: myLatlng
+  };
+  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+  var marker = new google.maps.Marker({
+    position: myLatlng,
+    title:'Hello World!'
+  });
+  marker.setMap(map);
 }
 //--------------------------------------------
+//--------------------------------------------
+//--------------------------------------------
+
+
+
 function addMarkersToMap(locations, map) {
   // mapMarkers array is only to needed for logging purposes!
   let mapMarkers = [];
@@ -285,5 +310,9 @@ $(window).on('load', function() {
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('currentUser');
     }
+  });
+  $('#testButton').click(function(){
+    console.log('postLocation was clicked');
+    addMarker(defaultLocation);
   });
 });
