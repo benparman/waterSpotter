@@ -72,7 +72,7 @@ function geoCodeLocation(location, serverLocationData) {
     dataType: 'json',
     success: function(data) {
       currentLocation = data.results[0].geometry.location;
-      initMap(currentLocation, serverLocationData);
+      map.setCenter(currentLocation);
     },
     error: function(){
       console.log('error');
@@ -101,10 +101,11 @@ function addNewMarker(existingMap) {
     lat:'',
     lng:''
   };
-  let newMarker = new google.maps.Marker({    
+  let newMarker = new google.maps.Marker({
     position: map.getCenter(),
     title:'Test Marker',
-    draggable: true
+    draggable: true,
+    icon: 'marker_red+.png'
   });
   if (STATE.newMarkerStatus === false) {
     STATE.newMarkerStatus = true;
@@ -132,7 +133,8 @@ function addMarkersToMap(locations, map) {
         lng: storedPlace.coordinates.lon
       },
       title: storedPlace.title,
-      map: map
+      map: map,
+      icon: 'waterdrop.png', //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff
     });
     // not needed - only here to console.log below
     mapMarkers.push(marker);
@@ -151,7 +153,7 @@ function listen(serverLocationData) {
     event.preventDefault();
     getLocation()
       .then(function(userLocation){
-        initMap(userLocation, serverLocationData);
+        map.setCenter(userLocation);
       });
   });
 }
