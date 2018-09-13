@@ -85,7 +85,7 @@ function initMap(coords, markerData) {
     zoom: 14,
     center: coords
   };
-  let map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  map = new google.maps.Map(document.getElementById('map'), mapOptions);
   addMarkersToMap(markerData, map);
   // $('#map').show();
 }
@@ -94,13 +94,14 @@ function initMap(coords, markerData) {
 //--------------------------------------------
 //------------New Addmarker Map---------------
 //--------------------------------------------
-function addMarker(coords) {
-  var myLatlng = new google.maps.LatLng(40.543504, -105.127969);
+function addMarker(existingMap) {
+  
+  var myLatlng = new google.maps.LatLng(40.543557, -105.128058);
   var mapOptions = {
     zoom: 4,
     center: myLatlng
   };
-  var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  let map = existingMap;
 
   var marker = new google.maps.Marker({
     position: myLatlng,
@@ -313,6 +314,6 @@ $(window).on('load', function() {
   });
   $('#testButton').click(function(){
     console.log('postLocation was clicked');
-    addMarker(defaultLocation);
+    addMarker(map);
   });
 });
