@@ -92,12 +92,15 @@ function initMap(coords, markerData) {
   // $('#map').show();
 }
 
-
 //--------------------------------------------
 //------------New Addmarker Map---------------
 //--------------------------------------------
-function addMarker(existingMap) {
+function addNewMarker(existingMap) {
   let map = existingMap;
+  let newMarkerCoords = {
+    lat:'',
+    lng:''
+  };
   let newMarker = new google.maps.Marker({    
     position: map.getCenter(),
     title:'Test Marker',
@@ -106,11 +109,10 @@ function addMarker(existingMap) {
   if (STATE.newMarkerStatus === false) {
     STATE.newMarkerStatus = true;
     newMarker.setMap(map);
+    newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
+    newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
+    $('#newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
   }
-  let newMarkerCoords = {
-    lat:'',
-    lng:''
-  };
   google.maps.event.addListener(newMarker,'drag',function() {
     newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
     newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
@@ -120,9 +122,6 @@ function addMarker(existingMap) {
 //--------------------------------------------
 //--------------------------------------------
 //--------------------------------------------
-
-
-
 function addMarkersToMap(locations, map) {
   // mapMarkers array is only to needed for logging purposes!
   let mapMarkers = [];
@@ -322,6 +321,6 @@ $(window).on('load', function() {
   });
   $('#testButton').click(function(){
     console.log('postLocation was clicked');
-    addMarker(map);
+    addNewMarker(map);
   });
 });
