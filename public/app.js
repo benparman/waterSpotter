@@ -8,7 +8,9 @@ let map;
 //----------- STATE Variables -----------
 const STATE = {
   loginStatus: null,
-  newMarkerStatus: false
+  newMarkerStatus: false,
+  viewPortWidth: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
+  currentInfoWindow: null,
 };
 //----------Set STATE.loginStatus--------
 function checkLoginStatus() {
@@ -77,15 +79,59 @@ function geoCodeLocation(location, serverLocationData) {
   $.ajax(settings);
 }
 //--------------------------------------------
-function initMap(coords, markerData) {
+function initMap(coords, locationData) {
   const mapOptions = {
     mapTypeId: 'terrain',
     zoom: 14,
     center: coords
   };
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  addMarkersToMap(markerData, map);
+  addMarkersToMap(locationData, map);
   // $('#map').show();
+}
+
+//------Add Markers from Database Data--------
+function addMarkersToMap(locations, map) {
+  // mapMarkers array is only to needed for logging purposes!
+  let mapMarkers = [];
+  locations.forEach(function(location) {
+    const marker = new google.maps.Marker({
+      position: {
+        lat: location.coordinates.lat,
+        lng: location.coordinates.lon
+      },
+      title: location.title,
+      map: map,
+      icon: 'waterdrop.png', //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff,
+      infoWindowContent:
+      `<infoWindowContent class="windowWrapper">
+          <h2 class="infoWindow">${location.title}</h2>
+          <h4 class="infoWindow">Description: ${location.description}</h4>
+          <p class="infoWindow">Contributor: ${location.contributor}</p>
+          <p class="infoWindow">Type: ${location.type}</p>
+        </infoWindowContent>`
+    });
+
+    //***************NEW - MAY NOT WORK YET /***************
+    const infowindow=new google.maps.InfoWindow({
+      content: marker.infoWindowContent,
+      maxWidth: STATE.viewPortWidth*.6
+    });
+    marker.addListener('click', function() { 
+      if (STATE.currentInfoWindow) {
+        STATE.currentInfoWindow.close();
+      }
+      infowindow.open(map, marker);
+      STATE.currentInfoWindow=infowindow;
+    });
+    //***************NEW - MAY NOT WORK YET /***************
+
+    // not needed - only here to console.log below
+    mapMarkers.push(marker);
+    return marker;
+  });
+  // Logging here to inspect marker data
+  console.log('These are the map markers :', mapMarkers);
 }
 
 //--------------Add New Marker----------------
@@ -113,44 +159,6 @@ function addNewMarker(existingMap) {
     newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
     $('#newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
   });   
-}
-
-//-----------Add Database Markers-------------
-function addMarkersToMap(locations, map) {
-  // mapMarkers array is only to needed for logging purposes!
-  let mapMarkers = [];
-  locations.forEach(function(storedPlace) {
-    const marker = new google.maps.Marker({
-      position: {
-        lat: storedPlace.coordinates.lat,
-        lng: storedPlace.coordinates.lon
-      },
-      title: storedPlace.title,
-      map: map,
-      icon: 'waterdrop.png', //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff,
-      infoWindowContent: 'This is some test content.'
-    });
-
-
-    // const infowindow=new google.maps.InfoWindow({
-    //   content: location.infoWindowContent,
-    //   maxWidth: STATE.viewPortWidth*.6
-    // });
-    // marker.addListener('click', function() { 
-    //   if (STATE.currentInfoWindow) {
-    //     STATE.currentInfoWindow.close();
-    //   }
-    //   infowindow.open(map, marker);
-    //   STATE.currentInfoWindow=infowindow;
-    // });
-
-
-    // not needed - only here to console.log below
-    mapMarkers.push(marker);
-    return marker;
-  });
-  // Logging here to inspect marker data
-  console.log('These are the map markers :', mapMarkers);
 }
 
 //----------- signup.html functions ----------
