@@ -4,7 +4,7 @@ const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 let defaultLocation={lat: 40.543504, lng: -105.127969};
 let currentLocation;
-let map;
+let map = null;
 //----------- STATE Variables -----------
 const STATE = {
   loginStatus: null,
@@ -113,7 +113,7 @@ function addMarkersToMap(locations, map) {
     });
 
     //***************NEW - MAY NOT WORK YET /***************
-    const infowindow=new google.maps.InfoWindow({
+    let infowindow=new google.maps.InfoWindow({
       content: marker.infoWindowContent,
       maxWidth: STATE.viewPortWidth*.6
     });
@@ -145,19 +145,52 @@ function addNewMarker(existingMap) {
     position: map.getCenter(),
     title:'Test Marker',
     draggable: true,
-    icon: 'marker_red+.png'
+    icon: 'marker_red+.png',
+    infoWindowContent:
+    `<infoWindowContent class="windowWrapper">
+      <form class="newMarkerForm">
+        <p class = newMarkerCoords></p>
+        <input type="text" id="newMarkerTitle" name="newTitle" placeholder="Title...">
+        <input type="text" id="newMarkerDescription" name="newDescription" placeholder="Description...">
+        <select type="text" id="newMarkerType" name="newType">
+          <option value="Drinking Fountain">Drinking Fountain</option>
+          <option value="Spigot">Spigot</option>
+          <option value="Freeze Proof Hydrang">Freeze Proof Hydrang</option>
+          <option value="Natural Spring">Natural Spring</option>
+          <option value="Sink">Sink</option>
+          <option value="Filtering Location (ie stream)">Filtering Location (i.e. stream)</option>
+        </select>
+        <input type="submit" value="Submit">
+      </form>
+    </infoWindowContent>`
   });
+
+  let infowindow=new google.maps.InfoWindow({
+    content: newMarker.infoWindowContent,
+    maxWidth: STATE.viewPortWidth*.6
+  });
+  infowindow.open(map, newMarker); // Opens newMarker infoWindow on creation
+  STATE.currentInfoWindow=infowindow; //Stores newMarker infoWindow in STATE
+  newMarker.addListener('click', function() { 
+    if (STATE.currentInfoWindow) {
+      STATE.currentInfoWindow.close();
+    }
+    infowindow.open(map, newMarker);
+    STATE.currentInfoWindow=infowindow;
+  });
+
+
   if (STATE.newMarkerStatus === false) {
     STATE.newMarkerStatus = true;
     newMarker.setMap(map);
     newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
     newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
-    $('#newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
+    $('.newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
   }
   google.maps.event.addListener(newMarker,'drag',function() {
     newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
     newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
-    $('#newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
+    $('.newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
   });   
 }
 
