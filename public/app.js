@@ -10,12 +10,7 @@ const STATE = {
   loginStatus: null,
   newMarkerStatus: false
 };
-checkLoginStatus();
-//--------------------------------------------
-//--------------------------------------------
-//----------- index.html functions -----------
-//--------------------------------------------
-//--------------------------------------------
+//----------Set STATE.loginStatus--------
 function checkLoginStatus() {
   if (sessionStorage.currentUser) {
     STATE.loginStatus = true;
@@ -28,7 +23,8 @@ function checkLoginStatus() {
     $('.loginStatus').html('<a href="login.html">Log In</a>');
   }
 }
-//--------------------------------------------
+checkLoginStatus();  // This needs to run before page load to set STATE.loginstatus
+//-------------Get Server Data-----------
 function getServerData(){
   const settings = {
     method: 'GET',
@@ -36,7 +32,7 @@ function getServerData(){
     dataType: 'json',
     contentType: 'application/json',
     success: function(res){
-      console.log(res);
+      console.log('Response from getServerData(): ',res);
     },
     error: function(err){
       console.log(err);
@@ -92,9 +88,7 @@ function initMap(coords, markerData) {
   // $('#map').show();
 }
 
-//--------------------------------------------
-//------------New Addmarker Map---------------
-//--------------------------------------------
+//--------------Add New Marker----------------
 function addNewMarker(existingMap) {
   let map = existingMap;
   let newMarkerCoords = {
@@ -120,9 +114,8 @@ function addNewMarker(existingMap) {
     $('#newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
   });   
 }
-//--------------------------------------------
-//--------------------------------------------
-//--------------------------------------------
+
+//-----------Add Database Markers-------------
 function addMarkersToMap(locations, map) {
   // mapMarkers array is only to needed for logging purposes!
   let mapMarkers = [];
@@ -134,8 +127,24 @@ function addMarkersToMap(locations, map) {
       },
       title: storedPlace.title,
       map: map,
-      icon: 'waterdrop.png', //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff
+      icon: 'waterdrop.png', //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff,
+      infoWindowContent: 'This is some test content.'
     });
+
+
+    // const infowindow=new google.maps.InfoWindow({
+    //   content: location.infoWindowContent,
+    //   maxWidth: STATE.viewPortWidth*.6
+    // });
+    // marker.addListener('click', function() { 
+    //   if (STATE.currentInfoWindow) {
+    //     STATE.currentInfoWindow.close();
+    //   }
+    //   infowindow.open(map, marker);
+    //   STATE.currentInfoWindow=infowindow;
+    // });
+
+
     // not needed - only here to console.log below
     mapMarkers.push(marker);
     return marker;
@@ -143,27 +152,8 @@ function addMarkersToMap(locations, map) {
   // Logging here to inspect marker data
   console.log('These are the map markers :', mapMarkers);
 }
-//--------------------------------------------
-function listen(serverLocationData) {
-  $('#searchLocation').submit(function(event) {
-    event.preventDefault();
-    geoCodeLocation($('.searchTerms').val(), serverLocationData);
-  });
-  $('#myLocation-button').click(function(event){
-    event.preventDefault();
-    getLocation()
-      .then(function(userLocation){
-        map.setCenter(userLocation);
-      });
-  });
-}
-//--------------------------------------------
-//------- End of index.html functions --------
-//--------------------------------------------
 
-//--------------------------------------------
 //----------- signup.html functions ----------
-//--------------------------------------------
 function registerUser(username, firsName, lastName, password) {
   const settings = {
     url: 'api/users/',
@@ -186,13 +176,8 @@ function registerUser(username, firsName, lastName, password) {
   console.log(settings.data);
   $.ajax(settings);
 }
-//--------------------------------------------
-//------- end of signup.html functions -------
-//--------------------------------------------
 
-//--------------------------------------------
 //----------- login.html functions -----------
-//--------------------------------------------
 function loginUser(username, password) {
   const settings = {
     url: 'api/auth/login/',
@@ -216,6 +201,7 @@ function loginUser(username, password) {
   return $.ajax(settings);
 }
 
+//----------- get protected data -----------
 function getProtected(authToken) {
   const settings = {
     async: true,
@@ -239,13 +225,8 @@ function getProtected(authToken) {
   //   console.log(response);
   // });
 }
-//--------------------------------------------
-//--------- end oflogin.html functions -------
-//--------------------------------------------
 
-//--------------------------------------------
 //----------- login.html functions -----------
-//--------------------------------------------
 function postLocation(title, description, lat, lon, type) {
   const settings = {
     url: '/locations',
@@ -271,18 +252,24 @@ function postLocation(title, description, lat, lon, type) {
   };
   return $.ajax(settings);
 }
-//--------------------------------------------
-//--------- end oflogin.html functions -------
-//--------------------------------------------
 
-//--------------------------------------------
 //-------------- Event Listeners -------------
-//--------------------------------------------
 $(window).on('load', function() {
   getServerData()
-    .then(function(serverLocationData){
-      initMap(defaultLocation, serverLocationData);
-      listen(serverLocationData);
+    .then(function(serverData){
+      initMap(defaultLocation, serverData);
+      // listen(serverData);
+      $('#searchLocation').submit(function(event) {
+        event.preventDefault();
+        geoCodeLocation($('.searchTerms').val(), serverData);
+      });
+      $('#myLocation-button').click(function(event){
+        event.preventDefault();
+        getLocation()
+          .then(function(userLocation){
+            map.setCenter(userLocation);
+          });
+      });
     });
   $('#signupForm').submit(event => {
     event.preventDefault();
@@ -315,14 +302,12 @@ $(window).on('load', function() {
     );
   });
   $('.loginStatus').click(function(){
-    console.log('loginStatus was Clicked');
     if (sessionStorage.currentUser) {
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('currentUser');
     }
   });
   $('#testButton').click(function(){
-    console.log('postLocation was clicked');
     addNewMarker(map);
   });
 });
