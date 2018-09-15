@@ -108,6 +108,20 @@ function initMap() {
 function addMarkersToMap() {
   // mapMarkers array is only to needed for logging purposes!
   STATE.markerLocations.forEach(function(location) {
+    let uniqueIcon;
+    if (location.type === 'Drinking Fountain') {
+      uniqueIcon = 'drinkingFountain.png';
+    } else if (location.type === 'Spigot') {
+      uniqueIcon = 'drinkingWater.png';
+    } else if (location.type === 'Freeze Proof Hydrant') {
+      uniqueIcon = 'waterwellpump.png';
+    } else if (location.type === 'Natural Spring') {
+      uniqueIcon = 'waterdrop.png';
+    }  else if (location.type === 'Filtering Location (ie stream)') {
+      uniqueIcon = 'river-2.png';
+    }  else if (location.type === 'Sink') {
+      uniqueIcon = 'sink.png';
+    }
     const marker = new google.maps.Marker({
       position: {
         lat: location.coordinates.lat,
@@ -115,7 +129,7 @@ function addMarkersToMap() {
       },
       title: location.title,
       map: STATE.map,
-      icon: 'waterdrop.png', //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff,
+      icon: uniqueIcon, //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff,
       animation: google.maps.Animation.DROP,
       infoWindowContent:
       `<infoWindowContent class="windowWrapper">
