@@ -7,10 +7,15 @@ let currentLocation;
 let map = null;
 //----------- STATE Variables -----------
 const STATE = {
+  markerLocations: null,
   loginStatus: null,
   newMarkerStatus: false,
   viewPortWidth: Math.max(document.documentElement.clientWidth, window.innerWidth || 0),
   currentInfoWindow: null,
+  newMarkerCoords : {
+    lat:'',
+    lng:''
+  }
 };
 //----------Set STATE.loginStatus--------
 function checkLoginStatus() {
@@ -137,10 +142,6 @@ function addMarkersToMap(locations, map) {
 //--------------Add New Marker----------------
 function addNewMarker(existingMap) {
   let map = existingMap;
-  let newMarkerCoords = {
-    lat:'',
-    lng:''
-  };
   let newMarker = new google.maps.Marker({
     position: map.getCenter(),
     title:'Test Marker',
@@ -148,20 +149,24 @@ function addNewMarker(existingMap) {
     icon: 'marker_red+.png',
     infoWindowContent:
     `<infoWindowContent class="windowWrapper">
-      <form class="newMarkerForm">
-        <p class = newMarkerCoords></p>
-        <input type="text" id="newMarkerTitle" name="newTitle" placeholder="Title...">
-        <input type="text" id="newMarkerDescription" name="newDescription" placeholder="Description...">
-        <select type="text" id="newMarkerType" name="newType">
-          <option value="Drinking Fountain">Drinking Fountain</option>
-          <option value="Spigot">Spigot</option>
-          <option value="Freeze Proof Hydrang">Freeze Proof Hydrang</option>
-          <option value="Natural Spring">Natural Spring</option>
-          <option value="Sink">Sink</option>
-          <option value="Filtering Location (ie stream)">Filtering Location (i.e. stream)</option>
-        </select>
-        <input type="submit" value="Submit">
-      </form>
+      <section class = "newMarker">
+        <fieldset class = "newMarker">
+          <form id="newMarker">
+            <p class = newMarkerCoords></p>
+            <input type="text" id="newMarkerTitle" name="newTitle" placeholder="Title...">
+            <input type="text" id="newMarkerDescription" name="newDescription" placeholder="Description...">
+            <select type="text" id="newMarkerType" name="newType">
+              <option value="Drinking Fountain">Drinking Fountain</option>
+              <option value="Spigot">Spigot</option>
+              <option value="Freeze Proof Hydrant">Freeze Proof Hydrant</option>
+              <option value="Natural Spring">Natural Spring</option>
+              <option value="Sink">Sink</option>
+              <option value="Filtering Location (ie stream)">Filtering Location (i.e. stream)</option>
+            </select>
+            <button id="postButton">Post New Location!</button>
+          </form>
+        </fieldset>
+      </section>
     </infoWindowContent>`
   });
 
@@ -183,14 +188,14 @@ function addNewMarker(existingMap) {
   if (STATE.newMarkerStatus === false) {
     STATE.newMarkerStatus = true;
     newMarker.setMap(map);
-    newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
-    newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
-    $('.newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
+    STATE.newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
+    STATE.newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
+    $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.newMarkerCoords.lat}, ${STATE.newMarkerCoords.lng}`);
   }
   google.maps.event.addListener(newMarker,'drag',function() {
-    newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
-    newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
-    $('.newMarkerCoords').text(`New Marker Coordinates: ${newMarkerCoords.lat}, ${newMarkerCoords.lng}`);
+    STATE.newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
+    STATE.newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
+    $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.newMarkerCoords.lat}, ${STATE.newMarkerCoords.lng}`);
   });   
 }
 
@@ -269,6 +274,7 @@ function getProtected(authToken) {
 
 //----------- login.html functions -----------
 function postLocation(title, description, lat, lon, type) {
+  console.log('postLocation() was called with the following parameters: ', title, description,lat,lon, type);
   const settings = {
     url: '/locations',
     method: 'POST',
@@ -332,16 +338,31 @@ $(window).on('load', function() {
         checkLoginStatus();
       }); 
   });
-  $('#locationForm').submit(event => {
+  // $('#locationForm').submit(event => {
+  //   event.preventDefault();
+  //   postLocation(
+  //     $('#newMarkerTitle').val(),
+  //     $('#newMarkerDescription').val(),
+  //     STATE.newMarkerCoords.lat,
+  //     STATE.newMarkerCoords.lng,
+  //     $('#newMarkerType').val()
+  //   );
+  // });
+
+
+  $('#map').submit('.#newMarker', event => {
     event.preventDefault();
     postLocation(
-      $('#post-title').val(),
-      $('#post-description').val(),
-      $('#post-lat').val(),
-      $('#post-lon').val(),
-      $('#post-type').val()
+      $('#newMarkerTitle').val(),
+      $('#newMarkerDescription').val(),
+      STATE.newMarkerCoords.lat,
+      STATE.newMarkerCoords.lng,
+      $('#newMarkerType').val()
     );
   });
+
+
+
   $('.loginStatus').click(function(){
     if (sessionStorage.currentUser) {
       sessionStorage.removeItem('accessToken');
