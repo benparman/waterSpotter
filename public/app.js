@@ -20,7 +20,8 @@ const STATE = {
   newMarkerCoords : {
     lat:'',
     lng:''
-  }
+  },
+  newMarker: null
 };
 //----------Set STATE.loginStatus--------
 function checkLoginStatus() {
@@ -124,7 +125,6 @@ function addMarkersToMap() {
         </infoWindowContent>`
     });
 
-    //***************NEW - MAY NOT WORK YET /***************
     let infowindow=new google.maps.InfoWindow({
       content: marker.infoWindowContent,
       maxWidth: STATE.viewPortWidth*.6
@@ -136,7 +136,6 @@ function addMarkersToMap() {
       infowindow.open(map, marker);
       STATE.currentInfoWindow=infowindow;
     });
-    //***************NEW - MAY NOT WORK YET /***************
 
     // not needed - only here to console.log below
     mapMarkers.push(marker);
@@ -149,7 +148,7 @@ function addMarkersToMap() {
 //--------------Add New Marker----------------
 function addNewMarker(existingMap) {
   let map = existingMap;
-  let newMarker = new google.maps.Marker({
+  STATE.newMarker = new google.maps.Marker({
     position: map.getCenter(),
     title:'Test Marker',
     draggable: true,
@@ -178,30 +177,30 @@ function addNewMarker(existingMap) {
   });
 
   let infowindow=new google.maps.InfoWindow({
-    content: newMarker.infoWindowContent,
+    content: STATE.newMarker.infoWindowContent,
     maxWidth: STATE.viewPortWidth*.6
   });
-  infowindow.open(map, newMarker); // Opens newMarker infoWindow on creation
+  infowindow.open(map, STATE.newMarker); // Opens newMarker infoWindow on creation
   STATE.currentInfoWindow=infowindow; //Stores newMarker infoWindow in STATE
-  newMarker.addListener('click', function() { 
+  STATE.newMarker.addListener('click', function() { 
     if (STATE.currentInfoWindow) {
       STATE.currentInfoWindow.close();
     }
-    infowindow.open(map, newMarker);
+    infowindow.open(map, STATE.newMarker);
     STATE.currentInfoWindow=infowindow;
   });
 
 
   if (STATE.newMarkerStatus === false) {
     STATE.newMarkerStatus = true;
-    newMarker.setMap(map);
-    STATE.newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
-    STATE.newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
+    STATE.newMarker.setMap(map);
+    STATE.newMarkerCoords.lat = STATE.newMarker.position.lat().toFixed(6);
+    STATE.newMarkerCoords.lng= STATE.newMarker.position.lng().toFixed(6);
     $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.newMarkerCoords.lat}, ${STATE.newMarkerCoords.lng}`);
   }
-  google.maps.event.addListener(newMarker,'drag',function() {
-    STATE.newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
-    STATE.newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
+  google.maps.event.addListener(STATE.newMarker,'drag',function() {
+    STATE.newMarkerCoords.lat = STATE.newMarker.position.lat().toFixed(6);
+    STATE.newMarkerCoords.lng= STATE.newMarker.position.lng().toFixed(6);
     $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.newMarkerCoords.lat}, ${STATE.newMarkerCoords.lng}`);
   });
 
@@ -216,11 +215,21 @@ function addNewMarker(existingMap) {
       $('#newMarkerType').val()
     );
     STATE.currentInfoWindow.close();
-    newMarker.setMap(null);
+    STATE.newMarkerStatus = false;
+    STATE.newMarker.setMap();
+    STATE.newMarker = null;
+    getServerData();
   });
 
-
+  $('#map div div div div div div div img').click(event => {
+    event.preventDefault();
+    STATE.newMarkerStatus = false;
+    STATE.newMarker.setMap();
+    STATE.newMarker = null;
+  });
 }
+
+//*[@id="map"]/div/div/div[1]/div[3]/div/div[4]/div/div[3]
 
 //----------- signup.html functions ----------
 function registerUser(username, firsName, lastName, password) {
