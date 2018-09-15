@@ -2,11 +2,16 @@
 
 const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
-let defaultLocation={lat: 40.543504, lng: -105.127969};
 let currentLocation;
-let map = null;
+// let STATE.map = null;
 //----------- STATE Variables -----------
 const STATE = {
+  map: null,
+  currentLocation: null,
+  defaultLocation:{
+    lat: 40.543504, 
+    lng: -105.127969
+  },
   markerLocations: null,
   loginStatus: null,
   newMarkerStatus: false,
@@ -38,8 +43,9 @@ function getServerData(){
     url: '/locations',
     dataType: 'json',
     contentType: 'application/json',
-    success: function(res){
-      console.log('Response from getServerData(): ',res);
+    success: function(serverData){
+      STATE.markerLocations = serverData;
+      console.log('Response from getServerData(): ',serverData);
     },
     error: function(err){
       console.log(err);
@@ -56,6 +62,7 @@ function getLocation() {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
+        STATE.currentLocation = currentLocation;
         resolve(currentLocation);
       });
     }
@@ -75,7 +82,7 @@ function geoCodeLocation(location, serverLocationData) {
     dataType: 'json',
     success: function(data) {
       currentLocation = data.results[0].geometry.location;
-      map.setCenter(currentLocation);
+      STATE.map.setCenter(currentLocation);
     },
     error: function(){
       console.log('error');
@@ -84,29 +91,29 @@ function geoCodeLocation(location, serverLocationData) {
   $.ajax(settings);
 }
 //--------------------------------------------
-function initMap(coords, locationData) {
+function initMap(coords) {
   const mapOptions = {
     mapTypeId: 'terrain',
     zoom: 14,
     center: coords
   };
-  map = new google.maps.Map(document.getElementById('map'), mapOptions);
-  addMarkersToMap(locationData, map);
+  STATE.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+  addMarkersToMap();
   // $('#map').show();
 }
 
 //------Add Markers from Database Data--------
-function addMarkersToMap(locations, map) {
+function addMarkersToMap() {
   // mapMarkers array is only to needed for logging purposes!
   let mapMarkers = [];
-  locations.forEach(function(location) {
+  STATE.markerLocations.forEach(function(location) {
     const marker = new google.maps.Marker({
       position: {
         lat: location.coordinates.lat,
         lng: location.coordinates.lon
       },
       title: location.title,
-      map: map,
+      map: STATE.map,
       icon: 'waterdrop.png', //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff,
       infoWindowContent:
       `<infoWindowContent class="windowWrapper">
@@ -196,7 +203,23 @@ function addNewMarker(existingMap) {
     STATE.newMarkerCoords.lat = newMarker.position.lat().toFixed(6);
     STATE.newMarkerCoords.lng= newMarker.position.lng().toFixed(6);
     $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.newMarkerCoords.lat}, ${STATE.newMarkerCoords.lng}`);
-  });   
+  });
+
+
+  $('#map').submit('.#newMarker', event => {
+    event.preventDefault();
+    postLocation(
+      $('#newMarkerTitle').val(),
+      $('#newMarkerDescription').val(),
+      STATE.newMarkerCoords.lat,
+      STATE.newMarkerCoords.lng,
+      $('#newMarkerType').val()
+    );
+    STATE.currentInfoWindow.close();
+    newMarker.setMap(null);
+  });
+
+
 }
 
 //----------- signup.html functions ----------
@@ -235,8 +258,6 @@ function loginUser(username, password) {
       password: password
     }),
     success: function(res) {
-      console.log('AuthToken (JWT): ', res.authToken);
-      JWT = res.authToken;
       sessionStorage.accessToken = res.authToken;
       sessionStorage.currentUser = username;
     },
@@ -303,18 +324,18 @@ function postLocation(title, description, lat, lon, type) {
 //-------------- Event Listeners -------------
 $(window).on('load', function() {
   getServerData()
-    .then(function(serverData){
-      initMap(defaultLocation, serverData);
+    .then(function(){
+      initMap(STATE.defaultLocation, STATE.markerLocations);
       // listen(serverData);
-      $('#searchLocation').submit(function(event) {
+      $('#searchLocation').submit(event => {
         event.preventDefault();
-        geoCodeLocation($('.searchTerms').val(), serverData);
+        geoCodeLocation($('.searchTerms').val(), STATE.markerLocations);
       });
-      $('#myLocation-button').click(function(event){
+      $('#myLocation-button').click(event =>{
         event.preventDefault();
         getLocation()
-          .then(function(userLocation){
-            map.setCenter(userLocation);
+          .then(function(){
+            STATE.map.setCenter(STATE.currentLocation);
           });
       });
     });
@@ -327,6 +348,7 @@ $(window).on('load', function() {
       $('#signup-password').val()
     );
   });
+
   $('#login-form').submit(event => {
     event.preventDefault();
     loginUser(
@@ -338,7 +360,10 @@ $(window).on('load', function() {
         checkLoginStatus();
       }); 
   });
-  // $('#locationForm').submit(event => {
+
+  //***********THIS HAS BEEN MOVED INSIDE addNewMarker Function! */
+  //****Placing it there allows access to newMarker so it can be removed */
+  // $('#map').submit('.#newMarker', event => {
   //   event.preventDefault();
   //   postLocation(
   //     $('#newMarkerTitle').val(),
@@ -347,21 +372,9 @@ $(window).on('load', function() {
   //     STATE.newMarkerCoords.lng,
   //     $('#newMarkerType').val()
   //   );
+  //   STATE.currentInfoWindow.close();
   // });
-
-
-  $('#map').submit('.#newMarker', event => {
-    event.preventDefault();
-    postLocation(
-      $('#newMarkerTitle').val(),
-      $('#newMarkerDescription').val(),
-      STATE.newMarkerCoords.lat,
-      STATE.newMarkerCoords.lng,
-      $('#newMarkerType').val()
-    );
-  });
-
-
+  //***********THIS HAS BEEN MOVED INSIDE addNewMarker Function! */
 
   $('.loginStatus').click(function(){
     if (sessionStorage.currentUser) {
@@ -370,6 +383,6 @@ $(window).on('load', function() {
     }
   });
   $('#testButton').click(function(){
-    addNewMarker(map);
+    addNewMarker(STATE.map);
   });
 });
