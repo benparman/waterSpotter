@@ -109,6 +109,10 @@ function addMarkersToMap() {
   // mapMarkers array is only to needed for logging purposes!
   STATE.markerLocations.forEach(function(location) {
     let uniqueIcon;
+    let deleteLocationButton = '';
+    if (sessionStorage.currentUser === location.contributor) {
+      deleteLocationButton = '<button id="deleteButton">Delete this location.</button>';
+    }
     if (location.type === 'Drinking Fountain') {
       uniqueIcon = 'drinkingFountain.png';
     } else if (location.type === 'Spigot') {
@@ -137,6 +141,7 @@ function addMarkersToMap() {
           <h4 class="infoWindow">Description: ${location.description}</h4>
           <p class="infoWindow">Contributor: ${location.contributor}</p>
           <p class="infoWindow">Type: ${location.type}</p>
+          ${deleteLocationButton}
         </infoWindowContent>`
     });
 
@@ -244,7 +249,8 @@ function addNewMarker(existingMap) {
   //   );
   // });
 
-  $('#map div div div div div div div img').click(event => {
+  $('#map').click('img[src~=\'https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png\']', event => {
+    console.log('WORKING!');
     event.preventDefault();
     STATE.newMarkerStatus = false;
     STATE.newMarker.setMap();
@@ -391,21 +397,6 @@ $(window).on('load', function() {
       }); 
   });
 
-  //***********THIS HAS BEEN MOVED INSIDE addNewMarker Function! */
-  //****Placing it there allows access to newMarker so it can be removed */
-  // $('#map').submit('.#newMarker', event => {
-  //   event.preventDefault();
-  //   postLocation(
-  //     $('#newMarkerTitle').val(),
-  //     $('#newMarkerDescription').val(),
-  //     STATE.newMarkerCoords.lat,
-  //     STATE.newMarkerCoords.lng,
-  //     $('#newMarkerType').val()
-  //   );
-  //   STATE.currentInfoWindow.close();
-  // });
-  //***********THIS HAS BEEN MOVED INSIDE addNewMarker Function! */
-
   $('.loginStatus').click(function(){
     if (sessionStorage.currentUser) {
       sessionStorage.removeItem('accessToken');
@@ -415,28 +406,32 @@ $(window).on('load', function() {
   $('#testButton').click(function(){
     addNewMarker(STATE.map);
   });
+  $('#map').submit('.#newMarker', event => {
+    event.preventDefault();
+    postLocation(
+      $('#newMarkerTitle').val(),
+      $('#newMarkerDescription').val(),
+      STATE.newMarkerCoords.lat,
+      STATE.newMarkerCoords.lng,
+      $('#newMarkerType').val()
+    );
+    STATE.currentInfoWindow.close();
+    STATE.newMarkerStatus = false;
+    STATE.newMarker.setMap();
+    STATE.newMarker = null;
+  
+    STATE.mapMarkers.forEach(function(mapMarker) {
+      mapMarker.setMap();
+    });
+  
+    STATE.mapMarkers = [],
+    getServerData().then(function(){
+      addMarkersToMap();
+    });
+  });
+  $('#map').on('click', '#deleteButton',event => {
+    event.preventDefault();
+    console.log('delete button clicked');
+  });
 });
 
-$('#map').submit('.#newMarker', event => {
-  event.preventDefault();
-  postLocation(
-    $('#newMarkerTitle').val(),
-    $('#newMarkerDescription').val(),
-    STATE.newMarkerCoords.lat,
-    STATE.newMarkerCoords.lng,
-    $('#newMarkerType').val()
-  );
-  STATE.currentInfoWindow.close();
-  STATE.newMarkerStatus = false;
-  STATE.newMarker.setMap();
-  STATE.newMarker = null;
-
-  STATE.mapMarkers.forEach(function(mapMarker) {
-    mapMarker.setMap();
-  });
-
-  STATE.mapMarkers = [],
-  getServerData().then(function(){
-    addMarkersToMap();
-  });
-});
