@@ -12,7 +12,7 @@ const STATE = {
     lat: 40.543504, 
     lng: -105.127969
   },
-  markerLocations: null,
+  markerLocations: null, 
   mapMarkers: [],
   loginStatus: null,
   newMarkerStatus: false,
@@ -249,7 +249,9 @@ function addNewMarker(existingMap) {
   //   );
   // });
 
-  $('#map').click('img[src~=\'https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png\']', event => {
+  // $('#map').click('img[src$="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png"]', event => {
+  //why is the above NOT working?
+  $('#map div div div div div div img').click(event => {
     console.log('WORKING!');
     event.preventDefault();
     STATE.newMarkerStatus = false;
