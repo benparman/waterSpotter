@@ -384,41 +384,27 @@ $(window).on('load', function() {
   });
   $('#map').submit('.#newMarker', event => {
     event.preventDefault();
-    let isPostValid = false;
-    if($('#newMarkerTitle').val().length > 0) {
-      isPostValid = true;
-    }
-
-    postLocation(
-      $('#newMarkerTitle').val(),
-      $('#newMarkerDescription').val(),
-      STATE.newMarkerCoords.lat,
-      STATE.newMarkerCoords.lng,
-      $('#newMarkerType').val()
-    );
-    STATE.currentInfoWindow.close();
-    STATE.newMarkerStatus = false;
-    STATE.newMarker.setMap();
-    STATE.newMarker = null;
-
-    if (isPostValid === true) {
+    if ($('#newMarkerTitle').val().length > 0) {
+      postLocation(
+        $('#newMarkerTitle').val(),
+        $('#newMarkerDescription').val(),
+        STATE.newMarkerCoords.lat,
+        STATE.newMarkerCoords.lng,
+        $('#newMarkerType').val()
+      );
       STATE.mapMarkers.forEach(function(mapMarker) {
         mapMarker.setMap();
       });
       STATE.mapMarkers = [],
-    getServerData().then(function(){
-      addMarkersToMap();
-    });
+      getServerData().then(function(){
+        addMarkersToMap();
+      });
     }
-
-    
-
-
-
+    STATE.currentInfoWindow.close();
+    STATE.newMarkerStatus = false;
+    STATE.newMarker.setMap();
+    STATE.newMarker = null;
   });
-
-
-  
   $('#map').on('click', '#deleteButton',event => {
     event.preventDefault();
     console.log('delete button clicked');
