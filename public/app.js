@@ -132,6 +132,7 @@ function addMarkersToMap() {
         lng: location.coordinates.lon
       },
       title: location.title,
+      id: location.id,
       map: STATE.map,
       icon: uniqueIcon, //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff,
       animation: google.maps.Animation.DROP,
@@ -305,7 +306,7 @@ function getProtected(authToken) {
   // });
 }
 
-//----------- login.html functions -----------
+//--------- POST Location to Server ----------
 function postLocation(title, description, lat, lon, type) {
   console.log('postLocation() was called with the following parameters: ', title, description,lat,lon, type);
   const settings = {
@@ -328,6 +329,23 @@ function postLocation(title, description, lat, lon, type) {
     },
     error: function(err) {
       console.log('Error, location was not added!', err);
+    }
+  };
+  return $.ajax(settings);
+}
+
+//------- Delete Location from Server --------
+function deleteLocation(id){
+  const settings = {
+    url: `locations/${id}`,
+    method: 'DELETE',
+    dataType: 'json',
+    contentType: 'application/json',
+    success: function(res) {
+      console.log('Server response from DELETE request: ', res);
+    },
+    error: function(err) {
+      console.log('ERRROR!  Server Response: ', err);
     }
   };
   return $.ajax(settings);
@@ -408,6 +426,15 @@ $(window).on('load', function() {
   $('#map').on('click', '#deleteButton',event => {
     event.preventDefault();
     console.log('delete button clicked');
+    deleteLocation(STATE.currentInfoWindow.anchor.id).then(function(){    
+      STATE.mapMarkers.forEach(function(mapMarker) {
+        mapMarker.setMap();
+      });
+      STATE.mapMarkers = [],
+      getServerData().then(function(){
+        addMarkersToMap();
+      });
+    }); 
   });
 });
 
