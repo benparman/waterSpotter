@@ -223,32 +223,6 @@ function addNewMarker(existingMap) {
     STATE.newMarkerCoords.lng= STATE.newMarker.position.lng().toFixed(6);
     $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.newMarkerCoords.lat}, ${STATE.newMarkerCoords.lng}`);
   });
-
-
-  // $('#map').submit('.#newMarker', event => {
-  //   event.preventDefault();
-  //   postLocation(
-  //     $('#newMarkerTitle').val(),
-  //     $('#newMarkerDescription').val(),
-  //     STATE.newMarkerCoords.lat,
-  //     STATE.newMarkerCoords.lng,
-  //     $('#newMarkerType').val()
-  //   );
-  //   STATE.currentInfoWindow.close();
-  //   STATE.newMarkerStatus = false;
-  //   STATE.newMarker.setMap();
-  //   STATE.newMarker = null;
-
-  //   STATE.mapMarkers.forEach(function(mapMarker) {
-  //     mapMarker.setMap();
-  //   });
-
-  //   STATE.mapMarkers = [],
-  //   getServerData().then(
-  //     addMarkersToMap()
-  //   );
-  // });
-
   // $('#map').click('img[src$="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png"]', event => {
   //why is the above NOT working?
   $('#map div div div div div div img').click(event => {
@@ -410,6 +384,11 @@ $(window).on('load', function() {
   });
   $('#map').submit('.#newMarker', event => {
     event.preventDefault();
+    let isPostValid = false;
+    if($('#newMarkerTitle').val().length > 0) {
+      isPostValid = true;
+    }
+
     postLocation(
       $('#newMarkerTitle').val(),
       $('#newMarkerDescription').val(),
@@ -421,16 +400,25 @@ $(window).on('load', function() {
     STATE.newMarkerStatus = false;
     STATE.newMarker.setMap();
     STATE.newMarker = null;
-  
-    STATE.mapMarkers.forEach(function(mapMarker) {
-      mapMarker.setMap();
-    });
-  
-    STATE.mapMarkers = [],
+
+    if (isPostValid === true) {
+      STATE.mapMarkers.forEach(function(mapMarker) {
+        mapMarker.setMap();
+      });
+      STATE.mapMarkers = [],
     getServerData().then(function(){
       addMarkersToMap();
     });
+    }
+
+    
+
+
+
   });
+
+
+  
   $('#map').on('click', '#deleteButton',event => {
     event.preventDefault();
     console.log('delete button clicked');
