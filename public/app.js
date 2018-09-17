@@ -110,8 +110,10 @@ function addMarkersToMap() {
   STATE.markerLocations.forEach(function(location) {
     let uniqueIcon;
     let deleteLocationButton = '';
+    let editLocationButton = '';
     if (sessionStorage.currentUser === location.contributor) {
       deleteLocationButton = '<button id="deleteButton">Delete this location.</button>';
+      editLocationButton = '<button id="editButton">Edit this location.</button>';
     }
     if (location.type === 'Drinking Fountain') {
       uniqueIcon = 'drinkingFountain.png';
@@ -142,7 +144,7 @@ function addMarkersToMap() {
           <h4 class="infoWindow">Description: ${location.description}</h4>
           <p class="infoWindow">Contributor: ${location.contributor}</p>
           <p class="infoWindow">Type: ${location.type}</p>
-          ${deleteLocationButton}
+          ${deleteLocationButton} ${editLocationButton}
         </infoWindowContent>`
     });
 
@@ -171,7 +173,7 @@ function addNewMarker(existingMap) {
   let map = existingMap;
   STATE.newMarker = new google.maps.Marker({
     position: map.getCenter(),
-    title:'Test Marker',
+    title:'New Location',
     draggable: true,
     icon: 'marker_red+.png',
     infoWindowContent:
