@@ -21,7 +21,9 @@ const STATE = {
     lat:'',
     lng:''
   },
-  newMarker: null
+  newMarker: null,
+  editWindowOpen: false,
+  editMarker: null
 };
 //----------Set STATE.loginStatus--------
 function checkLoginStatus() {
@@ -83,7 +85,7 @@ function geoCodeLocation(location, serverLocationData) {
     dataType: 'json',
     success: function(data) {
       currentLocation = data.results[0].geometry.location;
-      STATE.map.setCenter(currentLocation);
+      STATE.map.panTo(currentLocation);
     },
     error: function(){
       console.log('error');
@@ -156,6 +158,7 @@ function addMarkersToMap() {
         STATE.currentInfoWindow.close();
       }
       infowindow.open(STATE.map, marker);
+      STATE.map.panTo(marker.position);
       STATE.currentInfoWindow=infowindow;
     });
 
@@ -366,7 +369,7 @@ $(window).on('load', function() {
         event.preventDefault();
         getLocation()
           .then(function(){
-            STATE.map.setCenter(STATE.currentLocation);
+            STATE.map.panTo(STATE.currentLocation);
           });
       });
     });
@@ -447,47 +450,55 @@ $(window).on('load', function() {
   //***************WORK IN PROGRESS BELOW THIS LINE!!!! */
   $('#map').on('click', '#editButton', event => {
     event.preventDefault();
-    let origTitle = document.getElementById('infoWindowTitle').innerHTML;
-    let origDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
-    let origType = document.getElementById('infoWindowType').innerHTML.slice(6, document.getElementById('infoWindowType').innerHTML.length);
-    let selectOptionsHTML = '';
-    optionGenerator();
-    function optionGenerator() {
-      console.log('This is the original type: ', origType);
-      let selectOptions = [
-        'Drinking Fountain',
-        'Spigot',
-        'Freeze Proof Hydrant',
-        'Natural Spring',
-        'Sink',
-        'Filtering Location (ie stream)'
-      ];
-      for (let i=0; i<selectOptions.length; i++) {
-        if (selectOptions[i] === origType) {
-          selectOptionsHTML += `<option selected="selected" value="${selectOptions[i]}">${selectOptions[i]}</option>`;
-        }
-        else {
-          selectOptionsHTML += `<option value="${selectOptions[i]}">${selectOptions[i]}</option>`;
-        }
-      }
-      console.log(selectOptionsHTML);
-      console.log('This is the original title: ',origTitle);
-      $('#map .windowWrapper').html(
-        `<section class = "editMarker">
-        <fieldset class = "editMarker">
-          <form id="editMarker">
-            <p class = editMarkerCoords></p>
-            <input type="text" id="editMarkerTitle" name="newTitle" placeholder="${origTitle}">
-            <input type="text" id="editMarkerDescription" name="newDescription" placeholder="${origDescription}">
-            <select type="text" id="editMarkerType" name="newType">
-              ${selectOptionsHTML}
-            </select>
-            <button id="submitChanges">Submit</button>
-          </form>
-        </fieldset>
-      </section>`
-      );
-    }
+    STATE.editWindowOpen = true;
+    let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
+    let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
+    let originalType = document.getElementById('infoWindowType').innerHTML.slice(6, document.getElementById('infoWindowType').innerHTML.length);
+    
+    STATE.currentInfoWindow.close();
+    infowindow.open(STATE.map, STATE.newMarker)
+
+    optionGenerator(); //returns HTML for 'edit' infoWindow
+    let testVar = optionGenerator(originalTitle, originalDescription, originalType);
+    console.log('This is testvar: ',testVar);
+
+
+    
   });
 });
 
+function optionGenerator(origTitle, origDescription, origType) {
+  let selectOptionsHTML = '';
+  let selectOptions = [
+    'Drinking Fountain',
+    'Spigot',
+    'Freeze Proof Hydrant',
+    'Natural Spring',
+    'Sink',
+    'Filtering Location (ie stream)'
+  ];
+  for (let i=0; i<selectOptions.length; i++) {
+    if (selectOptions[i] === origType) {
+      selectOptionsHTML += `<option selected="selected" value="${selectOptions[i]}">${selectOptions[i]}</option>`;
+    }
+    else {
+      selectOptionsHTML += `<option value="${selectOptions[i]}">${selectOptions[i]}</option>`;
+    }
+  }
+  $('#map .windowWrapper').html(
+    `<section class = "editMarker">
+    <fieldset class = "editMarker">
+      <form id="editMarker">
+        <p class = editMarkerCoords></p>
+        <input type="text" id="editMarkerTitle" name="newTitle" placeholder="${origTitle}">
+        <input type="text" id="editMarkerDescription" name="newDescription" placeholder="${origDescription}">
+        <select type="text" id="editMarkerType" name="newType">
+          ${selectOptionsHTML}
+        </select>
+        <button id="submitChanges">Submit</button>
+      </form>
+    </fieldset>
+  </section>`
+  );
+  return selectOptionsHTML;
+}
