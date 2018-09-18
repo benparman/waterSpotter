@@ -473,16 +473,16 @@ $(window).on('load', function() {
       console.log(selectOptionsHTML);
       console.log('This is the original title: ',origTitle);
       $('#map .windowWrapper').html(
-        `<section class = "newMarker">
-        <fieldset class = "newMarker">
-          <form id="newMarker">
-            <p class = newMarkerCoords></p>
-            <input type="text" id="newMarkerTitle" name="newTitle" placeholder="${origTitle}">
-            <input type="text" id="newMarkerDescription" name="newDescription" placeholder="${origDescription}">
-            <select type="text" id="newMarkerType" name="newType">
+        `<section class = "editMarker">
+        <fieldset class = "editMarker">
+          <form id="editMarker">
+            <p class = editMarkerCoords></p>
+            <input type="text" id="editMarkerTitle" name="newTitle" placeholder="${origTitle}">
+            <input type="text" id="editMarkerDescription" name="newDescription" placeholder="${origDescription}">
+            <select type="text" id="editMarkerType" name="newType">
               ${selectOptionsHTML}
             </select>
-            <button id="postButton">Post New Location!</button>
+            <button id="submitChanges">Submit</button>
           </form>
         </fieldset>
       </section>`
