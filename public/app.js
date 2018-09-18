@@ -23,7 +23,7 @@ const STATE = {
   },
   newMarker: null,
   editWindowOpen: false,
-  editMarker: null
+  currentMarker: null
 };
 //----------Set STATE.loginStatus--------
 function checkLoginStatus() {
@@ -156,7 +156,9 @@ function addMarkersToMap() {
     marker.addListener('click', function() { 
       if (STATE.currentInfoWindow) {
         STATE.currentInfoWindow.close();
+        STATE.currentMarker = null;
       }
+      STATE.currentMarker = marker;
       infowindow.open(STATE.map, marker);
       STATE.map.panTo(marker.position);
       STATE.currentInfoWindow=infowindow;
@@ -210,6 +212,7 @@ function addNewMarker(existingMap) {
   STATE.newMarker.addListener('click', function() { 
     if (STATE.currentInfoWindow) {
       STATE.currentInfoWindow.close();
+      STATE.currentMarker = null;
     }
     infowindow.open(map, STATE.newMarker);
     STATE.currentInfoWindow=infowindow;
@@ -423,6 +426,7 @@ $(window).on('load', function() {
       });
     }
     STATE.currentInfoWindow.close();
+    STATE.currentMarker = null;
     STATE.newMarkerStatus = false;
     STATE.newMarker.setMap();
     STATE.newMarker = null;
@@ -450,20 +454,35 @@ $(window).on('load', function() {
   //***************WORK IN PROGRESS BELOW THIS LINE!!!! */
   $('#map').on('click', '#editButton', event => {
     event.preventDefault();
+    
     STATE.editWindowOpen = true;
     let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
     let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
     let originalType = document.getElementById('infoWindowType').innerHTML.slice(6, document.getElementById('infoWindowType').innerHTML.length);
-    
     STATE.currentInfoWindow.close();
-    infowindow.open(STATE.map, STATE.newMarker)
-
     optionGenerator(); //returns HTML for 'edit' infoWindow
     let testVar = optionGenerator(originalTitle, originalDescription, originalType);
     console.log('This is testvar: ',testVar);
 
-
     
+    let editInfowindow=new google.maps.InfoWindow({
+      content: `<section class = "editMarker">
+      <fieldset class = "editMarker">
+        <form id="editMarker">
+          <p class = editMarkerCoords></p>
+          <input type="text" id="editMarkerTitle" name="newTitle" placeholder="${originalTitle}">
+          <input type="text" id="editMarkerDescription" name="newDescription" placeholder="${originalDescription}">
+          <select type="text" id="editMarkerType" name="newType">
+            ${optionGenerator()}
+          </select>
+          <button id="submitChanges">Submit</button>
+        </form>
+      </fieldset>
+    </section>`,
+      maxWidth: STATE.viewPortWidth*.6
+    });
+    editInfowindow.open(STATE.map, STATE.currentMarker);
+    STATE.currentInfoWindow = editInfowindow;
   });
 });
 
@@ -485,20 +504,20 @@ function optionGenerator(origTitle, origDescription, origType) {
       selectOptionsHTML += `<option value="${selectOptions[i]}">${selectOptions[i]}</option>`;
     }
   }
-  $('#map .windowWrapper').html(
-    `<section class = "editMarker">
-    <fieldset class = "editMarker">
-      <form id="editMarker">
-        <p class = editMarkerCoords></p>
-        <input type="text" id="editMarkerTitle" name="newTitle" placeholder="${origTitle}">
-        <input type="text" id="editMarkerDescription" name="newDescription" placeholder="${origDescription}">
-        <select type="text" id="editMarkerType" name="newType">
-          ${selectOptionsHTML}
-        </select>
-        <button id="submitChanges">Submit</button>
-      </form>
-    </fieldset>
-  </section>`
-  );
+  // $('#map .windowWrapper').html(
+  //   `<section class = "editMarker">
+  //   <fieldset class = "editMarker">
+  //     <form id="editMarker">
+  //       <p class = editMarkerCoords></p>
+  //       <input type="text" id="editMarkerTitle" name="newTitle" placeholder="${origTitle}">
+  //       <input type="text" id="editMarkerDescription" name="newDescription" placeholder="${origDescription}">
+  //       <select type="text" id="editMarkerType" name="newType">
+  //         ${selectOptionsHTML}
+  //       </select>
+  //       <button id="submitChanges">Submit</button>
+  //     </form>
+  //   </fieldset>
+  // </section>`
+  // );
   return selectOptionsHTML;
 }
