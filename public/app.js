@@ -3,7 +3,6 @@
 const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 let currentLocation;
-// let STATE.map = null;
 //----------- STATE Variables -----------
 const STATE = {
   map: null,
@@ -140,10 +139,10 @@ function addMarkersToMap() {
       animation: google.maps.Animation.DROP,
       infoWindowContent:
       `<infoWindowContent class="windowWrapper">
-          <h2 class="infoWindow">${location.title}</h2>
-          <h4 class="infoWindow">Description: ${location.description}</h4>
-          <p class="infoWindow">Contributor: ${location.contributor}</p>
-          <p class="infoWindow">Type: ${location.type}</p>
+          <h2 class="infoWindow" id="infoWindowTitle">${location.title}</h2>
+          <h4 class="infoWindow" id="infoWindowDescription">Description: ${location.description}</h4>
+          <p class="infoWindow" id="infoWindowContributor">Contributor: ${location.contributor}</p>
+          <p class="infoWindow" id="infoWindowType">Type: ${location.type}</p>
           ${deleteLocationButton} ${editLocationButton}
         </infoWindowContent>`
     });
@@ -437,6 +436,58 @@ $(window).on('load', function() {
         addMarkersToMap();
       });
     }); 
+  });
+  
+  //*************************************************** */
+  //*************************************************** */
+  //*************************************************** */
+  //*************************************************** */
+  //*************************************************** */
+  //*************************************************** */
+  //***************WORK IN PROGRESS BELOW THIS LINE!!!! */
+  $('#map').on('click', '#editButton', event => {
+    event.preventDefault();
+    let origTitle = document.getElementById('infoWindowTitle').innerHTML;
+    let origDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
+    let origType = document.getElementById('infoWindowType').innerHTML.slice(6, document.getElementById('infoWindowType').innerHTML.length);
+    let selectOptionsHTML = '';
+    optionGenerator();
+    function optionGenerator() {
+      console.log('This is the original type: ', origType);
+      let selectOptions = [
+        'Drinking Fountain',
+        'Spigot',
+        'Freeze Proof Hydrant',
+        'Natural Spring',
+        'Sink',
+        'Filtering Location (ie stream)'
+      ];
+      for (let i=0; i<selectOptions.length; i++) {
+        if (selectOptions[i] === origType) {
+          selectOptionsHTML += `<option selected="selected" value="${selectOptions[i]}">${selectOptions[i]}</option>`;
+        }
+        else {
+          selectOptionsHTML += `<option value="${selectOptions[i]}">${selectOptions[i]}</option>`;
+        }
+      }
+      console.log(selectOptionsHTML);
+      console.log('This is the original title: ',origTitle);
+      $('#map .windowWrapper').html(
+        `<section class = "newMarker">
+        <fieldset class = "newMarker">
+          <form id="newMarker">
+            <p class = newMarkerCoords></p>
+            <input type="text" id="newMarkerTitle" name="newTitle" placeholder="${origTitle}">
+            <input type="text" id="newMarkerDescription" name="newDescription" placeholder="${origDescription}">
+            <select type="text" id="newMarkerType" name="newType">
+              ${selectOptionsHTML}
+            </select>
+            <button id="postButton">Post New Location!</button>
+          </form>
+        </fieldset>
+      </section>`
+      );
+    }
   });
 });
 
