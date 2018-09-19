@@ -30,12 +30,12 @@ function checkLoginStatus() {
   if (sessionStorage.currentUser) {
     STATE.loginStatus = true;
     console.log('User Logged In: ', STATE.loginStatus);
-    $('.loginStatus').html('<a href="">Log Out</a>');
+    $('.loginStatus').html('<a href = "">Log Out</a>');
   }
   else {
     STATE.loginStatus = false;
     console.log('User Logged In: ', STATE.loginStatus);
-    $('.loginStatus').html('<a href="login.html">Log In</a>');
+    $('.loginStatus').html('<a href = "login.html">Log In</a>');
   }
 }
 checkLoginStatus();  // This needs to run before page load to set STATE.loginstatus
@@ -113,8 +113,8 @@ function addMarkersToMap() {
     let deleteLocationButton = '';
     let editLocationButton = '';
     if (sessionStorage.currentUser === location.contributor) {
-      deleteLocationButton = '<button id="deleteButton">Delete this location.</button>';
-      editLocationButton = '<button id="editButton">Edit this location.</button>';
+      deleteLocationButton = '<button id = "deleteButton">Delete this location.</button>';
+      editLocationButton = '<button id = "editButton">Edit this location.</button>';
     }
     if (location.type === 'Drinking Fountain') {
       uniqueIcon = 'drinkingFountain.png';
@@ -140,11 +140,11 @@ function addMarkersToMap() {
       icon: uniqueIcon, //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff,
       animation: google.maps.Animation.DROP,
       infoWindowContent:
-      `<infoWindowContent class="windowWrapper">
-          <h2 class="infoWindow" id="infoWindowTitle">${location.title}</h2>
-          <h4 class="infoWindow" id="infoWindowDescription">Description: ${location.description}</h4>
-          <p class="infoWindow" id="infoWindowContributor">Contributor: ${location.contributor}</p>
-          <p class="infoWindow" id="infoWindowType">Type: ${location.type}</p>
+      `<infoWindowContent class = "windowWrapper">
+          <h2 class = "infoWindow" id = "infoWindowTitle">${location.title}</h2>
+          <h4 class = "infoWindow" id = "infoWindowDescription">Description: ${location.description}</h4>
+          <p class = "infoWindow" id = "infoWindowContributor">Contributor: ${location.contributor}</p>
+          <p class = "infoWindow" id = "infoWindowType">Type: ${location.type}</p>
           ${deleteLocationButton} ${editLocationButton}
         </infoWindowContent>`
     });
@@ -181,22 +181,22 @@ function addNewMarker(existingMap) {
     draggable: true,
     icon: 'marker_red+.png',
     infoWindowContent:
-    `<infoWindowContent class="windowWrapper">
+    `<infoWindowContent class = "windowWrapper">
       <section class = "newMarker">
         <fieldset class = "newMarker">
-          <form id="newMarker">
+          <form id = "newMarker">
             <p class = newMarkerCoords></p>
-            <input type="text" id="newMarkerTitle" name="newTitle" placeholder="Title...">
-            <input type="text" id="newMarkerDescription" name="newDescription" placeholder="Description...">
-            <select type="text" id="newMarkerType" name="newType">
-              <option value="Drinking Fountain">Drinking Fountain</option>
-              <option value="Spigot">Spigot</option>
-              <option value="Freeze Proof Hydrant">Freeze Proof Hydrant</option>
-              <option value="Natural Spring">Natural Spring</option>
-              <option value="Sink">Sink</option>
-              <option value="Filtering Location (ie stream)">Filtering Location (i.e. stream)</option>
+            <input type = "text" id = "newMarkerTitle" name = "newTitle" placeholder = "Title...">
+            <input type = "text" id = "newMarkerDescription" name = "newDescription" placeholder = "Description...">
+            <select type = "text" id = "newMarkerType" name = "newType">
+              <option value = "Drinking Fountain">Drinking Fountain</option>
+              <option value = "Spigot">Spigot</option>
+              <option value = "Freeze Proof Hydrant">Freeze Proof Hydrant</option>
+              <option value = "Natural Spring">Natural Spring</option>
+              <option value = "Sink">Sink</option>
+              <option value = "Filtering Location (ie stream)">Filtering Location (i.e. stream)</option>
             </select>
-            <button id="postButton">Post New Location!</button>
+            <button id = "postButton">Post New Location!</button>
           </form>
         </fieldset>
       </section>
@@ -231,10 +231,9 @@ function addNewMarker(existingMap) {
     STATE.newMarkerCoords.lng= STATE.newMarker.position.lng().toFixed(6);
     $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.newMarkerCoords.lat}, ${STATE.newMarkerCoords.lng}`);
   });
-  // $('#map').click('img[src$="https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png"]', event => {
+  // $('#map').click('img[src$ = "https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png"]', event => {
   //why is the above NOT working?
-  $('#map div div div div div div img').click(event => {
-    console.log('WORKING!');
+  $('#map div div div div div div div div img').click(event => {
     event.preventDefault();
     STATE.newMarkerStatus = false;
     STATE.newMarker.setMap();
@@ -407,7 +406,7 @@ $(window).on('load', function() {
   $('#testButton').click(function(){
     addNewMarker(STATE.map);
   });
-  $('#map').submit('.#newMarker', event => {
+  $('#map').submit('#newMarker', event => {
     event.preventDefault();
     if ($('#newMarkerTitle').val().length > 0) {
       postLocation(
@@ -466,19 +465,23 @@ $(window).on('load', function() {
 
     
     let editInfowindow=new google.maps.InfoWindow({
-      content: `<section class = "editMarker">
-      <fieldset class = "editMarker">
-        <form id="editMarker">
-          <p class = editMarkerCoords></p>
-          <input type="text" id="editMarkerTitle" name="newTitle" placeholder="${originalTitle}">
-          <input type="text" id="editMarkerDescription" name="newDescription" placeholder="${originalDescription}">
-          <select type="text" id="editMarkerType" name="newType">
-            ${optionGenerator()}
-          </select>
-          <button id="submitChanges">Submit</button>
-        </form>
-      </fieldset>
-    </section>`,
+      content: `
+      <infoWindowContent class = "windowWrapper">
+        <section class = "editMarker">
+          <fieldset class = "editMarker">
+            <form id = "editMarker">
+              <p class = editMarkerCoords></p>
+              <input type = "text" id = "editMarkerTitle" name = "newTitle" placeholder = "${originalTitle}">
+              <input type = "text" id = "editMarkerDescription" name = "newDescription" placeholder = "${originalDescription}">
+              <select type = "text" id = "editMarkerType" name = "newType">
+                ${optionGenerator()}
+              </select>
+              <button id = "submitChanges">Submit</button>
+            </form>
+          </fieldset>
+        </section>
+      </infowindowContent>
+    `,
       maxWidth: STATE.viewPortWidth*.6
     });
     editInfowindow.open(STATE.map, STATE.currentMarker);
@@ -498,26 +501,11 @@ function optionGenerator(origTitle, origDescription, origType) {
   ];
   for (let i=0; i<selectOptions.length; i++) {
     if (selectOptions[i] === origType) {
-      selectOptionsHTML += `<option selected="selected" value="${selectOptions[i]}">${selectOptions[i]}</option>`;
+      selectOptionsHTML += `<option selected = "selected" value = "${selectOptions[i]}">${selectOptions[i]}</option>`;
     }
     else {
-      selectOptionsHTML += `<option value="${selectOptions[i]}">${selectOptions[i]}</option>`;
+      selectOptionsHTML += `<option value = "${selectOptions[i]}">${selectOptions[i]}</option>`;
     }
   }
-  // $('#map .windowWrapper').html(
-  //   `<section class = "editMarker">
-  //   <fieldset class = "editMarker">
-  //     <form id="editMarker">
-  //       <p class = editMarkerCoords></p>
-  //       <input type="text" id="editMarkerTitle" name="newTitle" placeholder="${origTitle}">
-  //       <input type="text" id="editMarkerDescription" name="newDescription" placeholder="${origDescription}">
-  //       <select type="text" id="editMarkerType" name="newType">
-  //         ${selectOptionsHTML}
-  //       </select>
-  //       <button id="submitChanges">Submit</button>
-  //     </form>
-  //   </fieldset>
-  // </section>`
-  // );
   return selectOptionsHTML;
 }
