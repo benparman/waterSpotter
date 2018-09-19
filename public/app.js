@@ -108,6 +108,10 @@ function initMap() {
 //------Add Markers from Database Data--------
 function addMarkersToMap() {
   // mapMarkers array is only to needed for logging purposes!
+  if (STATE.newMarker !== null) {
+    STATE.newMarker.setMap();
+    STATE.newMarker = null;
+  }
   STATE.markerLocations.forEach(function(location) {
     let uniqueIcon;
     let deleteLocationButton = '';
@@ -153,7 +157,12 @@ function addMarkersToMap() {
       content: marker.infoWindowContent,
       maxWidth: STATE.viewPortWidth*.6
     });
-    marker.addListener('click', function() { 
+    marker.addListener('click', function() {
+      if (STATE.newMarker !== null) {
+        STATE.newMarker.setMap();
+        STATE.newMarker = null;
+        STATE.newMarkerStatus = false;
+      }
       if (STATE.currentInfoWindow) {
         STATE.currentInfoWindow.close();
         STATE.currentMarker = null;
@@ -175,6 +184,10 @@ function addMarkersToMap() {
 //--------------Add New Marker----------------
 function addNewMarker(existingMap) {
   let map = existingMap;
+  if (STATE.currentInfoWindow !== null) {
+    STATE.currentInfoWindow.close();
+    STATE.currentInfoWindow = null;
+  }
   STATE.newMarker = new google.maps.Marker({
     position: map.getCenter(),
     title:'New Location',
@@ -406,7 +419,7 @@ $(window).on('load', function() {
   $('#testButton').click(function(){
     addNewMarker(STATE.map);
   });
-  $('#map').submit('#newMarker', event => {
+  $('#map').on('submit', '#newMarker', event => {
     event.preventDefault();
     if ($('#newMarkerTitle').val().length > 0) {
       postLocation(
