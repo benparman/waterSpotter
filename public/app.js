@@ -23,6 +23,7 @@ const STATE = {
   },
   newMarker: null,
   editWindowOpen: false,
+  editInfowindow: null,
   currentMarker: null
 };
 //----------Set STATE.loginStatus--------
@@ -489,14 +490,13 @@ $(window).on('load', function() {
     let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
     let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
     let originalType = document.getElementById('infoWindowType').innerHTML.slice(6, document.getElementById('infoWindowType').innerHTML.length);
-    let location = STATE.map.getCenter();
     STATE.currentInfoWindow.close();
     optionGenerator(); //returns HTML for 'edit' infoWindow
     let testVar = optionGenerator(originalTitle, originalDescription, originalType);
     console.log('This is testvar: ',testVar);
 
     
-    let editInfowindow=new google.maps.InfoWindow({
+    STATE.editInfowindow=new google.maps.InfoWindow({
       content: `
       <infoWindowContent class = "windowWrapper">
         <section class = "editMarker">
@@ -516,12 +516,26 @@ $(window).on('load', function() {
     `,
       maxWidth: STATE.viewPortWidth*.6
     });
-    editInfowindow.open(STATE.map, STATE.currentMarker);
-    STATE.currentInfoWindow = editInfowindow;
+    STATE.editInfowindow.open(STATE.map, STATE.currentMarker);
+    STATE.currentInfoWindow = STATE.editInfowindow;
     $('#map').on('click', '#submitChanges', event=> {
       event.preventDefault();
       console.log('clicked edit submit button');
-      updateLocation(STATE.currentMarker.id, $('#map #editMarkerTitle').val(), $('#map #editMarkerDescription').val(), $('#map #editMarkerType').val());
+      updateLocation(
+        STATE.currentMarker.id, 
+        $('#map #editMarkerTitle').val(), 
+        $('#map #editMarkerDescription').val(), 
+        $('#map #editMarkerType').val()
+      ).then(
+        STATE.editInfowindow.close(),
+        STATE.mapMarkers.forEach(function(mapMarker) {
+          mapMarker.setMap();
+        }),
+        getServerData().then(function(){
+          addMarkersToMap();
+        }
+        )
+      );
     });
   });
 });
