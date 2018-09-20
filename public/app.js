@@ -108,10 +108,10 @@ function initMap() {
 //------Add Markers from Database Data--------
 function addMarkersToMap() {
   // mapMarkers array is only to needed for logging purposes!
-  if (STATE.newMarker !== null) {
-    STATE.newMarker.setMap();
-    STATE.newMarker = null;
-  }
+  // if (STATE.newMarker !== null) {
+  //   STATE.newMarker.setMap();
+  //   STATE.newMarker = null;
+  // }
   STATE.markerLocations.forEach(function(location) {
     let uniqueIcon;
     let deleteLocationButton = '';
@@ -182,14 +182,17 @@ function addMarkersToMap() {
 }
 
 //--------------Add New Marker----------------
-function addNewMarker(existingMap) {
-  let map = existingMap;
+function addNewMarker() {
+  if (STATE.newMarker !== null) {
+    STATE.newMarker.setmap();
+    // STATE.newMarker = null;
+  }
   if (STATE.currentInfoWindow !== null) {
     STATE.currentInfoWindow.close();
     STATE.currentInfoWindow = null;
   }
   STATE.newMarker = new google.maps.Marker({
-    position: map.getCenter(),
+    position: STATE.map.getCenter(),
     title:'New Location',
     draggable: true,
     icon: 'marker_red+.png',
@@ -220,21 +223,21 @@ function addNewMarker(existingMap) {
     content: STATE.newMarker.infoWindowContent,
     maxWidth: STATE.viewPortWidth*.6
   });
-  infowindow.open(map, STATE.newMarker); // Opens newMarker infoWindow on creation
+  infowindow.open(STATE.map, STATE.newMarker); // Opens newMarker infoWindow on creation
   STATE.currentInfoWindow=infowindow; //Stores newMarker infoWindow in STATE
   STATE.newMarker.addListener('click', function() { 
     if (STATE.currentInfoWindow) {
       STATE.currentInfoWindow.close();
       STATE.currentMarker = null;
     }
-    infowindow.open(map, STATE.newMarker);
+    infowindow.open(STATE.map, STATE.newMarker);
     STATE.currentInfoWindow=infowindow;
   });
 
 
   if (STATE.newMarkerStatus === false) {
     STATE.newMarkerStatus = true;
-    STATE.newMarker.setMap(map);
+    STATE.newMarker.setMap(STATE.map);
     STATE.newMarkerCoords.lat = STATE.newMarker.position.lat().toFixed(6);
     STATE.newMarkerCoords.lng= STATE.newMarker.position.lng().toFixed(6);
     $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.newMarkerCoords.lat}, ${STATE.newMarkerCoords.lng}`);
@@ -370,6 +373,28 @@ function deleteLocation(id){
   return $.ajax(settings);
 }
 
+//----- Generate Dropdown for Edit Form ------
+function optionGenerator(origTitle, origDescription, origType) {
+  let selectOptionsHTML = '';
+  let selectOptions = [
+    'Drinking Fountain',
+    'Spigot',
+    'Freeze Proof Hydrant',
+    'Natural Spring',
+    'Sink',
+    'Filtering Location (ie stream)'
+  ];
+  for (let i=0; i<selectOptions.length; i++) {
+    if (selectOptions[i] === origType) {
+      selectOptionsHTML += `<option selected = "selected" value = "${selectOptions[i]}">${selectOptions[i]}</option>`;
+    }
+    else {
+      selectOptionsHTML += `<option value = "${selectOptions[i]}">${selectOptions[i]}</option>`;
+    }
+  }
+  return selectOptionsHTML;
+}
+
 //-------------- Event Listeners -------------
 $(window).on('load', function() {
   getServerData()
@@ -457,13 +482,6 @@ $(window).on('load', function() {
     }); 
   });
   
-  //*************************************************** */
-  //*************************************************** */
-  //*************************************************** */
-  //*************************************************** */
-  //*************************************************** */
-  //*************************************************** */
-  //***************WORK IN PROGRESS BELOW THIS LINE!!!! */
   $('#map').on('click', '#editButton', event => {
     event.preventDefault();
     
@@ -471,6 +489,7 @@ $(window).on('load', function() {
     let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
     let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
     let originalType = document.getElementById('infoWindowType').innerHTML.slice(6, document.getElementById('infoWindowType').innerHTML.length);
+    let location = STATE.map.getCenter();
     STATE.currentInfoWindow.close();
     optionGenerator(); //returns HTML for 'edit' infoWindow
     let testVar = optionGenerator(originalTitle, originalDescription, originalType);
@@ -499,26 +518,43 @@ $(window).on('load', function() {
     });
     editInfowindow.open(STATE.map, STATE.currentMarker);
     STATE.currentInfoWindow = editInfowindow;
+    $('#map').on('click', '#submitChanges', event=> {
+      event.preventDefault();
+      console.log('clicked edit submit button');
+      updateLocation(STATE.currentMarker.id, $('#map #editMarkerTitle').val(), $('#map #editMarkerDescription').val(), $('#map #editMarkerType').val());
+    });
   });
 });
 
-function optionGenerator(origTitle, origDescription, origType) {
-  let selectOptionsHTML = '';
-  let selectOptions = [
-    'Drinking Fountain',
-    'Spigot',
-    'Freeze Proof Hydrant',
-    'Natural Spring',
-    'Sink',
-    'Filtering Location (ie stream)'
-  ];
-  for (let i=0; i<selectOptions.length; i++) {
-    if (selectOptions[i] === origType) {
-      selectOptionsHTML += `<option selected = "selected" value = "${selectOptions[i]}">${selectOptions[i]}</option>`;
+
+
+//*************************************************** */
+//*************************************************** */
+//*************************************************** */
+//*************************************************** */
+//*************************************************** */
+//*************************************************** */
+//***************WORK IN PROGRESS BELOW THIS LINE!!!! */
+
+function updateLocation(id, title, description, type){
+  const settings = {
+    url: `locations/${id}`,
+    method: 'PUT',
+    dataType: 'json',
+    contentType: 'application/json',
+    data: JSON.stringify({
+      id: id,
+      title: title,
+      description: description,
+      type: type
+    }),
+    success: function(res) {
+      console.log('Successfully Updated Location: ', res);
+    },
+    error: function(err) {
+      console.log('ERRROR!  Server Response: ', err);
     }
-    else {
-      selectOptionsHTML += `<option value = "${selectOptions[i]}">${selectOptions[i]}</option>`;
-    }
-  }
-  return selectOptionsHTML;
+  };
+  console.log('updateLocation Settings: ', settings);
+  return $.ajax(settings);
 }
