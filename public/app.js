@@ -2,11 +2,12 @@
 const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 let currentLocation;
+
+
+
 //----------- STATE Variables -----------
 const STATE = {
-  currentInfoWindow: null,
-  currentLocation: null,
-  currentMarker: null,
+  current : null,
   defaultLocation:{lat: 40.543504, lng: -105.127969},
   editWindowOpen: false,
   editInfowindow: null,
@@ -19,7 +20,22 @@ const STATE = {
   newMarkerStatus: false,
   viewPortWidth: Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
 };
-//----------Set STATE.loginStatus--------
+//---------- Reset State.current --------
+function resetCurrent() {
+  console.log('resetcurrent ran');
+  if (STATE.current !== null) {
+    if (STATE.current.marker.new === true) {
+      STATE.current.marker.setMap();
+      console.log('marker removed');
+    }
+    if (STATE.current.infoWindow) {
+      STATE.current.infoWindow.close();
+    }
+  }
+  
+  STATE.current ={marker: null,infoWindow: null,location: {lat: null,lng: null}};
+}
+//--------- Set STATE.loginStatus -------
 function checkLoginStatus() {
   if (sessionStorage.currentUser) {
     STATE.loginStatus = true;
@@ -59,7 +75,7 @@ function getLocation() {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-        STATE.currentLocation = currentLocation;
+        STATE.current.location = currentLocation;
         resolve(currentLocation);
       });
     }
@@ -117,6 +133,7 @@ function addMarkersToMap() {
       title: location.title,
       id: location.id,
       map: STATE.map,
+      new: false,
       icon: generateMarkerIcons(location), //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff,
       animation: google.maps.Animation.DROP,
       infoWindowContent:
@@ -133,16 +150,11 @@ function addMarkersToMap() {
       maxWidth: STATE.viewPortWidth*.6
     });
     marker.addListener('click', function() {
-      if (STATE.newMarker !== null) {
-        STATE.newMarker.setMap();
-        STATE.newMarker = null;
-        STATE.newMarkerStatus = false;
-      }
-      closeInfoWindow();
-      STATE.currentMarker = marker;
+      resetCurrent();
+      STATE.current.marker = marker;
       infowindow.open(STATE.map, marker);
       STATE.map.panTo(marker.position);
-      STATE.currentInfoWindow=infowindow;
+      STATE.current.infoWindow=infowindow;
     });
     // not needed - only here to console.log below
     STATE.mapMarkers.push(marker);
@@ -156,14 +168,16 @@ function addMarkersToMap() {
 function addNewMarker() {
   if (STATE.newMarker !== null) {
     STATE.newMarker.setmap();
-    // STATE.newMarker = null;
   }
-  closeInfoWindow();
-  STATE.newMarker = new google.maps.Marker({
+  resetCurrent();
+  STATE.current.marker = new google.maps.Marker({
     position: STATE.map.getCenter(),
+    lat: STATE.map.getCenter().lat(),
+    lng: STATE.map.getCenter().lng(),
     title:'New Location',
     draggable: true,
     icon: 'marker_red+.png',
+    new: true,
     infoWindowContent:
     `<infoWindowContent class = "windowWrapper">
       <section class = "newMarker">
@@ -188,36 +202,33 @@ function addNewMarker() {
   });
 
   let infowindow=new google.maps.InfoWindow({
-    content: STATE.newMarker.infoWindowContent,
+    content: STATE.current.marker.infoWindowContent,
     maxWidth: STATE.viewPortWidth*.6
   });
-  infowindow.open(STATE.map, STATE.newMarker); // Opens newMarker infoWindow on creation
-  STATE.currentInfoWindow=infowindow; //Stores newMarker infoWindow in STATE
-  STATE.newMarker.addListener('click', function() { 
-    closeInfoWindow();
-    infowindow.open(STATE.map, STATE.newMarker);
-    STATE.currentInfoWindow=infowindow;
+  infowindow.open(STATE.map, STATE.current.marker); // Opens newMarker infoWindow on creation
+  STATE.current.infoWindow=infowindow; //Stores newMarker infoWindow in STATE
+  STATE.current.marker.addListener('click', function() {
+    if (STATE.current.marker) {
+      resetCurrent();
+    }
+    infowindow.open(STATE.map, STATE.current.marker);
+    STATE.current.infoWindow=infowindow;
   });
 
 
-  if (STATE.newMarkerStatus === false) {
-    STATE.newMarkerStatus = true;
-    STATE.newMarker.setMap(STATE.map);
-    STATE.newMarkerCoords.lat = STATE.newMarker.position.lat().toFixed(6);
-    STATE.newMarkerCoords.lng= STATE.newMarker.position.lng().toFixed(6);
-    $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.newMarkerCoords.lat}, ${STATE.newMarkerCoords.lng}`);
+  if (STATE.current.marker !== true) {
+    STATE.current.marker.setMap(STATE.map);
+    $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.current.marker.position.lat().toFixed(6)}, ${STATE.current.marker.position.lng().toFixed(6)}`);
   }
-  google.maps.event.addListener(STATE.newMarker,'drag',function() {
-    STATE.newMarkerCoords.lat = STATE.newMarker.position.lat().toFixed(6);
-    STATE.newMarkerCoords.lng= STATE.newMarker.position.lng().toFixed(6);
-    $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.newMarkerCoords.lat}, ${STATE.newMarkerCoords.lng}`);
+  google.maps.event.addListener(STATE.current.marker,'drag',function() {
+    $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.current.marker.position.lat().toFixed(6)}, ${STATE.current.marker.position.lng().toFixed(6)}`);
   });
   // $('#map').click('img[src$ = "https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png"]', event => {
   //why is the above NOT working?
   $('#map div div div div div div div div img').click(event => {
     event.preventDefault();
     STATE.newMarkerStatus = false;
-    STATE.newMarker.setMap();
+    STATE.current.marker.setMap();
     STATE.newMarker = null;
   });
 }
@@ -374,7 +385,7 @@ $(window).on('load', function() {
         event.preventDefault();
         getLocation()
           .then(function(){
-            STATE.map.panTo(STATE.currentLocation);
+            STATE.map.panTo(STATE.current.location);
           });
       });
     });
@@ -427,8 +438,8 @@ $(window).on('load', function() {
         addMarkersToMap();
       });
     }
-    closeInfoWindow();
-    STATE.currentMarker = null;
+    resetCurrent();
+    STATE.current.marker = null;
     STATE.newMarkerStatus = false;
     STATE.newMarker.setMap();
     STATE.newMarker = null;
@@ -436,7 +447,7 @@ $(window).on('load', function() {
   $('#map').on('click', '#deleteButton',event => {
     event.preventDefault();
     console.log('delete button clicked');
-    deleteLocation(STATE.currentInfoWindow.anchor.id).then(function(){    
+    deleteLocation(STATE.current.infoWindow.anchor.id).then(function(){    
       STATE.mapMarkers.forEach(function(mapMarker) {
         mapMarker.setMap();
       });
@@ -453,9 +464,9 @@ $(window).on('load', function() {
     let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
     let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
     let originalType = document.getElementById('infoWindowType').innerHTML.slice(6, document.getElementById('infoWindowType').innerHTML.length);
-    STATE.currentInfoWindow.close();
+    STATE.current.infoWindow.close();
     optionGenerator(); //returns HTML for 'edit' infoWindow
-    STATE.currentInfoWindow=new google.maps.InfoWindow({
+    STATE.current.infoWindow=new google.maps.InfoWindow({
       content: `
       <infoWindowContent class = "windowWrapper">
         <section class = "editMarker">
@@ -475,12 +486,12 @@ $(window).on('load', function() {
     `,
       maxWidth: STATE.viewPortWidth*.6
     });
-    STATE.currentInfoWindow.open(STATE.map, STATE.currentMarker);
+    STATE.current.infoWindow.open(STATE.map, STATE.current.marker);
     $('#map').on('click', '#submitChanges', event=> {
       event.preventDefault();
       console.log('clicked edit submit button');
       updateLocation(
-        STATE.currentMarker.id, 
+        STATE.current.marker.id, 
         $('#map #editMarkerTitle').val(), 
         $('#map #editMarkerDescription').val(), 
         $('#map #editMarkerType').val()
@@ -521,12 +532,6 @@ function updateLocation(id, title, description, type){
 }
 //***************WORK IN PROGRESS BELOW THIS LINE!!!! */
 
-function closeInfoWindow() {
-  if (STATE.currentInfoWindow) {
-    STATE.currentInfoWindow.close();
-    STATE.currentMarker = null;
-  }
-}
 
 function generateMarkerIcons(location){
   if (location.type === 'Drinking Fountain') {
