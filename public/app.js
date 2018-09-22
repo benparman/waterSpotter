@@ -1,13 +1,10 @@
 'use strict';
 const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
-let currentLocation;
-
-
 
 //----------- STATE Variables -----------
 const STATE = {
-  current : null,
+  current : {marker: null,infoWindow: null,location: {lat: null,lng: null}},
   defaultLocation:{lat: 40.543504, lng: -105.127969},
   editWindowOpen: false,
   editInfowindow: null,
@@ -17,24 +14,9 @@ const STATE = {
   mapMarkers: [],
   newMarker: null,
   newMarkerCoords : {lat:'',lng:''},
-  newMarkerStatus: false,
   viewPortWidth: Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
 };
-//---------- Reset State.current --------
-function resetCurrent() {
-  console.log('resetcurrent ran');
-  if (STATE.current !== null) {
-    if (STATE.current.marker.new === true) {
-      STATE.current.marker.setMap();
-      console.log('marker removed');
-    }
-    if (STATE.current.infoWindow) {
-      STATE.current.infoWindow.close();
-    }
-  }
-  
-  STATE.current ={marker: null,infoWindow: null,location: {lat: null,lng: null}};
-}
+
 //--------- Set STATE.loginStatus -------
 function checkLoginStatus() {
   if (sessionStorage.currentUser) {
@@ -48,7 +30,22 @@ function checkLoginStatus() {
     $('.loginStatus').html('<a href = "login.html">Log In</a>');
   }
 }
-checkLoginStatus();  // This needs to run before page load to set STATE.loginstatus
+
+//---------- Reset State.current --------
+function resetCurrent() {
+  console.log('resetcurrent ran');
+  if (STATE.current.marker !== null) {
+    if (STATE.current.marker.new === true) {
+      STATE.current.marker.setMap();
+      console.log('marker removed');
+    }
+    if (STATE.current.infoWindow) {
+      STATE.current.infoWindow.close();
+    }
+  }
+  STATE.current = {marker: null,infoWindow: null,location: {lat: null,lng: null}};
+}
+
 //-------------Get Server Data-----------
 function getServerData(){
   const settings = {
@@ -71,12 +68,11 @@ function getLocation() {
   return new Promise((resolve, reject) => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
-        currentLocation = {
+        STATE.current.location = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
-        STATE.current.location = currentLocation;
-        resolve(currentLocation);
+        resolve(STATE.current.location);
       });
     }
     else {
@@ -94,8 +90,8 @@ function geoCodeLocation(location, serverLocationData) {
     },
     dataType: 'json',
     success: function(data) {
-      currentLocation = data.results[0].geometry.location;
-      STATE.map.panTo(currentLocation);
+      STATE.current.location = data.results[0].geometry.location;
+      STATE.map.panTo(STATE.current.location);
     },
     error: function(){
       console.log('error');
@@ -114,6 +110,22 @@ function initMap() {
   addMarkersToMap();
 }
 
+//--------- Generate Marker Icons ------------
+function generateMarkerIcons(location){
+  if (location.type === 'Drinking Fountain') {
+    return 'drinkingFountain.png';
+  } else if (location.type === 'Spigot') {
+    return 'drinkingWater.png';
+  } else if (location.type === 'Freeze Proof Hydrant') {
+    return 'waterwellpump.png';
+  } else if (location.type === 'Natural Spring') {
+    return 'waterdrop.png';
+  }  else if (location.type === 'Filtering Location (ie stream)') {
+    return 'river-2.png';
+  }  else if (location.type === 'Sink') {
+    return 'sink.png';
+  }
+}
 //------Add Markers from Database Data--------
 function addMarkersToMap() {
   STATE.markerLocations.forEach(function(location) {
@@ -149,8 +161,11 @@ function addMarkersToMap() {
       content: marker.infoWindowContent,
       maxWidth: STATE.viewPortWidth*.6
     });
+
     marker.addListener('click', function() {
-      resetCurrent();
+      if (STATE.current.marker) {
+        resetCurrent();
+      }
       STATE.current.marker = marker;
       infowindow.open(STATE.map, marker);
       STATE.map.panTo(marker.position);
@@ -162,6 +177,12 @@ function addMarkersToMap() {
   });
   // Logging here to inspect marker data
   console.log('These are the map markers :', STATE.mapMarkers);
+  $('#map').click(event => {
+    console.log('working on this...');
+    event.preventDefault();
+    // STATE.current.marker.setMap();
+    // STATE.current.marker = null;
+  });
 }
 
 //--------------Add New Marker----------------
@@ -225,11 +246,13 @@ function addNewMarker() {
   });
   // $('#map').click('img[src$ = "https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png"]', event => {
   //why is the above NOT working?
+
+  //moved from line 241
   $('#map div div div div div div div div img').click(event => {
+    console.log('clicked the close button');
     event.preventDefault();
-    STATE.newMarkerStatus = false;
     STATE.current.marker.setMap();
-    STATE.newMarker = null;
+    STATE.current.marker = null;
   });
 }
 
@@ -370,145 +393,7 @@ function optionGenerator(origTitle, origDescription, origType) {
   }
   return selectOptionsHTML;
 }
-
-//-------------- Event Listeners -------------
-$(window).on('load', function() {
-  getServerData()
-    .then(function(){
-      initMap();
-      // listen(serverData);
-      $('#searchLocation').submit(event => {
-        event.preventDefault();
-        geoCodeLocation($('.searchTerms').val(), STATE.markerLocations);
-      });
-      $('#myLocation-button').click(event =>{
-        event.preventDefault();
-        getLocation()
-          .then(function(){
-            STATE.map.panTo(STATE.current.location);
-          });
-      });
-    });
-  $('#signupForm').submit(event => {
-    event.preventDefault();
-    registerUser(
-      $('#signup-username').val(),
-      $('#signup-firstName').val(),
-      $('#signup-lastName').val(),
-      $('#signup-password').val()
-    );
-  });
-
-  $('#login-form').submit(event => {
-    event.preventDefault();
-    loginUser(
-      $('#login-username').val(),
-      $('#login-password').val()
-    )
-      .then(function(JWT) {
-        getProtected(JWT.authToken);
-        checkLoginStatus();
-      }); 
-  });
-
-  $('.loginStatus').click(function(){
-    if (sessionStorage.currentUser) {
-      sessionStorage.removeItem('accessToken');
-      sessionStorage.removeItem('currentUser');
-    }
-  });
-  $('#testButton').click(function(){
-    addNewMarker(STATE.map);
-  });
-  $('#map').on('submit', '#newMarker', event => {
-    event.preventDefault();
-    if ($('#newMarkerTitle').val().length > 0) {
-      postLocation(
-        $('#newMarkerTitle').val(),
-        $('#newMarkerDescription').val(),
-        STATE.newMarkerCoords.lat,
-        STATE.newMarkerCoords.lng,
-        $('#newMarkerType').val()
-      );
-      STATE.mapMarkers.forEach(function(mapMarker) {
-        mapMarker.setMap();
-      });
-      STATE.mapMarkers = [],
-      getServerData().then(function(){
-        addMarkersToMap();
-      });
-    }
-    resetCurrent();
-    STATE.current.marker = null;
-    STATE.newMarkerStatus = false;
-    STATE.newMarker.setMap();
-    STATE.newMarker = null;
-  });
-  $('#map').on('click', '#deleteButton',event => {
-    event.preventDefault();
-    console.log('delete button clicked');
-    deleteLocation(STATE.current.infoWindow.anchor.id).then(function(){    
-      STATE.mapMarkers.forEach(function(mapMarker) {
-        mapMarker.setMap();
-      });
-      STATE.mapMarkers = [],
-      getServerData().then(function(){
-        addMarkersToMap();
-      });
-    }); 
-  });
-  
-  $('#map').on('click', '#editButton', event => {
-    event.preventDefault();
-    STATE.editWindowOpen = true;
-    let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
-    let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
-    let originalType = document.getElementById('infoWindowType').innerHTML.slice(6, document.getElementById('infoWindowType').innerHTML.length);
-    STATE.current.infoWindow.close();
-    optionGenerator(); //returns HTML for 'edit' infoWindow
-    STATE.current.infoWindow=new google.maps.InfoWindow({
-      content: `
-      <infoWindowContent class = "windowWrapper">
-        <section class = "editMarker">
-          <fieldset class = "editMarker">
-            <form id = "editMarker">
-              <p class = editMarkerCoords></p>
-              <input type = "text" id = "editMarkerTitle" name = "newTitle" placeholder = "${originalTitle}">
-              <input type = "text" id = "editMarkerDescription" name = "newDescription" placeholder = "${originalDescription}">
-              <select type = "text" id = "editMarkerType" name = "newType">
-                ${optionGenerator()}
-              </select>
-              <button id = "submitChanges">Submit</button>
-            </form>
-          </fieldset>
-        </section>
-      </infowindowContent>
-    `,
-      maxWidth: STATE.viewPortWidth*.6
-    });
-    STATE.current.infoWindow.open(STATE.map, STATE.current.marker);
-    $('#map').on('click', '#submitChanges', event=> {
-      event.preventDefault();
-      console.log('clicked edit submit button');
-      updateLocation(
-        STATE.current.marker.id, 
-        $('#map #editMarkerTitle').val(), 
-        $('#map #editMarkerDescription').val(), 
-        $('#map #editMarkerType').val()
-      ).then(
-        STATE.editInfowindow.close(),
-        STATE.mapMarkers.forEach(function(mapMarker) {
-          mapMarker.setMap();
-        }),
-        getServerData().then(function(){
-          addMarkersToMap();
-        }
-        )
-      );
-    });
-  });
-});
-
+//------------- Update Location --------------
 function updateLocation(id, title, description, type){
   const settings = {
     url: `locations/${id}`,
@@ -530,21 +415,139 @@ function updateLocation(id, title, description, type){
   };
   return $.ajax(settings);
 }
-//***************WORK IN PROGRESS BELOW THIS LINE!!!! */
+
+//-------------- Event Listeners -------------
+checkLoginStatus();  // This needs to run before page load to set STATE.loginstatus
+$(window).on('load', function() {
+  getServerData()
+    .then(function(){
+      initMap();
+      $('#searchLocation').submit(event => {
+        event.preventDefault();
+        geoCodeLocation($('.searchTerms').val(), STATE.markerLocations);
+      });
+    });
+  $('#myLocation-button').click(event =>{
+    event.preventDefault();
+    getLocation()
+      .then(function(){
+        STATE.map.panTo(STATE.current.location);
+      });
+  });
+  $('#signupForm').submit(event => {
+    event.preventDefault();
+    registerUser(
+      $('#signup-username').val(),
+      $('#signup-firstName').val(),
+      $('#signup-lastName').val(),
+      $('#signup-password').val()
+    );
+  });
+  $('#login-form').submit(event => {
+    event.preventDefault();
+    loginUser(
+      $('#login-username').val(),
+      $('#login-password').val()
+    )
+      .then(function(JWT) {
+        getProtected(JWT.authToken);
+        checkLoginStatus();
+      }); 
+  });
+  $('.loginStatus').click(function(){
+    if (sessionStorage.currentUser) {
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('currentUser');
+    }
+  });
+  $('#testButton').click(function(){
+    addNewMarker(STATE.map);
+  });
+  $('#map').on('submit', '#newMarker', event => {
+    event.preventDefault();
+    if ($('#newMarkerTitle').val().length > 0) {
+      postLocation(
+        $('#newMarkerTitle').val(),
+        $('#newMarkerDescription').val(),
+        STATE.current.marker.lat,
+        STATE.current.marker.lng,
+        $('#newMarkerType').val()
+      );
+      STATE.mapMarkers.forEach(function(mapMarker) {
+        mapMarker.setMap();
+      });
+      STATE.mapMarkers = [],
+      getServerData().then(function(){
+        addMarkersToMap();
+      });
+    }
+    resetCurrent();
+  });
+  $('#map').on('click', '#deleteButton',event => {
+    event.preventDefault();
+    console.log('delete button clicked');
+    deleteLocation(STATE.current.infoWindow.anchor.id).then(function(){    
+      STATE.mapMarkers.forEach(function(mapMarker) {
+        mapMarker.setMap();
+      });
+      STATE.mapMarkers = [],
+      getServerData().then(function(){
+        addMarkersToMap();
+      });
+    }); 
+  });
+  $('#map').on('click', '#editButton', event => {
+    event.preventDefault();
+    STATE.editWindowOpen = true;
+    let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
+    let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
+    let windowContent = {
+      content: `
+      <infoWindowContent class = "windowWrapper">
+        <section class = "editMarker">
+          <fieldset class = "editMarker">
+            <form id = "editMarker">
+              <p class = editMarkerCoords></p>
+              <input type = "text" id = "editMarkerTitle" name = "newTitle" placeholder = "${originalTitle}">
+              <input type = "text" id = "editMarkerDescription" name = "newDescription" placeholder = "${originalDescription}">
+              <select type = "text" id = "editMarkerType" name = "newType">
+                ${optionGenerator()}
+              </select>
+              <button id = "submitChanges">Submit</button>
+            </form>
+          </fieldset>
+        </section>
+      </infowindowContent>
+    `
+    };
+    STATE.current.infoWindow.close();
+    optionGenerator(); //returns HTML for 'edit' infoWindow
+    STATE.current.infoWindow=new google.maps.InfoWindow({
+      content: windowContent.content,
+      maxWidth: STATE.viewPortWidth*.6
+    });
+    STATE.current.infoWindow.open(STATE.map, STATE.current.marker);
+    $('#map').on('click', '#submitChanges', event=> {
+      event.preventDefault();
+      console.log('clicked edit submit button');
+      updateLocation(
+        STATE.current.marker.id, 
+        $('#map #editMarkerTitle').val(), 
+        $('#map #editMarkerDescription').val(), 
+        $('#map #editMarkerType').val()
+      ).then(
+        STATE.editInfowindow.close(),
+        STATE.mapMarkers.forEach(function(mapMarker) {
+          mapMarker.setMap();
+        }),
+        getServerData().then(function(){
+          addMarkersToMap();
+        })
+      );
+    });
+  });
+  
+});
 
 
-function generateMarkerIcons(location){
-  if (location.type === 'Drinking Fountain') {
-    return 'drinkingFountain.png';
-  } else if (location.type === 'Spigot') {
-    return 'drinkingWater.png';
-  } else if (location.type === 'Freeze Proof Hydrant') {
-    return 'waterwellpump.png';
-  } else if (location.type === 'Natural Spring') {
-    return 'waterdrop.png';
-  }  else if (location.type === 'Filtering Location (ie stream)') {
-    return 'river-2.png';
-  }  else if (location.type === 'Sink') {
-    return 'sink.png';
-  }
-}
+
