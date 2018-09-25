@@ -177,9 +177,9 @@ function addMarkersToMap() {
   });
   // Logging here to inspect marker data
   console.log('These are the map markers :', STATE.mapMarkers);
-  $('#map').click(event => {
-    console.log('working on this...');
+  $('#map').on('click', 'img', event => {
     event.preventDefault();
+    console.log('working on this...');
     // STATE.current.marker.setMap();
     // STATE.current.marker = null;
   });
@@ -248,7 +248,8 @@ function addNewMarker() {
   //why is the above NOT working?
 
   //moved from line 241
-  $('#map div div div div div div div div img').click(event => {
+  // $('#map div div div div div div div div img').click(event => {
+  $('#map').on('click', 'div div div div div div div div img', event => {
     console.log('clicked the close button');
     event.preventDefault();
     STATE.current.marker.setMap();
