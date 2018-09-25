@@ -162,6 +162,13 @@ function addMarkersToMap() {
       maxWidth: STATE.viewPortWidth*.6
     });
 
+    //**********NEW LISTENER - Place state functions here */
+    //**********NEW LISTENER - Place state functions here */
+    //**********NEW LISTENER - Place state functions here */
+    infowindow.addListener('closeclick', function() {
+      console.log('closeclick event working');
+    });
+
     marker.addListener('click', function() {
       if (STATE.current.marker) {
         resetCurrent();
@@ -177,12 +184,6 @@ function addMarkersToMap() {
   });
   // Logging here to inspect marker data
   console.log('These are the map markers :', STATE.mapMarkers);
-  $('#map').on('click', 'img', event => {
-    event.preventDefault();
-    console.log('working on this...');
-    // STATE.current.marker.setMap();
-    // STATE.current.marker = null;
-  });
 }
 
 //--------------Add New Marker----------------
@@ -244,16 +245,12 @@ function addNewMarker() {
   google.maps.event.addListener(STATE.current.marker,'drag',function() {
     $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.current.marker.position.lat().toFixed(6)}, ${STATE.current.marker.position.lng().toFixed(6)}`);
   });
-  // $('#map').click('img[src$ = "https://maps.gstatic.com/mapfiles/api-3/images/mapcnt6.png"]', event => {
-  //why is the above NOT working?
 
-  //moved from line 241
-  // $('#map div div div div div div div div img').click(event => {
-  $('#map').on('click', 'div div div div div div div div img', event => {
-    console.log('clicked the close button');
-    event.preventDefault();
-    STATE.current.marker.setMap();
-    STATE.current.marker = null;
+  //**********NEW LISTENER - Place state functions here */
+  //**********NEW LISTENER - Place state functions here */
+  //**********NEW LISTENER - Place state functions here */
+  infowindow.addListener('closeclick', function() {
+    console.log('closeclick event working');
   });
 }
 
