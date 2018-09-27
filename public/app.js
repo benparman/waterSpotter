@@ -1,22 +1,17 @@
 'use strict';
 const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
-
 //----------- STATE Variables -----------
 const STATE = {
   current : {marker: null,infoWindow: null,location: {lat: null,lng: null}},
   defaultLocation:{lat: 40.543504, lng: -105.127969},
-  editWindowOpen: false,
-  editInfowindow: null,
   loginStatus: null,
   markerLocations: null, 
   map: null,
   mapMarkers: [],
-  newMarker: null,
   newMarkerCoords : {lat:'',lng:''},
   viewPortWidth: Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
 };
-
 //--------- Set STATE.loginStatus -------
 function checkLoginStatus() {
   if (sessionStorage.currentUser) {
@@ -30,22 +25,18 @@ function checkLoginStatus() {
     $('.loginStatus').html('<a href = "login.html">Log In</a>');
   }
 }
-
 //---------- Reset State.current --------
 function resetCurrent() {
   console.log('resetcurrent ran');
-  if (STATE.current.marker !== null) {
-    if (STATE.current.marker.new === true) {
-      STATE.current.marker.setMap();
-      console.log('marker removed');
-    }
-    if (STATE.current.infoWindow) {
-      STATE.current.infoWindow.close();
-    }
+  if (STATE.current.marker !== null && STATE.current.marker.new === true) {
+    STATE.current.marker.setMap();
+    console.log('marker removed');
+  }
+  if (STATE.current.infoWindow) {
+    STATE.current.infoWindow.close();
   }
   STATE.current = {marker: null,infoWindow: null,location: {lat: null,lng: null}};
 }
-
 //-------------Get Server Data-----------
 function getServerData(){
   const settings = {
@@ -109,7 +100,6 @@ function initMap() {
   STATE.map = new google.maps.Map(document.getElementById('map'), mapOptions);
   addMarkersToMap();
 }
-
 //--------- Generate Marker Icons ------------
 function generateMarkerIcons(location){
   if (location.type === 'Drinking Fountain') {
@@ -161,14 +151,9 @@ function addMarkersToMap() {
       content: marker.infoWindowContent,
       maxWidth: STATE.viewPortWidth*.6
     });
-
-    //**********NEW LISTENER - Place state functions here */
-    //**********NEW LISTENER - Place state functions here */
-    //**********NEW LISTENER - Place state functions here */
     infowindow.addListener('closeclick', function() {
-      console.log('closeclick event working');
+      resetCurrent();
     });
-
     marker.addListener('click', function() {
       if (STATE.current.marker) {
         resetCurrent();
@@ -185,12 +170,8 @@ function addMarkersToMap() {
   // Logging here to inspect marker data
   console.log('These are the map markers :', STATE.mapMarkers);
 }
-
 //--------------Add New Marker----------------
 function addNewMarker() {
-  if (STATE.newMarker !== null) {
-    STATE.newMarker.setmap();
-  }
   resetCurrent();
   STATE.current.marker = new google.maps.Marker({
     position: STATE.map.getCenter(),
@@ -222,7 +203,6 @@ function addNewMarker() {
       </section>
     </infoWindowContent>`
   });
-
   let infowindow=new google.maps.InfoWindow({
     content: STATE.current.marker.infoWindowContent,
     maxWidth: STATE.viewPortWidth*.6
@@ -236,24 +216,19 @@ function addNewMarker() {
     infowindow.open(STATE.map, STATE.current.marker);
     STATE.current.infoWindow=infowindow;
   });
-
-
-  if (STATE.current.marker !== true) {
-    STATE.current.marker.setMap(STATE.map);
-    $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.current.marker.position.lat().toFixed(6)}, ${STATE.current.marker.position.lng().toFixed(6)}`);
-  }
+  STATE.current.marker.setMap(STATE.map);
+  $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.current.marker.position.lat()}, 
+  ${STATE.current.marker.position.lng()}`);
   google.maps.event.addListener(STATE.current.marker,'drag',function() {
-    $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.current.marker.position.lat().toFixed(6)}, ${STATE.current.marker.position.lng().toFixed(6)}`);
+    STATE.current.marker.lat = STATE.current.marker.position.lat();
+    STATE.current.marker.lng = STATE.current.marker.position.lng();
+    $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.current.marker.position.lat()}, 
+    ${STATE.current.marker.position.lng()}`);
   });
-
-  //**********NEW LISTENER - Place state functions here */
-  //**********NEW LISTENER - Place state functions here */
-  //**********NEW LISTENER - Place state functions here */
   infowindow.addListener('closeclick', function() {
-    console.log('closeclick event working');
+    resetCurrent();
   });
 }
-
 //----------- signup.html functions ----------
 function registerUser(username, firsName, lastName, password) {
   const settings = {
@@ -277,7 +252,6 @@ function registerUser(username, firsName, lastName, password) {
   console.log(settings.data);
   $.ajax(settings);
 }
-
 //----------- login.html functions -----------
 function loginUser(username, password) {
   const settings = {
@@ -299,7 +273,6 @@ function loginUser(username, password) {
   };
   return $.ajax(settings);
 }
-
 //----------- get protected data -----------
 function getProtected(authToken) {
   const settings = {
@@ -324,7 +297,6 @@ function getProtected(authToken) {
   //   console.log(response);
   // });
 }
-
 //--------- POST Location to Server ----------
 function postLocation(title, description, lat, lon, type) {
   console.log('postLocation() was called with the following parameters: ', title, description,lat,lon, type);
@@ -352,7 +324,6 @@ function postLocation(title, description, lat, lon, type) {
   };
   return $.ajax(settings);
 }
-
 //------- Delete Location from Server --------
 function deleteLocation(id){
   const settings = {
@@ -369,7 +340,6 @@ function deleteLocation(id){
   };
   return $.ajax(settings);
 }
-
 //----- Generate Dropdown for Edit Form ------
 function optionGenerator(origTitle, origDescription, origType) {
   let selectOptionsHTML = '';
@@ -413,7 +383,6 @@ function updateLocation(id, title, description, type){
   };
   return $.ajax(settings);
 }
-
 //-------------- Event Listeners -------------
 checkLoginStatus();  // This needs to run before page load to set STATE.loginstatus
 $(window).on('load', function() {
@@ -496,7 +465,6 @@ $(window).on('load', function() {
   });
   $('#map').on('click', '#editButton', event => {
     event.preventDefault();
-    STATE.editWindowOpen = true;
     let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
     let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
     let windowContent = {
@@ -522,7 +490,8 @@ $(window).on('load', function() {
     optionGenerator(); //returns HTML for 'edit' infoWindow
     STATE.current.infoWindow=new google.maps.InfoWindow({
       content: windowContent.content,
-      maxWidth: STATE.viewPortWidth*.6
+      maxWidth: STATE.viewPortWidth*.6,
+      edit: true
     });
     STATE.current.infoWindow.open(STATE.map, STATE.current.marker);
     $('#map').on('click', '#submitChanges', event=> {
@@ -534,7 +503,6 @@ $(window).on('load', function() {
         $('#map #editMarkerDescription').val(), 
         $('#map #editMarkerType').val()
       ).then(
-        STATE.editInfowindow.close(),
         STATE.mapMarkers.forEach(function(mapMarker) {
           mapMarker.setMap();
         }),
@@ -544,8 +512,5 @@ $(window).on('load', function() {
       );
     });
   });
-  
 });
-
-
 
