@@ -118,6 +118,13 @@ function generateMarkerIcons(location){
 }
 //------Add Markers from Database Data--------
 function addMarkersToMap() {
+  if (STATE.mapMarkers.length > 0) {
+    console.log('***********REMOVING MARKERS');
+    STATE.mapMarkers.forEach(function(mapMarker) {
+      mapMarker.setMap();
+    });
+  }
+  STATE.mapMarkers = [];
   STATE.markerLocations.forEach(function(location) {
     let deleteLocationButton = '';
     let editLocationButton = '';
@@ -163,11 +170,9 @@ function addMarkersToMap() {
       STATE.map.panTo(marker.position);
       STATE.current.infoWindow=infowindow;
     });
-    // not needed - only here to console.log below
     STATE.mapMarkers.push(marker);
-    return marker;
+    // return marker;
   });
-  // Logging here to inspect marker data
   console.log('These are the map markers :', STATE.mapMarkers);
 }
 //--------------Add New Marker----------------
@@ -363,6 +368,10 @@ function optionGenerator(origTitle, origDescription, origType) {
 }
 //------------- Update Location --------------
 function updateLocation(id, title, description, type){
+  console.log(`ID: ${id}, TITLE: ${title}, DESCRIPTION: ${description}, TYPE: ${type}`);
+  if (id === null || title === null || description === null || type === null) {
+    console.log('ERRROR! All fields must have a value!');
+  }
   const settings = {
     url: `locations/${id}`,
     method: 'PUT',
@@ -466,6 +475,7 @@ $(window).on('load', function() {
   $('#map').on('click', '#editButton', event => {
     event.preventDefault();
     let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
+    console.log(originalTitle);
     let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
     let windowContent = {
       content: `
@@ -494,23 +504,23 @@ $(window).on('load', function() {
       edit: true
     });
     STATE.current.infoWindow.open(STATE.map, STATE.current.marker);
-    $('#map').on('click', '#submitChanges', event=> {
+
+    $('#map').on('submit', '#editMarker', event=> {
       event.preventDefault();
-      console.log('clicked edit submit button');
       updateLocation(
         STATE.current.marker.id, 
         $('#map #editMarkerTitle').val(), 
         $('#map #editMarkerDescription').val(), 
         $('#map #editMarkerType').val()
       ).then(
-        STATE.mapMarkers.forEach(function(mapMarker) {
-          mapMarker.setMap();
-        }),
-        getServerData().then(function(){
+        // STATE.current.infoWindow.close(),
+        // STATE.current.infoWindow = null,
+        resetCurrent(),
+        getServerData().then(function(res){
+          console.log('post getServerData response: ',res);
           addMarkersToMap();
         })
       );
     });
   });
 });
-
