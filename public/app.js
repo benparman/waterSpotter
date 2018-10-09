@@ -419,7 +419,7 @@ $(window).on('load', function() {
       $('#signup-password').val()
     );
   });
-  $('#login-form').submit(event => {
+  $('#login-form').click(event => {
     event.preventDefault();
     loginUser(
       $('#login-username').val(),
