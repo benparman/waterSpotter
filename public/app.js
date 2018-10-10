@@ -130,7 +130,7 @@ function addMarkersToMap() {
     let editLocationButton = '';
     if (sessionStorage.currentUser === location.contributor) {
       deleteLocationButton = '<button id = "deleteButton">Delete this location.</button>';
-      editLocationButton = '<button id = "editButton">Edit this location.</button>';
+      editLocationButton = '<button class = "editButton">Edit this location.</button>';
     }
     const marker = new google.maps.Marker({
       position: {
@@ -186,6 +186,7 @@ function addNewMarker() {
     draggable: true,
     icon: 'marker_red+.png',
     new: true,
+    animation: google.maps.Animation.BOUNCE,
     infoWindowContent:
     `<infoWindowContent class = "windowWrapper">
       <section class = "newMarker">
@@ -303,13 +304,16 @@ function getProtected(authToken) {
   // });
 }
 //--------- POST Location to Server ----------
-function postLocation(title, description, lat, lon, type) {
+function postLocation(authToken,title, description, lat, lon, type) {
   console.log('postLocation() was called with the following parameters: ', title, description,lat,lon, type);
   const settings = {
     url: '/locations',
     method: 'POST',
     dataType: 'json',
     contentType: 'application/json',
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
     data: JSON.stringify({
       title: title,
       description: description,
@@ -330,12 +334,15 @@ function postLocation(title, description, lat, lon, type) {
   return $.ajax(settings);
 }
 //------- Delete Location from Server --------
-function deleteLocation(id){
+function deleteLocation(authToken, id){
   const settings = {
     url: `locations/${id}`,
     method: 'DELETE',
     dataType: 'json',
     contentType: 'application/json',
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
     success: function(res) {
       console.log('Server response from DELETE request: ', res);
     },
@@ -367,8 +374,8 @@ function optionGenerator(origTitle, origDescription, origType) {
   return selectOptionsHTML;
 }
 //------------- Update Location --------------
-function updateLocation(id, title, description, type){
-  console.log(`ID: ${id}, TITLE: ${title}, DESCRIPTION: ${description}, TYPE: ${type}`);
+function updateLocation(authToken, id, title, description, type){
+  console.log(`Updated Location --- ID: ${id}, TITLE: ${title}, DESCRIPTION: ${description}, TYPE: ${type}`);
   if (id === null || title === null || description === null || type === null) {
     console.log('ERRROR! All fields must have a value!');
   }
@@ -377,6 +384,9 @@ function updateLocation(id, title, description, type){
     method: 'PUT',
     dataType: 'json',
     contentType: 'application/json',
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
     data: JSON.stringify({
       id: id,
       title: title,
@@ -443,6 +453,7 @@ $(window).on('load', function() {
     event.preventDefault();
     if ($('#newMarkerTitle').val().length > 0) {
       postLocation(
+        sessionStorage.accessToken,
         $('#newMarkerTitle').val(),
         $('#newMarkerDescription').val(),
         STATE.current.marker.lat,
@@ -462,17 +473,21 @@ $(window).on('load', function() {
   $('#map').on('click', '#deleteButton',event => {
     event.preventDefault();
     console.log('delete button clicked');
-    deleteLocation(STATE.current.infoWindow.anchor.id).then(function(){    
-      STATE.mapMarkers.forEach(function(mapMarker) {
-        mapMarker.setMap();
-      });
-      STATE.mapMarkers = [],
-      getServerData().then(function(){
-        addMarkersToMap();
-      });
-    }); 
+    deleteLocation(
+      sessionStorage.accessToken, 
+      STATE.current.infoWindow.anchor.id
+    )
+      .then(function(){    
+        STATE.mapMarkers.forEach(function(mapMarker) {
+          mapMarker.setMap();
+        });
+        STATE.mapMarkers = [],
+        getServerData().then(function(){
+          addMarkersToMap();
+        });
+      }); 
   });
-  $('#map').on('click', '#editButton', event => {
+  $('#map').on('click', '.editButton', event => {
     event.preventDefault();
     let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
     console.log(originalTitle);
@@ -481,15 +496,15 @@ $(window).on('load', function() {
       content: `
       <infoWindowContent class = "windowWrapper">
         <section class = "editMarker">
-          <fieldset class = "editMarker">
-            <form id = "editMarker">
+          <fieldset class = "editFields">
+            <form class = "editForm">
               <p class = editMarkerCoords></p>
               <input type = "text" id = "editMarkerTitle" name = "newTitle" placeholder = "${originalTitle}">
               <input type = "text" id = "editMarkerDescription" name = "newDescription" placeholder = "${originalDescription}">
               <select type = "text" id = "editMarkerType" name = "newType">
                 ${optionGenerator()}
               </select>
-              <button id = "submitChanges">Submit</button>
+              <button class = "submitChanges">Submit</button>
             </form>
           </fieldset>
         </section>
@@ -505,22 +520,22 @@ $(window).on('load', function() {
     });
     STATE.current.infoWindow.open(STATE.map, STATE.current.marker);
 
-    $('#map').on('submit', '#editMarker', event=> {
+    $('#map').on('submit', '.editMarker', event=> {
       event.preventDefault();
+      $('#map').removeClass('editMarker');
       updateLocation(
+        sessionStorage.accessToken,
         STATE.current.marker.id, 
         $('#map #editMarkerTitle').val(), 
         $('#map #editMarkerDescription').val(), 
         $('#map #editMarkerType').val()
-      ).then(
-        // STATE.current.infoWindow.close(),
-        // STATE.current.infoWindow = null,
+      ).then(function() {
         resetCurrent(),
         getServerData().then(function(res){
           console.log('post getServerData response: ',res);
           addMarkersToMap();
-        })
-      );
+        });
+      });
     });
   });
 });
