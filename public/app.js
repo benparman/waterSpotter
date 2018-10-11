@@ -464,9 +464,10 @@ $(window).on('load', function() {
         mapMarker.setMap();
       });
       STATE.mapMarkers = [],
-      getServerData().then(function(){
-        addMarkersToMap();
-      });
+      // getServerData().then(function(){
+      //   addMarkersToMap();
+      // });
+      getServerData().then(addMarkersToMap);
     }
     resetCurrent();
   });
@@ -519,22 +520,21 @@ $(window).on('load', function() {
       edit: true
     });
     STATE.current.infoWindow.open(STATE.map, STATE.current.marker);
-
-    $('#map').on('submit', '.editMarker', event=> {
-      event.preventDefault();
-      $('#map').removeClass('editMarker');
-      updateLocation(
-        sessionStorage.accessToken,
-        STATE.current.marker.id, 
-        $('#map #editMarkerTitle').val(), 
-        $('#map #editMarkerDescription').val(), 
-        $('#map #editMarkerType').val()
-      ).then(function() {
-        resetCurrent(),
-        getServerData().then(function(res){
-          console.log('post getServerData response: ',res);
-          addMarkersToMap();
-        });
+  });
+  $('#map').on('submit', '.editMarker', event=> {
+    event.preventDefault();
+    $('#map').removeClass('editMarker');
+    updateLocation(
+      sessionStorage.accessToken,
+      STATE.current.marker.id, 
+      $('#map #editMarkerTitle').val(), 
+      $('#map #editMarkerDescription').val(), 
+      $('#map #editMarkerType').val()
+    ).then(function() {
+      resetCurrent(),
+      getServerData().then(function(res){
+        console.log('post getServerData response: ',res);
+        addMarkersToMap();
       });
     });
   });

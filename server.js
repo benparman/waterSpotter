@@ -113,7 +113,7 @@ app.post('/locations', jwtAuth, (req, res) => {
 });
 
 //---------DELETE---------
-app.delete('/locations/:id', (req, res) => {
+app.delete('/locations/:id', jwtAuth, (req, res) => {
   Location
     .findByIdAndRemove(req.params.id)
     .then(() => {
@@ -128,7 +128,7 @@ app.delete('/locations/:id', (req, res) => {
 });
 
 //---------PUT---------
-app.put('/locations/:id', (req, res) => {
+app.put('/locations/:id', jwtAuth, (req, res) => {
   if(!(req.params.id === req.body.id)) {
     res.status(400).json({
       error: 'Request path id, and request body id must match!'
