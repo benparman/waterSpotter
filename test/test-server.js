@@ -1,15 +1,23 @@
 'use strict';
 
-const chai = require('chai');
 const chaiHttp = require('chai-http');
+const chai = require('chai');
 const faker = require('faker');
 const mongoose = require('mongoose');
 const expect = chai.expect;
 const {Location} = require('../models'); // ".."" moves up one level, out of test and into root
 const {app, runServer, closeServer} = require('../server');
 const {TEST_DATABASE_URL} = require('../config');
-console.log('This is TEST_DATABASE_URL: ', TEST_DATABASE_URL);
 const parseDate = require('parse-date');
+
+const jwt = require('jsonwebtoken');
+const {User} = require('../users');
+const {JWT_SECRET} = require('../config');
+
+const passport = require('passport');
+const jwtAuth = passport.authenticate('jwt', {
+  session: false
+});
 
 chai.use(chaiHttp);
 //------------------------------
@@ -30,7 +38,10 @@ function seedLocationData() {
       verified: false
     });
   }
-  return Location.insertMany(seedData);
+  let seededData = Location.insertMany(seedData);
+  console.log('***************THIS IS SEEDED DATA: ', seededData);
+
+  return seededData;
 }
 
 function generateLocationData() {
@@ -57,15 +68,36 @@ function tearDownDb() {
   });
 }
 describe('Location API Resource', function() {
+
+  const username = 'exampleUser';
+  const password = 'examplePass';
+  const firstName = 'Example';
+  const lastName = 'User';
+
   before(function() {
     return runServer(TEST_DATABASE_URL);
   });
   beforeEach(function() {
-    return seedLocationData();
+    return seedLocationData().then(function() {
+      return User.hashPassword(password).then(password =>
+        User.create({
+          username,
+          password,
+          firstName,
+          lastName
+        })
+      );
+    });
   });
+
   afterEach(function() {
     return tearDownDb();
   });
+
+  afterEach(function() {
+    return User.remove({});
+  });
+
   after(function() {
     return closeServer();
   });
@@ -121,10 +153,28 @@ describe('Location API Resource', function() {
   });
 
   describe('POST endpoint', function() {
+    
+    //-------------------------------------------
     it('should add a new location', function() {
       const newLocation = generateLocationData();
+      const token = jwt.sign(
+        {
+          user: {
+            username,
+            firstName,
+            lastName
+          }
+        },
+        JWT_SECRET,
+        {
+          algorithm: 'HS256',
+          subject: username,
+          expiresIn: '7d'
+        }
+      );
       return chai.request(app)
         .post('/locations')
+        .set('authorization', `Bearer ${token}`)
         .send(newLocation)
         .then(function(res) {
           expect(res).to.have.status(201);
@@ -149,6 +199,7 @@ describe('Location API Resource', function() {
           expect(location.verified).to.equal(newLocation.verified);
         });
     });
+    //------------------------------------------- 
   });
   describe('PUT endpoint', function() {
     it('should update locations with new data', function() {
@@ -156,6 +207,21 @@ describe('Location API Resource', function() {
         description: 'FIRE HOSE IN THE FRONT!',
         type: 'OUT OF CONTROL FIRE HOSE!'
       };
+      const token = jwt.sign(
+        {
+          user: {
+            username,
+            firstName,
+            lastName
+          }
+        },
+        JWT_SECRET,
+        {
+          algorithm: 'HS256',
+          subject: username,
+          expiresIn: '7d'
+        }
+      );
 
       return Location
         .findOne()
@@ -163,6 +229,7 @@ describe('Location API Resource', function() {
           updateData.id = location._id;
           return chai.request(app)
             .put(`/locations/${location._id}`)
+            .set('authorization', `Bearer ${token}`)
             .send(updateData);
         })
         .then(function(res) {
@@ -178,11 +245,28 @@ describe('Location API Resource', function() {
   describe('DELETE endpoint', function() {
     it('Should remove the location associated with a specified ID', function() {
       let location;
+      const token = jwt.sign(
+        {
+          user: {
+            username,
+            firstName,
+            lastName
+          }
+        },
+        JWT_SECRET,
+        {
+          algorithm: 'HS256',
+          subject: username,
+          expiresIn: '7d'
+        }
+      );
       return Location
         .findOne()
         .then(function(_location) {
           location = _location;
-          return chai.request(app).delete(`/locations/${location._id}`);
+          return chai.request(app)
+            .delete(`/locations/${location._id}`)
+            .set('authorization', `Bearer ${token}`);
         })
         .then(function(res) {
           expect(res).to.have.status(200);
