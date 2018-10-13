@@ -2,11 +2,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const {User} = require('./models');
-const router = express.Router();
+const users = express.Router();
 const jsonParser = bodyParser.json();
 
 //POST - New user registration
-router.post('/', jsonParser, (req, res) => {
+users.post('/', jsonParser, (req, res) => {
   const requiredFields = ['username', 'password', 'firstName', 'lastName'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
@@ -134,7 +134,7 @@ router.post('/', jsonParser, (req, res) => {
 
 //*************** REMOVE THIS BEFORE PRODUCTION *****************/
 //*************** DO NOT USE *REAL* PASSWORDS!! *****************/
-router.get('/', (req, res) => {
+users.get('/', (req, res) => {
   return User.find()
     .then(users => res.json(users.map(user => user.serialize())))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
@@ -142,4 +142,4 @@ router.get('/', (req, res) => {
 //*************** REMOVE THIS BEFORE PRODUCTION *****************/
 //*************** DO NOT USE *REAL* PASSWORDS!! *****************/
 
-module.exports = {router};
+module.exports = {users};

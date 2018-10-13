@@ -202,26 +202,26 @@ describe('Location API Resource', function() {
     //------------------------------------------- 
   });
   describe('PUT endpoint', function() {
+    const token = jwt.sign(
+      {
+        user: {
+          username,
+          firstName,
+          lastName
+        }
+      },
+      JWT_SECRET,
+      {
+        algorithm: 'HS256',
+        subject: username,
+        expiresIn: '7d'
+      }
+    );
     it('should update locations with new data', function() {
       const updateData = {
         description: 'FIRE HOSE IN THE FRONT!',
         type: 'OUT OF CONTROL FIRE HOSE!'
       };
-      const token = jwt.sign(
-        {
-          user: {
-            username,
-            firstName,
-            lastName
-          }
-        },
-        JWT_SECRET,
-        {
-          algorithm: 'HS256',
-          subject: username,
-          expiresIn: '7d'
-        }
-      );
 
       return Location
         .findOne()
