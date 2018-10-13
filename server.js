@@ -15,8 +15,8 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(morgan('common'));
 //Using destructuring assignment, and renaming veriables from ./users and ./auth
-const {users: usersRouter } = require('./users');
-const {router: authRouter, localStrategy, jwtStrategy} = require('./auth');
+const {users} = require('./users');
+const {authRouter, localStrategy, jwtStrategy} = require('./auth');
 
 console.log('server.js line 20 - This is LOCAL STRATEGY ', localStrategy);
 
@@ -34,7 +34,7 @@ app.use(function(req,res,next) {
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-app.use('/api/users/', usersRouter);
+app.use('/api/users/', users);
 app.use('/api/auth/', authRouter);
 
 const jwtAuth = passport.authenticate('jwt', {
