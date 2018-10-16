@@ -5,11 +5,9 @@ const {User} = require('./models');
 const users = express.Router();
 const jsonParser = bodyParser.json();
 
-//POST - New user registration
 users.post('/', jsonParser, (req, res) => {
   const requiredFields = ['username', 'password', 'firstName', 'lastName'];
   const missingField = requiredFields.find(field => !(field in req.body));
-
   if(missingField) {
     return res.status(422).json({
       code: 422,
@@ -18,12 +16,10 @@ users.post('/', jsonParser, (req, res) => {
       location: missingField
     });
   }
-
   const stringFields = ['username', 'password', 'firstName', 'lastName'];
   const nonStringField = stringFields.find(
     field => field in req.body && typeof req.body[field] !== 'string'
   );
-
   if (nonStringField) {
     return res.status(422).json({
       code: 422,
@@ -32,16 +28,10 @@ users.post('/', jsonParser, (req, res) => {
       location: nonStringField
     });
   }
-
-  //Trims white space (if present) from ends ofusername and password, then to 
-  //see if trimmed username and password match non-trimmed username and password.
-  //If they do not match, error message is sent alerting that username and
-  //password must not begin or end with whitespace.
   const explicitlyTrimmedFields = ['username', 'password'];
   const nonTrimmedField = explicitlyTrimmedFields.find(
     field => req.body[field].trim() !== req.body[field]
   );
-
   if (nonTrimmedField) {
     return res.status(422).json({
       code: 422,
@@ -50,7 +40,6 @@ users.post('/', jsonParser, (req, res) => {
       location: nonTrimmedField
     });
   }
-
   const sizedFields = {
     username: {
       min: 1,
@@ -68,7 +57,6 @@ users.post('/', jsonParser, (req, res) => {
       max: 24
     }
   };
-
   const tooSmallField = Object.keys(sizedFields).find(
     field =>
       'min' in sizedFields[field] &&
@@ -79,7 +67,6 @@ users.post('/', jsonParser, (req, res) => {
       'max' in sizedFields[field] &&
         req.body[field].trim().length > sizedFields[field].max
   );
-
   if (tooSmallField || tooLargeField) {
     return res.status(422).json({
       code: 422,
@@ -90,11 +77,9 @@ users.post('/', jsonParser, (req, res) => {
       location: tooSmallField || tooLargeField
     });
   }
-
   let {username, password, firstName = '', lastName = ''} = req.body;
   firstName = firstName.trim();
   lastName = lastName.trim();
-
   return User.find({username})
     .count()
     .then(count => {
@@ -131,15 +116,9 @@ users.post('/', jsonParser, (req, res) => {
           message: 'Internal server error'});
     });
 });
-
-//*************** REMOVE THIS BEFORE PRODUCTION *****************/
-//*************** DO NOT USE *REAL* PASSWORDS!! *****************/
 users.get('/', (req, res) => {
   return User.find()
     .then(users => res.json(users.map(user => user.serialize())))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
-//*************** REMOVE THIS BEFORE PRODUCTION *****************/
-//*************** DO NOT USE *REAL* PASSWORDS!! *****************/
-
 module.exports = {users};

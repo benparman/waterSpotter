@@ -1,7 +1,6 @@
 'use strict';
 
 const mongoose = require('mongoose');
-
 const locationSchema = mongoose.Schema({
   title: {type: String, required: true},
   description: {type: String, required: true},
@@ -15,11 +14,9 @@ const locationSchema = mongoose.Schema({
   type: {type: String, required: true},
   verified: {type: Boolean, default: false}
 });
-
 locationSchema.virtual('latLng').get(function() {
   return `${this.coordinates.lat},${this.coordinates.lon}`;
 });
-
 locationSchema.methods.serialize = function() {
   return{
     title: this.title,
@@ -35,6 +32,5 @@ locationSchema.methods.serialize = function() {
     verified: this.verified
   };
 };
-
 const Location = mongoose.model('Location', locationSchema);
 module.exports = { Location };
