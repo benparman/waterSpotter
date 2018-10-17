@@ -406,13 +406,13 @@ function updateLocation(authToken, id, title, description, type){
 checkLoginStatus();  // This needs to run before page load to set STATE.loginstatus
 $(window).on('load', function() {
   getServerData()
-    .then(function(){
-      initMap();
+    .then(
+      initMap,
       $('#searchLocation').submit(event => {
         event.preventDefault();
         geoCodeLocation($('.searchTerms').val(), STATE.markerLocations);
-      });
-    });
+      })
+    );
   $('#myLocation-button').click(event =>{
     event.preventDefault();
     getLocation()
@@ -429,16 +429,13 @@ $(window).on('load', function() {
       $('#signup-password').val()
     );
   });
-  $('#login-form').click(event => {
+  $('#login-form').submit(event => {
     event.preventDefault();
     loginUser(
       $('#login-username').val(),
       $('#login-password').val()
     )
-      .then(function(JWT) {
-        getProtected(JWT.authToken);
-        checkLoginStatus();
-      }); 
+      .then(checkLoginStatus); 
   });
   $('.loginStatus').click(function(){
     if (sessionStorage.currentUser) {
@@ -464,10 +461,8 @@ $(window).on('load', function() {
         mapMarker.setMap();
       });
       STATE.mapMarkers = [],
-      // getServerData().then(function(){
-      //   addMarkersToMap();
-      // });
-      getServerData().then(addMarkersToMap);
+      getServerData()
+        .then(addMarkersToMap);
     }
     resetCurrent();
   });
@@ -483,9 +478,8 @@ $(window).on('load', function() {
           mapMarker.setMap();
         });
         STATE.mapMarkers = [],
-        getServerData().then(function(){
-          addMarkersToMap();
-        });
+        getServerData()
+          .then(addMarkersToMap);
       }); 
   });
   $('#map').on('click', '.editButton', event => {
@@ -530,12 +524,12 @@ $(window).on('load', function() {
       $('#map #editMarkerTitle').val(), 
       $('#map #editMarkerDescription').val(), 
       $('#map #editMarkerType').val()
-    ).then(function() {
-      resetCurrent(),
+    ).then(
+      resetCurrent,
       getServerData().then(function(res){
         console.log('post getServerData response: ',res);
         addMarkersToMap();
-      });
-    });
+      })
+    );
   });
 });
