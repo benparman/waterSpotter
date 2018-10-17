@@ -41,7 +41,7 @@ function resetCurrent() {
 function getServerData(){
   const settings = {
     method: 'GET',
-    url: '/locations',
+    url: 'api/locations',
     dataType: 'json',
     contentType: 'application/json',
     success: function(serverData){
@@ -307,7 +307,7 @@ function getProtected(authToken) {
 function postLocation(authToken,title, description, lat, lon, type) {
   console.log('postLocation() was called with the following parameters: ', title, description,lat,lon, type);
   const settings = {
-    url: '/locations',
+    url: 'api/locations',
     method: 'POST',
     dataType: 'json',
     contentType: 'application/json',
@@ -380,7 +380,7 @@ function updateLocation(authToken, id, title, description, type){
     console.log('ERRROR! All fields must have a value!');
   }
   const settings = {
-    url: `locations/${id}`,
+    url: `api/locations/${id}`,
     method: 'PUT',
     dataType: 'json',
     contentType: 'application/json',
