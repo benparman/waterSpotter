@@ -336,7 +336,7 @@ function postLocation(authToken,title, description, lat, lon, type) {
 //------- Delete Location from Server --------
 function deleteLocation(authToken, id){
   const settings = {
-    url: `locations/${id}`,
+    url: `api/locations/${id}`,
     method: 'DELETE',
     dataType: 'json',
     contentType: 'application/json',
