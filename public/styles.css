@@ -1,7 +1,58 @@
-.header a {
-  float: right;
-  margin-left: 20px;
-  text-decoration: none; 
+html {
+  background-color: rgb(149, 149, 149);
+}
+
+body {
+  margin: 0;
+  height: 84%;
+  position: absolute;
+  /* bottom: 0; */
+}
+
+
+header {
+  background-color: rgb(237, 237, 237);
+}
+
+.subHeader {
+  background-color: rgb(202, 202, 202);
+  /* width: 100vw; */
+}
+
+header a {
+  float: left;
+  margin-right: 15px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+header h1, h2 {
+  display: inline-block;
+  padding: 0;
+  margin: 0;
+}
+
+header h2 {
+  font-style: italic;
+  /* margin-bottom: 20px; */
+}
+
+.links {
+  position: relative;
+  bottom: 8px;
+}
+
+.title {
+  margin: 0;
+  padding: 0;
+}
+
+.searchLocation {
+  /* text-align: center; */
+}
+
+.searchLocation input, button {
+  /* margin: 5px 10px; */
 }
 
 .signupForm {
@@ -9,17 +60,23 @@
   width: 17%
 }
 
+main {
+  position: relative;
+  display: block;
+  /* height: 100%; */
+  height: 100%;
+}
+
 #map {
-  height: 600px;  /* The height is 400 pixels */
-  width: 95%;  /* The width is the width of the web page */
+  height: 100%;
  }
 
 h1 {
-  font-size: 24px;
+  font-size: 22px;
 }
 
 h2 {
-  font-size: 18px
+  font-size: 14px
 }
 
 h3 {

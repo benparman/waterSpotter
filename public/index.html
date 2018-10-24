@@ -1,55 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" type="text/css" href="styles.css">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="float-grid.css">
+    <title>Water Spotter</title>
+  </head>
+
+  <body>
+  <header>
+    <div class = "row">
+      <div class = "title col-6">
+        <h1>Water Spotter</h1><br>
+        <h2>Find your next refill while on the road or trail!</h2>
+      </div>
+      <div class = "links col-6">
+        <h3><a href="signup.html">Sign Up</a></h3>
+        <h3 class="postLocation"><a href="postLocation.html">Post Location</a></h3>
+        <h3><a href="index.html">Home</a></h3>
+        <h3 class="loginStatus"></h3>
+      </div>
+    </div>
+  </header>
+
+  <header class = "subHeader">
+    <div class = "row">
+      <form class = "searchLocation">
+        <input name="searchTerms" aria-label="search-here" type="text" class="searchTerms" placeholder="Location?" required="">
+        <button aria-label="submit-button" id="js-location-submit-button" type="submit">Go!</button>
+        <button aria-label="myLocation-button" id="myLocation-button" type="submit">Use my location!</button>
+      </form>
+    </div>
+  </header>
 
   
-  
-  <title>Water Spotter</title>
-</head>
-<body>
-  <section class="main" aria-label="Content container" name="container" role="main">
+    <main>
+      <div id="map" aria-labelledby="Google map display" name="googleMap"></div>
+    </main>
 
-    <section class="header">
-      <h3><a href="signup.html">Sign Up</a></h3>
-      <h3 class="postLocation"><a href="postLocation.html">Post Location</a></h3>
-      <h3><a href="index.html">Home</a></h3>
-      <h3 class="loginStatus"></h3>
-
-      <h1>Water Spotter</h1>
-      <h2>Find your next refill while on the road or trail</h2>
-    </section>
-
-    <section class="searchCriteria">
-      <!-- <h2>Show me:</h2>
-      <fieldset class="checkboxes">
-        <ul class="nameMe">
-          <li><input type="checkbox" checked>Fountain</li>
-          <li><input type="checkbox" checked>Spigot</li>
-          <li><input type="checkbox" checked>Natural Spring</li>
-          <li><input type="checkbox" checked>Stream or River</li>
-          <li><input type="checkbox" checked>Other</li>
-        </ul>
-      </fieldset> -->
-      <fieldset class="fieldBox stackable" id="searchLocation" role="textbox">
-        <form>
-          <label>Location</label>
-          <input name="searchTerms" aria-label="search-here" type="text" class="searchTerms" placeholder="Search here" required=""><br class="mobile"/>
-          <button aria-label="submit-button" id="js-location-submit-button" type="submit">Go!</button>
-          <button aria-label="myLocation-button" id="myLocation-button" type="submit">Use my current location!</button>
-        </form>
-      </fieldset>
-    </section>
-
-  <div id="map" aria-labelledby="Google map display" name="googleMap"></div>
-  </div>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script async defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrlS-LQnc7fbdIRMZD5ctvGlYzQo3GyQU">
-      </script>
-  <script src="app.js"></script>
-</body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCrlS-LQnc7fbdIRMZD5ctvGlYzQo3GyQU"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
