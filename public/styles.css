@@ -1,11 +1,24 @@
 html {
   background-color: rgb(149, 149, 149);
-  min-height: 100%;
+  /* min-height: 100%; */
 }
 body {
   margin: 0;
-  min-height: 100%;
+  /* min-height: 100%; */
+  position: relative;
 }
+
+html, body, main, #map {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+  padding: 0px
+}
+
+main {
+  /* border: 5px solid orange; */
+}
+
 .titleHeader {
   background-color: rgb(237, 237, 237);
 }
@@ -48,15 +61,13 @@ header h2 {
 }
 main {
   position: absolute;
-  height: 84%;
+  max-height: 100%;
   width: 100%;
   display: block;
 }
 #map {
-  position: relative;
   height: 100%;
-  width: 100%;
-  border: 1px solid black;
+  border: 5px solid black;
  }
 h1 {
   font-size: 22px;

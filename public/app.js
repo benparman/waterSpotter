@@ -1,4 +1,5 @@
 'use strict';
+
 const geoCodingEndpoint='https://maps.googleapis.com/maps/api/geocode/json';
 const geoCodingApiKey='AIzaSyB05Gh-VXpXhypmBg4R3hzZl8zFxJJYLGQ';
 //----------- STATE Variables -----------
@@ -532,4 +533,19 @@ $(window).on('load', function() {
       })
     );
   });
+
+  let headerHeight = $('header').height();
+  console.log(headerHeight);
+  let newMapHeight = $(window).height() - headerHeight - 10;
+  
+  
+
+  $('#map').height(newMapHeight);
+
+  $(window).resize(function(){
+    let headerHeight = $('header').height();
+    let newMapHeight = $(window).height() - headerHeight - 10;
+    $('#map').height(newMapHeight);
+  });
+
 });
