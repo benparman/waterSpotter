@@ -1,80 +1,69 @@
 html {
   background-color: rgb(149, 149, 149);
+  min-height: 100%;
 }
-
 body {
   margin: 0;
+  min-height: 100%;
 }
-
-
-header {
+.titleHeader {
   background-color: rgb(237, 237, 237);
-  display: block;
 }
-
 .subHeader {
   background-color: rgb(202, 202, 202);
-  display: block;
-  /* width: 100vw; */
 }
-
+.searchLocation {
+  margin: 5px 0 5px 0;
+  text-align: center;
+}
+.searchLocation input {
+  width: 100px;
+}
+.searchLocation button {
+  background-color: rgb(237, 237, 237);
+}
 header a {
+  position: relative;
   font-size: 12px;
   float: left;
   margin-right: 15px;
   text-decoration: none;
-  display: inline-block;
+  bottom: 8px;
 }
-
 header h1, h2 {
   display: inline-block;
   padding: 0;
   margin: 0;
 }
-
 header h2 {
   font-style: italic;
-  /* margin-bottom: 20px; */
 }
-
-.links {
-  /* position: relative; */
-  bottom: 8px;
-}
-
 .title {
   margin: 0;
   padding: 0;
 }
-
 .signupForm {
   display: inline-block;
   width: 17%
 }
-
 main {
   position: absolute;
   height: 84%;
   width: 100%;
-  bottom: 0;
-  top: 90px;
+  display: block;
 }
-
 #map {
   position: relative;
   height: 100%;
   width: 100%;
   border: 1px solid black;
  }
-
 h1 {
   font-size: 22px;
 }
-
 h2 {
   font-size: 14px
 }
-
 h3 {
   font-size: 14px
 }

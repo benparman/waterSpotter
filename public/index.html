@@ -9,34 +9,34 @@
     <title>Water Spotter</title>
   </head>
 
-
-  <header>
-    <div class = "row">
-      <div class = "title col-6">
-        <h1>Water Spotter</h1><br>
-        <h2>Find your next refill while on the road or trail!</h2>
-      </div>
-      <div class = "links col-6">
-        <h3><a href="signup.html">Sign Up</a></h3>
-        <h3 class="postLocation"><a href="postLocation.html">Post Location</a></h3>
-        <h3><a href="index.html">Home</a></h3>
-        <h3 class="loginStatus"></h3>
-      </div>
-    </div>
-  </header>
-
-  <div class = "subHeader">
-    <div class = "row">
-      <form class = "searchLocation">
-        <input name="searchTerms" aria-label="search-here" type="text" class="searchTerms" placeholder="Location?" required="">
-        <button aria-label="submit-button" id="js-location-submit-button" type="submit">Go!</button>
-        <button aria-label="myLocation-button" id="myLocation-button" type="submit">Use my location!</button>
-      </form>
-    </div>
-  </div>
-
   <body>
     <main>
+      <header>
+
+        <div class = "row titleHeader">
+          <div class = "title col-6">
+            <h1>Water Spotter</h1><br>
+            <h2>Find your next refill while on the road or trail!</h2>
+          </div>
+          <div class = "links col-6">
+            <h3><a href="signup.html">Sign Up</a></h3>
+            <h3 class="postLocation"><a href="postLocation.html">Post Location</a></h3>
+            <h3><a href="index.html">Home</a></h3>
+            <h3 class="loginStatus"></h3>
+          </div>
+        </div>
+
+
+          <div class = "row subheader">
+            <form class = "searchLocation">
+              <input name="searchTerms" aria-label="search-here" type="text" class="searchTerms" placeholder="Location?" required="">
+              <button aria-label="submit-button" id="js-location-submit-button" type="submit">Go!</button>
+              <button aria-label="myLocation-button" id="myLocation-button" type="submit">Use my location!</button>
+            </form>
+          </div>
+
+      </header>
+
       <div id="map" aria-labelledby="Google map display" name="googleMap"></div>
     </main>
 
