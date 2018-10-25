@@ -534,17 +534,15 @@ $(window).on('load', function() {
     );
   });
 
+  //----------- Set and resize map height -----------
   let headerHeight = $('header').height();
-  console.log(headerHeight);
-  let newMapHeight = $(window).height() - headerHeight - 10;
-  
-  
+  let borderWidth = parseInt($('#map').css('border-width'), 10) * 2;
 
+  let newMapHeight = $(window).height() - headerHeight - borderWidth;
   $('#map').height(newMapHeight);
-
   $(window).resize(function(){
-    let headerHeight = $('header').height();
-    let newMapHeight = $(window).height() - headerHeight - 10;
+    headerHeight = $('header').height();
+    newMapHeight = $(window).height() - headerHeight - borderWidth;
     $('#map').height(newMapHeight);
   });
 
