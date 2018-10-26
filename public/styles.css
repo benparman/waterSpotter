@@ -4,7 +4,6 @@
 html {
   background-color: rgb(149, 149, 149);
 }
-
 body {
   margin: 0;
   background-image: url('waterDrops.jpg');
@@ -44,28 +43,6 @@ header h1, h2 {
 header h2 {
   font-style: italic;
 }
-main {
-  position: absolute;
-  max-height: 100%;
-  width: 100%;
-  /* display: block; */
-}
-.titleHeader {
-  background-color: rgba(0, 0, 0, 0.3);
-}
-.subHeader {
-  background-color: rgba(0, 0, 0, 0.527);
-}
-.searchLocation {
-  margin: 5px 0 5px 0;
-  text-align: center;
-}
-.searchLocation input {
-  width: 100px;
-}
-.searchLocation button {
-  background-color: rgb(237, 237, 237);
-}
 .title {
   margin: 0;
   padding: 0;
@@ -73,6 +50,12 @@ main {
 .signupForm {
   display: inline-block;
   width: 17%
+}
+main {
+  position: absolute;
+  max-height: 100%;
+  width: 100%;
+  display: block;
 }
 #map {
   height: 100%;

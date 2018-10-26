@@ -538,21 +538,13 @@ $(window).on('load', function() {
   let headerHeight = $('header').height();
   let borderWidth = parseInt($('#map').css('border-width'), 10) * 2;
   let newMapHeight = $(window).height() - headerHeight - borderWidth;
-<<<<<<< HEAD
-  console.log(newMapHeight);
-=======
   $('body').height('100vh');
->>>>>>> tmp
   $('#map').height(newMapHeight);
   $(window).resize(function(){
     headerHeight = $('header').height();
     newMapHeight = $(window).height() - headerHeight - borderWidth;
     $('#map').height(newMapHeight);
-<<<<<<< HEAD
-    $('html').css('background-size: cover');
-=======
     $('body').height('100vh');
->>>>>>> tmp
   });
 
 });
