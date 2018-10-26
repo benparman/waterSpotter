@@ -537,13 +537,14 @@ $(window).on('load', function() {
   //----------- Set and resize map height -----------
   let headerHeight = $('header').height();
   let borderWidth = parseInt($('#map').css('border-width'), 10) * 2;
-
   let newMapHeight = $(window).height() - headerHeight - borderWidth;
+  console.log(newMapHeight);
   $('#map').height(newMapHeight);
   $(window).resize(function(){
     headerHeight = $('header').height();
     newMapHeight = $(window).height() - headerHeight - borderWidth;
     $('#map').height(newMapHeight);
+    $('html').css('background-size: cover');
   });
 
 });
