@@ -1,9 +1,17 @@
 * {
+<<<<<<< HEAD
   box-sizing: border-box;
+=======
+  box-sizing : border-box;
+}
+html {
+  background-color: rgb(149, 149, 149);
+>>>>>>> tmp
 }
 
 body {
   margin: 0;
+<<<<<<< HEAD
   background-image: url("https://wonderfulengineering.com/wp-content/uploads/2016/03/Water-wallpaper-12.jpg");
   background-repeat: no-repeat;
   background-size: cover;
@@ -11,6 +19,29 @@ body {
   background-position: center;
 }
 
+=======
+  background-image: url('waterDrops.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.titleHeader {
+  background-color: rgba(0, 0, 0, 0.25);
+}
+.subHeader {
+  background-color: rgb(0, 0, 0, 0.5);
+}
+.searchLocation {
+  text-align: center;
+  padding: 5px;
+}
+.searchLocation input {
+  width: 100px;
+}
+.searchLocation button {
+  background-color: rgb(237, 237, 237);
+}
+>>>>>>> tmp
 header a {
   position: relative;
   font-size: 12px;
@@ -70,4 +101,22 @@ h2 {
 }
 h3 {
   font-size: 14px
+}
+@media only screen and (min-width : 640px) {
+  .col-3 {
+    width : 25%;
+  }
+  .col-4 {
+    width : 33.33333%;
+  }
+  .col-6 {
+    width : 50%;
+  }
+  .col-12 {
+    width : 100%;
+  }
+  header a {
+    float: right;
+    margin: 0 0 0 15px;
+  }
 }

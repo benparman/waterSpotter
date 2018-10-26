@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 /* * {
+=======
+
+* {
+>>>>>>> tmp
   box-sizing : border-box;
 }
 .row {
@@ -21,7 +26,9 @@
   padding-right: 1.04166666%;
   width : 100%;
 }
-@media only screen and (min-width : 640px) {
+
+
+/* @media only screen and (min-width : 640px) {
   .col-3 {
     width : 25%;
   }
