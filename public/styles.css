@@ -1,25 +1,12 @@
 * {
-<<<<<<< HEAD
-  box-sizing: border-box;
-=======
   box-sizing : border-box;
 }
 html {
   background-color: rgb(149, 149, 149);
->>>>>>> tmp
 }
 
 body {
   margin: 0;
-<<<<<<< HEAD
-  background-image: url("https://wonderfulengineering.com/wp-content/uploads/2016/03/Water-wallpaper-12.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 100vh;
-  background-position: center;
-}
-
-=======
   background-image: url('waterDrops.jpg');
   background-repeat: no-repeat;
   background-size: cover;
@@ -41,7 +28,6 @@ body {
 .searchLocation button {
   background-color: rgb(237, 237, 237);
 }
->>>>>>> tmp
 header a {
   position: relative;
   font-size: 12px;
