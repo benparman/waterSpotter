@@ -10,37 +10,33 @@
 </head>
 
 <body>
-  <section class="main" aria-label="Content container" name="container" role="main">
-      <section class="header">
-          <h3><a href="signup.html">Sign Up</a></h3>
-          <h3 class="postLocation"><a href="postLocation.html">Post Location</a></h3>
-          <h3><a href="index.html">Home</a></h3>
-          <h3 class="loginStatus"></h3>
-      <h1>Water Spotter</h1>
-      <h2>Find your next refill while on the road or trail</h2>
-    </section>
-    <section class="signupForm" id="signupForm">
-      <form>
-        <fieldset>
-          <label>Username</label>
-          <input type="text" id="signup-username"class="signupField" placeholder="Username">
-       
 
-          <label>First Name</label>
-          <input type="text" id="signup-firstName"class="signupField" placeholder="First Name">
-       
+    <header>
+        <div class = "headerOne">
+          <div class = "title">
+            <h1>Water Spotter</h1><br>
+            <h2>Find your next refill while on the road or trail!</h2>
+          </div>
+        </div>
+        <div class = "headerTwo">
+          <div class = "links">
+            <h3><a href="signup.html">Sign Up</a></h3>
+            <h3 class="postLocation"><a href="postLocation.html">Post Location</a></h3>
+            <h3><a href="index.html">Home</a></h3>
+            <h3 class="loginStatus"></h3>
+          </div>
+        </div>
+        <div class = "headerThree">            
+          <form class="user-form">
+            <input type="text" class="userField" placeholder="Username">
+            <input type="text" class="userField" placeholder="First Name">
+            <input type="text" class="userField" placeholder="Last Name">
+            <input type="password" class="userField" placeholder="Password">
+            <button class="userField">Sign Up</button>
+          </form>
+        </div>
+      </header>
 
-          <label>Last Name</label>
-          <input type="text" id="signup-lastName"class="signupField" placeholder="Last Name">
-       
-          
-          <label>Password</label>
-          <input type="password" id="signup-password"class="signupField" placeholder="Password">
-        </fieldset>
-        <button id="signupButton">Sign Up</button>
-      </form>
-    </section>
-  </section>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="app.js"></script>
 </body>
