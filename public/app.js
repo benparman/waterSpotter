@@ -28,6 +28,7 @@ function checkLoginStatus() {
     $('.loginStatus').html('<a href = "login.html">Log In</a>');
     $('.postLocation').hide();
     $('.signup').show();
+    $('.loginPageOnly').hide();
   }
 }
 //---------- Reset State.current --------
@@ -375,9 +376,12 @@ function loginUser(username, password) {
     success: function(res) {
       sessionStorage.accessToken = res.authToken;
       sessionStorage.currentUser = username;
+      $('.loginStatus').show();
+      window.location.replace('index.html');
     },
     error: function() {
       console.log('Login Failed!');
+      alert('Incorrect username and/or password!');
     }
   };
   return $.ajax(settings);
@@ -532,14 +536,12 @@ $(window).on('load', function() {
       $('#signup-password').val()
     );
   });
-  $('.user-form').submit(event => {
+  $('.login-form').submit(event => {
     event.preventDefault();
     loginUser(
       $('#loginUser').val(),
-      $('#loginPassword').val(),
-      console.log($('#loginUser').val(), $('#loginPassword').val())
+      $('#loginPassword').val()
     )
-      
       .then(checkLoginStatus); 
   });
   $('.loginStatus').click(function(){
