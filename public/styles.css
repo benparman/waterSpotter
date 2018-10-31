@@ -2,32 +2,9 @@
   box-sizing : border-box;
   font-family: roboto;
 }
-
-/* ---- */
-.row::before,
-.row::after {
-  display : table;
-  content : '';
-}
-.row::after {
-  clear: both;
-}
-/* ----- */
-
-/* This is new content: */
-
-.links h3 {
-  display: inline-block;
-  margin: 2px 10px;
-}
-.links a {
-  text-decoration: none;
-  color: #00c1ff;
-}
-/* This is new content: */
-
 html {
   background-color: rgb(149, 149, 149);
+  min-width: 124px;
 }
 body {
   margin: 0;
@@ -36,20 +13,59 @@ body {
   background-size: cover;
   background-position: center;
 }
-.title {
+main {
+  position: absolute;
+  max-height: 100%;
+  width: 100%;
+  display: block;
+}
+h1 {
+  font-size: 22px;
+}
+h2 {
+  font-size: 14px
+}
+h3 {
+  font-size: 14px
+}
+header h1, h2 {
   display: inline-block;
+  padding: 0;
+  margin: 0;
+  color: white;
+}
+button {
+  box-shadow: inset 0 0 5px 0px white;
+  background-color: #0d00ff5c;
+  color: white;
 }
 .headerOne {
-  background-color: rgba(3, 5, 5, 0.82);
+  background-color: rgba(0, 0, 0, 0.87);
     padding: 5px 0 5px 10px;
+    min-height: 54px
 }
 .headerTwo {
   text-align: center;
-  background-color: rgba(39, 69, 75, 0.67);
+  background-color: rgba(0, 0, 0, 0.72);
 }
 .headerThree {
-  background-color: rgba(3, 5, 5, 0.65);
+  background-color: rgba(0, 0, 0, 0.54);
   padding: 0 10px;
+}
+.headerContentContainer {
+  max-width: 1920px;
+  margin: auto;
+}
+.title {
+  display: inline-block;
+}
+.links h3 {
+  display: inline-block;
+  margin: 2px 10px;
+}
+.links a {
+  text-decoration: none;
+  color: #00c1ff;
 }
 .searchLocation {
   text-align: center;
@@ -68,50 +84,45 @@ body {
 .postLocation {
   display: none;
 }
-button {
-  box-shadow: inset 0 0 5px 0px white;
-  background-color: #0d00ff5c;
-  color: white;
-}
+
 .userField {
   display:block;
   margin: 5px auto;
 }
-header h1, h2 {
-  display: inline-block;
-  padding: 0;
-  margin: 0;
-  color: white;
-}
+
 .signupForm {
   display: inline-block;
   width: 17%
-}
-main {
-  position: absolute;
-  max-height: 100%;
-  width: 100%;
-  display: block;
 }
 #map {
   height: 100%;
   border: 5px solid rgba(255, 255, 255, 0);
   border-radius: 10px;
+  max-width: 1920px;
+  min-width: 124px;
+  margin: auto;
  }
-h1 {
-  font-size: 22px;
-}
-h2 {
-  font-size: 14px
-}
-h3 {
-  font-size: 14px
-}
+
 
 /* --------------------------------------- */
-@media only screen and (min-width : 640px) {
+@media only screen and (min-width : 500px) {
   .links {
     float: right;
     margin-left: 15px;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+  .headerThree {
+    background-color: rgba(0, 0, 0, 0.72);
+  }
+}
+@media only screen and (min-width : 1920px) {
+  .title {
+    position: fixed;
+  }
+  .links {
+    position: absolute;
+    left: 1720px;
   }
 }
