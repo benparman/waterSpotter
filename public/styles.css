@@ -40,7 +40,7 @@ body {
   display: inline-block;
 }
 .headerOne {
-  background-color: rgba(3, 5, 5, 0.65);
+  background-color: rgba(3, 5, 5, 0.82);
     padding: 5px 0 5px 10px;
 }
 .headerTwo {
@@ -58,13 +58,17 @@ body {
 .searchLocation input {
   width: 100px;
 }
-.searchLocation button {
-  background-color: rgb(237, 237, 237);
-}
 .user-form {
   padding: 1px;
+  text-align: center;
 }
-.user-form button {
+.postButton {
+  margin: 5px auto;
+}
+.postLocation {
+  display: none;
+}
+button {
   box-shadow: inset 0 0 5px 0px white;
   background-color: #0d00ff5c;
   color: white;

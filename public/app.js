@@ -19,11 +19,15 @@ function checkLoginStatus() {
     STATE.loginStatus = true;
     console.log('User Logged In: ', STATE.loginStatus);
     $('.loginStatus').html('<a href = "">Log Out</a>');
+    $('.postLocation').show();
+    $('.signup').hide();
   }
   else {
     STATE.loginStatus = false;
     console.log('User Logged In: ', STATE.loginStatus);
     $('.loginStatus').html('<a href = "login.html">Log In</a>');
+    $('.postLocation').hide();
+    $('.signup').show();
   }
 }
 //---------- Reset State.current --------
@@ -507,7 +511,7 @@ $(window).on('load', function() {
   getServerData()
     .then(
       initMap,
-      $('#searchLocation').submit(event => {
+      $('.searchLocation').submit(event => {
         event.preventDefault();
         geoCodeLocation($('.searchTerms').val(), STATE.markerLocations);
       })
