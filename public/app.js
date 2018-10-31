@@ -528,12 +528,14 @@ $(window).on('load', function() {
       $('#signup-password').val()
     );
   });
-  $('#login-form').submit(event => {
+  $('.user-form').submit(event => {
     event.preventDefault();
     loginUser(
-      $('#login-username').val(),
-      $('#login-password').val()
+      $('#loginUser').val(),
+      $('#loginPassword').val(),
+      console.log($('#loginUser').val(), $('#loginPassword').val())
     )
+      
       .then(checkLoginStatus); 
   });
   $('.loginStatus').click(function(){
