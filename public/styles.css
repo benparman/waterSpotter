@@ -1,6 +1,5 @@
 * {
   box-sizing : border-box;
-  font-family: roboto;
 }
 html {
   background-color: rgb(149, 149, 149);
@@ -28,6 +27,9 @@ h2 {
 h3 {
   font-size: 14px
 }
+header {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
 header h1, h2 {
   display: inline-block;
   padding: 0;
@@ -51,6 +53,7 @@ button {
 .headerThree {
   background-color: rgba(0, 0, 0, 0.54);
   padding: 0 10px;
+  text-align: center;
 }
 .headerContentContainer {
   max-width: 1920px;
@@ -68,17 +71,18 @@ button {
   color: #00c1ff;
 }
 .searchLocation {
-  text-align: center;
-  padding: 5px;
+  /* text-align: center; */
+  /* padding: 5px; */
 }
 .searchLocation input {
   width: 100px;
+  padding: 0;
 }
 .user-form {
   padding: 1px;
   text-align: center;
 }
-.postButton {
+.headerThree button {
   margin: 5px auto;
 }
 .postLocation {

@@ -512,6 +512,26 @@ function updateLocation(authToken, id, title, description, type){
 //-------------- Event Listeners -------------
 checkLoginStatus();  // This needs to run before page load to set STATE.loginstatus
 $(window).on('load', function() {
+
+  $('.postLocation').click(function(){
+    $('.headerThree').html(`<div class="headerContentContainer">
+    <button class="postButton">Add Marker</button>
+    <button class="cancelButton">Cancel</button>
+  </div>`)
+  })
+
+  $('.headerThree').on('click', '.cancelButton', function(event){
+    event.preventDefault();
+    $('.headerThree').html(`<div class="headerContentContainer">
+    <form class = "searchLocation">
+      <input name="searchTerms" aria-label="search-here" type="text" class="searchTerms" placeholder="Location?" required="">
+      <button aria-label="submit-button" id="js-location-submit-button" type="submit">Go!</button>
+      <button aria-label="myLocation-button" id="myLocation-button" type="submit">Use my location!</button>
+    </form>
+  </div>`)
+  })
+
+
   getServerData()
     .then(
       initMap,
@@ -550,7 +570,7 @@ $(window).on('load', function() {
       sessionStorage.removeItem('currentUser');
     }
   });
-  $('#testButton').click(function(){
+  $('.postButton').click(function(){
     addNewMarker(STATE.map);
   });
   $('#map').on('submit', '#newMarker', event => {
