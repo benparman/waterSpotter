@@ -102,8 +102,46 @@ button {
   min-width: 124px;
   margin: auto;
  }
+ 
+/* ------- Google Map Components ------- */
+#map > div > div > div:nth-child(1) > 
+div:nth-child(3) > div > div:nth-child(4) > 
+div > div:nth-child(1) > div:nth-child(4) {
+  border: 2px solid #7cc3dd;
+  border-radius: 15px !important;
+  background:
+  linear-gradient(
+      #00b0ff63, 
+      #c8f0ff8a,
+      #c8f0ff14, 
+      rgba(125, 131, 255, 0)
+    ),
+  url('iw-background.jpg');
+  background-size: 120%;
+  background-position: bottom;
+  background-repeat:no-repeat;
+}
+.gm-style-iw {
+  min-width: 150px;
+  max-width: 155px;
+  height: 225px;
 
-
+}
+#infoWindowTitle {
+  color:black;
+  font-size: 1.4em;
+  text-decoration: underline;
+}
+#infoWindowDescription {
+  position: relative;
+  margin: 5px 0;
+}
+p.infoWindow {
+  margin: 5px 0;
+}
+.iw-bold {
+  font-weight: bold;
+}
 /* --------------------------------------- */
 @media only screen and (min-width : 500px) {
   .links {

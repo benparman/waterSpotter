@@ -252,9 +252,9 @@ function addMarkersToMap() {
       infoWindowContent:
       `<infoWindowContent class = "windowWrapper">
           <h2 class = "infoWindow" id = "infoWindowTitle">${location.title}</h2>
-          <h4 class = "infoWindow" id = "infoWindowDescription">Description: ${location.description}</h4>
-          <p class = "infoWindow" id = "infoWindowContributor">Contributor: ${location.contributor}</p>
-          <p class = "infoWindow" id = "infoWindowType">Type: ${location.type}</p>
+          <h3 class = "infoWindow" id = "infoWindowDescription">Description: ${location.description}</h4>
+          <p class = "infoWindow" id = "infoWindowContributor"><span class = "iw-bold">Contributor:</span> ${location.contributor}</p>
+          <p class = "infoWindow" id = "infoWindowType"><span class = "iw-bold">Type:</span> ${location.type}</p>
           ${deleteLocationButton} ${editLocationButton}
         </infoWindowContent>`
     });
