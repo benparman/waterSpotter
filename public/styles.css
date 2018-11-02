@@ -107,7 +107,7 @@ button {
 #map > div > div > div:nth-child(1) > 
 div:nth-child(3) > div > div:nth-child(4) > 
 div > div:nth-child(1) > div:nth-child(4) {
-  border: 2px solid #7cc3dd;
+  border: 2px solid rgb(184, 221, 238);
   border-radius: 15px !important;
   background:
   linear-gradient(
@@ -121,11 +121,32 @@ div > div:nth-child(1) > div:nth-child(4) {
   background-position: bottom;
   background-repeat:no-repeat;
 }
+
+#map > div > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div {
+  background-color: rgb(184, 221, 238) !important;
+  box-shadow: rgb(58, 110, 136) -3px 3px 6px 0px !important;
+}
+#map > div > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div {
+  background-color: rgb(184, 221, 238) !important;
+  box-shadow: rgb(58, 110, 136) 3px 3px 6px 0px !important;
+}
+#map > div > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1) > div:nth-child(2) {
+  background-color: rgb(58, 110, 136) !important;
+}
+#map > div > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(4) > div > button {
+  box-shadow: none !important;
+}
+
 .gm-style-iw {
   min-width: 150px;
   max-width: 155px;
   height: 225px;
-
+}
+#map > div > div > div:nth-child(1) > div:nth-child(3) > div > div:nth-child(4) > div > div:nth-child(1) > div:nth-child(2) {
+  background-color: rgb(255, 0, 0);
+  box-shadow: rgba(0, 0, 0, 0) 0px 1px 0px -1px !important;
+  border-radius: 15px !important;
+  box-shadow: rgb(58, 110, 136) 0px 0px 6px 4px !important;
 }
 #infoWindowTitle {
   color:black;
