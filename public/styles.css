@@ -107,7 +107,7 @@ button {
 #map > div > div > div:nth-child(1) > 
 div:nth-child(3) > div > div:nth-child(4) > 
 div > div:nth-child(1) > div:nth-child(4) {
-  border: 2px solid rgb(184, 221, 238);
+  border: 1px solid rgb(183, 221, 239);
   border-radius: 15px !important;
   background:
   linear-gradient(
