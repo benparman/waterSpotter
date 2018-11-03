@@ -82,11 +82,15 @@ button {
   padding: 1px;
   text-align: center;
 }
-.headerThree button {
+/* .headerThree button {
+  margin: 5px auto;
+} */
+.searchTerms {
   margin: 5px auto;
 }
 .postLocation {
   display: none;
+  margin-left: 15px;
 }
 
 .userField {

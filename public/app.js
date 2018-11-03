@@ -309,6 +309,7 @@ function addNewMarker() {
             </select>
             <button id = "postButton">Post New Location!</button>
           </form>
+          <button id = "cancel">Cancel</button>
         </fieldset>
       </section>
     </infoWindowContent>`
@@ -513,39 +514,40 @@ function updateLocation(authToken, id, title, description, type){
 checkLoginStatus();  // This needs to run before page load to set STATE.loginstatus
 $(window).on('load', function() {
 
-  $('.postLocation').click(function(){
-    $('.headerThree').html(`<div class="headerContentContainer">
-    <button class="postButton">Add Marker</button>
-    <button class="cancelButton">Cancel</button>
-  </div>`)
-  })
+  // $('.postLocation').click(function(){
+  //   $('.headerThree').html(`<div class="headerContentContainer">
+  //   <button class="postButton">Add Marker</button>
+  //   <button class="cancelButton">Cancel</button>
+  // </div>`)
+  // })
 
-  $('.headerThree').on('click', '.cancelButton', function(event){
-    event.preventDefault();
-    $('.headerThree').html(`<div class="headerContentContainer">
-    <form class = "searchLocation">
-      <input name="searchTerms" aria-label="search-here" type="text" class="searchTerms" placeholder="Location?" required="">
-      <button aria-label="submit-button" id="js-location-submit-button" type="submit">Go!</button>
-      <button aria-label="myLocation-button" id="myLocation-button" type="submit">Use my location!</button>
-    </form>
-  </div>`)
-  })
+  // $('.headerThree').on('click', '.cancelButton', function(event){
+  //   event.preventDefault();
+  //   $('.headerThree').html(`<div class="headerContentContainer">
+  //   <form class = "searchLocation">
+  //     <input name="searchTerms" aria-label="search-here" type="text" class="searchTerms" placeholder="Location?" required="">
+  //     <button aria-label="submit-button" id="js-location-submit-button" type="submit">Go!</button>
+  //     <button aria-label="myLocation-button" id="myLocation-button" type="button">Use my location!</button>
+  //   </form>
+  // </div>`)
+  // })
 
 
   getServerData()
     .then(
       initMap,
-      $('.searchLocation').submit(event => {
+      $('.headerThree').on('submit', '.searchLocation', event => {
         event.preventDefault();
         geoCodeLocation($('.searchTerms').val(), STATE.markerLocations);
       })
     );
-  $('#myLocation-button').click(event =>{
+
+    $('.headerThree').on('click', '#myLocation-button', event => {
     event.preventDefault();
-    getLocation()
-      .then(function(){
-        STATE.map.panTo(STATE.current.location);
-      });
+      getLocation()
+        .then(function(){
+          STATE.map.panTo(STATE.current.location);
+        });
   });
   $('#signupForm').submit(event => {
     event.preventDefault();
@@ -570,9 +572,15 @@ $(window).on('load', function() {
       sessionStorage.removeItem('currentUser');
     }
   });
-  $('.postButton').click(function(){
+  $('.headerThree').on('click', '.postLocation', event => {
+    event.preventDefault();
     addNewMarker(STATE.map);
   });
+  $('#map').on('click', '#cancel', function(event) {
+    event.preventDefault();
+    STATE.current.infoWindow.close();
+    resetCurrent();
+  })
   $('#map').on('submit', '#newMarker', event => {
     event.preventDefault();
     if ($('#newMarkerTitle').val().length > 0) {
