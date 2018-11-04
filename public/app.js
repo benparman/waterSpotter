@@ -123,14 +123,33 @@ function initMap() {
           ]
       },
       {
-          "featureType": "poi",
-          "elementType": "geometry.fill",
-          "stylers": [
-              {
-                  "color": "#8d867c"
-              }
-          ]
-      },
+        "featureType": "transit",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "all",
+      "stylers": [
+          {
+              "visibility": "off"
+          }
+      ]
+  },
+      // {
+      //     "featureType": "poi",
+      //     "elementType": "geometry.fill",
+      //     "stylers": [
+      //         {
+      //             "color": "#8d867c",
+      //             "visibility": "off"
+      //         }
+      //     ]
+      // },
       {
           "featureType": "road.highway",
           "elementType": "geometry.fill",
