@@ -80,7 +80,7 @@ button {
   width: 100px;
   padding: 0;
 }
-.user-form {
+.login-form, .signup-form {
   padding: 1px;
   text-align: center;
   width: 250px;
@@ -94,9 +94,9 @@ button {
   z-index: 1;
   background-color: #333a3d;
 }
-.js-user-form {
+/* .js-user-form {
   display: none;
-}
+} */
 /* .headerThree button {
   margin: 5px auto;
 } */

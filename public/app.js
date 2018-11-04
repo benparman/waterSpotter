@@ -25,7 +25,7 @@ function checkLoginStatus() {
   else {
     STATE.loginStatus = false;
     console.log('User Logged In: ', STATE.loginStatus);
-    $('.loginStatus').html('<a href = "login.html">Log In</a>');
+    $('.loginStatus').html('<a class="showLoginForm" href="#">Log In</a>');
     $('.postLocation').hide();
     $('.signup').show();
     $('.loginPageOnly').hide();
@@ -533,19 +533,43 @@ $(window).on('load', function() {
 
 $('.signup').on('click', function(event) {
   event.preventDefault();
+  $('.js-user-form').html(
+    `<form class="signup-form" id="signupForm">
+    <input type="text" class="userField" id="signup-username" placeholder="Username">
+    <input type="text" class="userField" id="signup-firstName" placeholder="First Name">
+    <input type="text" class="userField" id="signup-lastName" placeholder="Last Name">
+    <input type="password" class="userField" id="signup-password" placeholder="Password">
+    <button class="userField" type = "submit">Sign Up</button>
+    <button class="close-logIn-signIn-form" type = "button">Cancel</button>
+    </form>`
+    )
   $('.js-user-form').show();
   $('#map').css('opacity', .5);
-
 });
 
-$('.closeSignupForm').on('click', function(event) {
+$('.showLoginForm').on('click', function(event) {
+  event.preventDefault();
+  $('.js-user-form').html(
+    `<form class="login-form">
+      <input type="text" class="userField" id="loginUser" placeholder="Username or Email">
+      <input type="password" class="userField" id="loginPassword" placeholder="Password">
+      <button class="userField" type="submit">Log In</button>
+      <button class="close-logIn-signIn-form" type = "button">Cancel</button>
+    </form>`
+  )
+  $('.js-user-form').show();
+  $('#map').css('opacity', .5);
+})
+
+$('.js-user-form').on('click', '.close-logIn-signIn-form',function(event) {
   event.preventDefault();
   $('.js-user-form').hide();
   $('#map').css('opacity', 1);
 })
 
-  $('#signupForm').submit(event => {
+  $('.js-user-form').on('submit', '.signup-form', event => {
     event.preventDefault();
+    console.log('572 works');
     registerUser(
       $('#signup-username').val(),
       $('#signup-firstName').val(),
@@ -553,7 +577,7 @@ $('.closeSignupForm').on('click', function(event) {
       $('#signup-password').val()
     );
   });
-  $('.login-form').submit(event => {
+  $('.js-user-form').on('submit', '.login-form', event => {
     event.preventDefault();
     loginUser(
       $('#loginUser').val(),
