@@ -374,6 +374,10 @@ function registerUser(username, firsName, lastName, password) {
     }),
     success: function() {
       console.log(`The user "${username}" was successfully added to the database`);
+      $('.loginStatus').show();
+      $('.js-user-form').hide();
+      $('#map').css('pointer-events', 'auto');
+      $('#map').css('opacity', 1);
     },
     error: function() {
       console.log(`ERROR! The user "${username}" was NOT added to the database!`);
@@ -406,6 +410,7 @@ function loginUser(username, password) {
       alert('Incorrect username and/or password!');
     }
   };
+  checkLoginStatus();
   return $.ajax(settings);
 }
 //----------- get protected data -----------
@@ -593,7 +598,6 @@ $('.js-user-form').on('click', '.close-logIn-signIn-form',function(event) {
 
   $('.js-user-form').on('submit', '.signup-form', event => {
     event.preventDefault();
-    console.log('572 works');
     registerUser(
       $('#signup-username').val(),
       $('#signup-firstName').val(),
