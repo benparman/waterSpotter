@@ -514,25 +514,6 @@ function updateLocation(authToken, id, title, description, type){
 checkLoginStatus();  // This needs to run before page load to set STATE.loginstatus
 $(window).on('load', function() {
 
-  // $('.postLocation').click(function(){
-  //   $('.headerThree').html(`<div class="headerContentContainer">
-  //   <button class="postButton">Add Marker</button>
-  //   <button class="cancelButton">Cancel</button>
-  // </div>`)
-  // })
-
-  // $('.headerThree').on('click', '.cancelButton', function(event){
-  //   event.preventDefault();
-  //   $('.headerThree').html(`<div class="headerContentContainer">
-  //   <form class = "searchLocation">
-  //     <input name="searchTerms" aria-label="search-here" type="text" class="searchTerms" placeholder="Location?" required="">
-  //     <button aria-label="submit-button" id="js-location-submit-button" type="submit">Go!</button>
-  //     <button aria-label="myLocation-button" id="myLocation-button" type="button">Use my location!</button>
-  //   </form>
-  // </div>`)
-  // })
-
-
   getServerData()
     .then(
       initMap,
@@ -549,6 +530,20 @@ $(window).on('load', function() {
           STATE.map.panTo(STATE.current.location);
         });
   });
+
+$('.signup').on('click', function(event) {
+  event.preventDefault();
+  $('.js-user-form').show();
+  $('#map').css('opacity', .5);
+
+});
+
+$('.closeSignupForm').on('click', function(event) {
+  event.preventDefault();
+  $('.js-user-form').hide();
+  $('#map').css('opacity', 1);
+})
+
   $('#signupForm').submit(event => {
     event.preventDefault();
     registerUser(
