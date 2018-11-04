@@ -86,7 +86,7 @@ button {
   width: 250px;
   border: 4px solid #eaeaea;
   border-radius: 15px;
-  margin: 15% auto;
+  margin: 5% auto;
   padding: 30px;
   left: 0;
   right: 0;
@@ -124,6 +124,7 @@ button {
   max-width: 1920px;
   min-width: 124px;
   margin: auto;
+  pointer-events: auto;
  }
  
 /* ------- Google Map Components ------- */

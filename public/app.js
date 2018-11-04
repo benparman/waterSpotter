@@ -18,7 +18,7 @@ function checkLoginStatus() {
   if (sessionStorage.currentUser) {
     STATE.loginStatus = true;
     console.log('User Logged In: ', STATE.loginStatus);
-    $('.loginStatus').html('<a href = "">Log Out</a>');
+    $('.loginStatus').html('<a class = "logoutButton" href = "">Log Out</a>');
     $('.postLocation').show();
     $('.signup').hide();
   }
@@ -378,7 +378,9 @@ function loginUser(username, password) {
       sessionStorage.accessToken = res.authToken;
       sessionStorage.currentUser = username;
       $('.loginStatus').show();
-      window.location.replace('index.html');
+      $('.js-user-form').hide();
+      $('#map').css('pointer-events', 'auto');
+      $('#map').css('opacity', 1);
     },
     error: function() {
       console.log('Login Failed!');
@@ -531,7 +533,7 @@ $(window).on('load', function() {
         });
   });
 
-$('.signup').on('click', function(event) {
+$('.links').on('click', '.signup', function(event) {
   event.preventDefault();
   $('.js-user-form').html(
     `<form class="signup-form" id="signupForm">
@@ -544,10 +546,11 @@ $('.signup').on('click', function(event) {
     </form>`
     )
   $('.js-user-form').show();
-  $('#map').css('opacity', .5);
+  $('#map').css('opacity', .4);
+  $('#map').css('pointer-events', 'none');
 });
 
-$('.showLoginForm').on('click', function(event) {
+$('.links').on('click', '.showLoginForm', function(event) {
   event.preventDefault();
   $('.js-user-form').html(
     `<form class="login-form">
@@ -558,13 +561,15 @@ $('.showLoginForm').on('click', function(event) {
     </form>`
   )
   $('.js-user-form').show();
-  $('#map').css('opacity', .5);
+  $('#map').css('opacity', .4);
+  $('#map').css('pointer-events', 'none');
 })
 
 $('.js-user-form').on('click', '.close-logIn-signIn-form',function(event) {
   event.preventDefault();
   $('.js-user-form').hide();
   $('#map').css('opacity', 1);
+  $('#map').css('pointer-events', 'auto');
 })
 
   $('.js-user-form').on('submit', '.signup-form', event => {
@@ -585,11 +590,14 @@ $('.js-user-form').on('click', '.close-logIn-signIn-form',function(event) {
     )
       .then(checkLoginStatus); 
   });
-  $('.loginStatus').click(function(){
+  $('.links').on('click', '.logoutButton', function(event){
+    event.preventDefault();
     if (sessionStorage.currentUser) {
       sessionStorage.removeItem('accessToken');
       sessionStorage.removeItem('currentUser');
     }
+    $('.postLocation').hide();
+    checkLoginStatus();
   });
   $('.headerThree').on('click', '.postLocation', event => {
     event.preventDefault();
