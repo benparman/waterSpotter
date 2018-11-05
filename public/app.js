@@ -375,9 +375,13 @@ function registerUser(username, firsName, lastName, password) {
     success: function() {
       console.log(`The user "${username}" was successfully added to the database`);
       $('.loginStatus').show();
-      $('.js-user-form').hide();
-      $('#map').css('pointer-events', 'auto');
-      $('#map').css('opacity', 1);
+      // $('.js-user-form').hide();
+      // $('.signup-form').hide();
+      $('.signup-form').html(
+        `<p class="signupMessage">Success!  You may now log in as "${username}"</p>
+        <button class="dismiss">Dismiss</button>`)
+      // $('#map').css('pointer-events', 'auto');
+      // $('#map').css('opacity', 1);
     },
     error: function(res) {
       $('.signupMessage').html(`${res.responseJSON.location} ${res.responseJSON.message}`);
@@ -610,6 +614,13 @@ $('.js-user-form').on('click', '.close-logIn-signIn-form',function(event) {
       $('#signup-password').val()
     );
   });
+  $('.js-user-form').on('click', '.dismiss', function(event) {
+    event.preventDefault();
+    $('.js-user-form').hide();
+      // $('.signup-form').hide();
+      $('#map').css('pointer-events', 'auto');
+      $('#map').css('opacity', 1);
+  })
   $('.js-user-form').on('submit', '.login-form', event => {
     event.preventDefault();
     loginUser(
