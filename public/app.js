@@ -379,7 +379,9 @@ function registerUser(username, firsName, lastName, password) {
       $('#map').css('pointer-events', 'auto');
       $('#map').css('opacity', 1);
     },
-    error: function() {
+    error: function(res) {
+      $('.signupMessage').html(`${res.responseJSON.location} ${res.responseJSON.message}`);
+      console.log('server respons line 383 app.js: ', res.responseJSON);
       console.log(`ERROR! The user "${username}" was NOT added to the database!`);
     }
   };
@@ -405,9 +407,10 @@ function loginUser(username, password) {
       $('#map').css('pointer-events', 'auto');
       $('#map').css('opacity', 1);
     },
-    error: function() {
+    error: function(res) {
+      console.log(res);
       console.log('Login Failed!');
-      alert('Incorrect username and/or password!');
+      $('.loginMessage').html('Incorrect username or password.')
     }
   };
   checkLoginStatus();
@@ -567,6 +570,7 @@ $('.links').on('click', '.signup', function(event) {
     <input type="password" class="userField" id="signup-password" placeholder="Password">
     <button class="userField" type = "submit">Sign Up</button>
     <button class="close-logIn-signIn-form" type = "button">Cancel</button>
+    <p class="signupMessage"></p>
     </form>`
     )
   $('.js-user-form').show();
@@ -582,6 +586,7 @@ $('.links').on('click', '.showLoginForm', function(event) {
       <input type="password" class="userField" id="loginPassword" placeholder="Password">
       <button class="userField" type="submit">Log In</button>
       <button class="close-logIn-signIn-form" type = "button">Cancel</button>
+      <p class="loginMessage"></p>
     </form>`
   )
   $('.js-user-form').show();

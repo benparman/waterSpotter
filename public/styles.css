@@ -94,6 +94,10 @@ button {
   z-index: 1;
   background-color: #333a3d;
 }
+.loginMessage, .signupMessage {
+  color: yellow;
+}
+
 /* .js-user-form {
   display: none;
 } */
