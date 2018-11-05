@@ -549,63 +549,61 @@ function updateLocation(authToken, id, title, description, type){
 checkLoginStatus();  // This needs to run before page load to set STATE.loginstatus
 $(window).on('load', function() {
 
-  getServerData()
-    .then(
-      initMap,
-      $('.headerThree').on('submit', '.searchLocation', event => {
-        event.preventDefault();
-        geoCodeLocation($('.searchTerms').val(), STATE.markerLocations);
-      })
-    );
+  getServerData().then(initMap);
 
-    $('.headerThree').on('click', '#myLocation-button', event => {
+  $('header').on('submit', '.searchLocation', event => {
     event.preventDefault();
-      getLocation()
-        .then(function(){
-          STATE.map.panTo(STATE.current.location);
-        });
+    geoCodeLocation($('.searchTerms').val(), STATE.markerLocations);
+  })
+
+  $('header').on('click', '#myLocation-button', event => {
+  event.preventDefault();
+    getLocation()
+      .then(function(){
+        STATE.map.panTo(STATE.current.location);
+      });
   });
 
-$('.links').on('click', '.signup', function(event) {
-  event.preventDefault();
-  $('.js-user-form').html(
-    `<form class="signup-form" id="signupForm">
-    <input type="text" class="userField" id="signup-username" placeholder="Username">
-    <input type="text" class="userField" id="signup-firstName" placeholder="First Name">
-    <input type="text" class="userField" id="signup-lastName" placeholder="Last Name">
-    <input type="password" class="userField" id="signup-password" placeholder="Password">
-    <button class="userField" type = "submit">Sign Up</button>
-    <button class="close-logIn-signIn-form" type = "button">Cancel</button>
-    <p class="signupMessage"></p>
-    </form>`
-    )
-  $('.js-user-form').show();
-  $('#map').css('opacity', .4);
-  $('#map').css('pointer-events', 'none');
-});
-
-$('.links').on('click', '.showLoginForm', function(event) {
-  event.preventDefault();
-  $('.js-user-form').html(
-    `<form class="login-form">
-      <input type="text" class="userField" id="loginUser" placeholder="Username or Email">
-      <input type="password" class="userField" id="loginPassword" placeholder="Password">
-      <button class="userField" type="submit">Log In</button>
+  $('.links').on('click', '.signup', function(event) {
+    event.preventDefault();
+    $('.js-user-form').html(
+      `<form class="signup-form" id="signupForm">
+      <input type="text" class="userField" id="signup-username" placeholder="Username">
+      <input type="text" class="userField" id="signup-firstName" placeholder="First Name">
+      <input type="text" class="userField" id="signup-lastName" placeholder="Last Name">
+      <input type="password" class="userField" id="signup-password" placeholder="Password">
+      <button class="userField" type = "submit">Sign Up</button>
       <button class="close-logIn-signIn-form" type = "button">Cancel</button>
-      <p class="loginMessage"></p>
-    </form>`
-  )
-  $('.js-user-form').show();
-  $('#map').css('opacity', .4);
-  $('#map').css('pointer-events', 'none');
-})
+      <p class="signupMessage"></p>
+      </form>`
+      )
+    $('.js-user-form').show();
+    $('#map').css('opacity', .4);
+    $('#map').css('pointer-events', 'none');
+  });
 
-$('.js-user-form').on('click', '.close-logIn-signIn-form',function(event) {
-  event.preventDefault();
-  $('.js-user-form').hide();
-  $('#map').css('opacity', 1);
-  $('#map').css('pointer-events', 'auto');
-})
+  $('.links').on('click', '.showLoginForm', function(event) {
+    event.preventDefault();
+    $('.js-user-form').html(
+      `<form class="login-form">
+        <input type="text" class="userField" id="loginUser" placeholder="Username or Email">
+        <input type="password" class="userField" id="loginPassword" placeholder="Password">
+        <button class="userField" type="submit">Log In</button>
+        <button class="close-logIn-signIn-form" type = "button">Cancel</button>
+        <p class="loginMessage"></p>
+      </form>`
+    )
+    $('.js-user-form').show();
+    $('#map').css('opacity', .4);
+    $('#map').css('pointer-events', 'none');
+  })
+
+  $('.js-user-form').on('click', '.close-logIn-signIn-form',function(event) {
+    event.preventDefault();
+    $('.js-user-form').hide();
+    $('#map').css('opacity', 1);
+    $('#map').css('pointer-events', 'auto');
+  })
 
   $('.js-user-form').on('submit', '.signup-form', event => {
     event.preventDefault();
@@ -640,7 +638,7 @@ $('.js-user-form').on('click', '.close-logIn-signIn-form',function(event) {
     $('.postLocation').hide();
     checkLoginStatus();
   });
-  $('.headerThree').on('click', '.postLocation', event => {
+  $('header').on('click', '.postLocation', event => {
     event.preventDefault();
     addNewMarker(STATE.map);
   });
@@ -748,5 +746,4 @@ $('.js-user-form').on('click', '.close-logIn-signIn-form',function(event) {
     $('#map').height(newMapHeight);
     $('body').height('100vh');
   });
-
 });
