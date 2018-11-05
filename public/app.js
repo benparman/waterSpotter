@@ -18,6 +18,7 @@ function checkLoginStatus() {
   if (sessionStorage.currentUser) {
     STATE.loginStatus = true;
     console.log('User Logged In: ', STATE.loginStatus);
+    $('.welcomeUser').html(`Hi, ${sessionStorage.currentUser}!`)
     $('.loginStatus').html('<a class = "logoutButton" href = "">Log Out</a>');
     $('.postLocation').show();
     $('.signup').hide();
@@ -25,6 +26,7 @@ function checkLoginStatus() {
   else {
     STATE.loginStatus = false;
     console.log('User Logged In: ', STATE.loginStatus);
+    $('.welcomeUser').html('');
     $('.loginStatus').html('<a class="showLoginForm" href="#">Log In</a>');
     $('.postLocation').hide();
     $('.signup').show();

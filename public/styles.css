@@ -13,6 +13,7 @@ body {
   background-position: center;
   position: relative;
   z-index: -1;
+  font-family: roboto, sans-serif;
 }
 main {
   position: absolute;
@@ -24,13 +25,14 @@ h1 {
   font-size: 22px;
 }
 h2 {
-  font-size: 14px
+  font-size: 10px;
+  font-weight: normal;
 }
 h3 {
   font-size: 14px
 }
 header {
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
 }
 header h1, h2 {
   display: inline-block;
@@ -72,9 +74,15 @@ button {
   text-decoration: none;
   color: #00c1ff;
 }
-.searchLocation {
-  /* text-align: center; */
-  /* padding: 5px; */
+.welcomeUser {
+  color: #00c0ff;
+  /* font-family: 'Oswald', sans-serif; */
+  font-size: 12px;
+  font-style: italic;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+
 }
 .searchLocation input {
   width: 100px;
@@ -202,6 +210,9 @@ p.infoWindow {
   }
   .headerThree {
     background-color: rgba(0, 0, 0, 0.72);
+  }
+  .welcomeUser {
+    position: static;
   }
 }
 @media only screen and (min-width : 1920px) {
