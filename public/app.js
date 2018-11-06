@@ -736,8 +736,11 @@ $(window).on('load', function() {
 
   //----------- Set and resize map height -----------
   let headerHeight = $('header').height();
-  let borderWidth = parseInt($('#map').css('border-width'), 10) * 2;
+  console.log(headerHeight);
+  let borderWidth = parseInt($('#map').css('border-width'), 10) * 4;
+  console.log(borderWidth);
   let newMapHeight = $(window).height() - headerHeight - borderWidth;
+  console.log(newMapHeight);
   $('body').height('100vh');
   $('#map').height(newMapHeight);
   $(window).resize(function(){
