@@ -254,8 +254,8 @@ function addMarkersToMap() {
     let deleteLocationButton = '';
     let editLocationButton = '';
     if (sessionStorage.currentUser === location.contributor) {
-      deleteLocationButton = '<button id = "deleteButton">Delete this location.</button>';
-      editLocationButton = '<button class = "editButton">Edit this location.</button>';
+      deleteLocationButton = '<button class="iw-button" id="deleteButton">Delete this location.</button>';
+      editLocationButton = '<button class="iw-button" id="editButton">Edit this location.</button>';
     }
     const marker = new google.maps.Marker({
       position: {
@@ -273,10 +273,12 @@ function addMarkersToMap() {
       infoWindowContent:
       `<infoWindowContent class = "windowWrapper">
           <h2 class = "infoWindow" id = "infoWindowTitle">${location.title}</h2>
-          <h3 class = "infoWindow" id = "infoWindowDescription">Description: ${location.description}</h4>
+          <p class = "infoWindow" id = "infoWindowDescription"><span class = "iw-bold">Description:</span>  ${location.description}</p>
           <p class = "infoWindow" id = "infoWindowContributor"><span class = "iw-bold">Contributor:</span> ${location.contributor}</p>
           <p class = "infoWindow" id = "infoWindowType"><span class = "iw-bold">Type:</span> ${location.type}</p>
-          ${deleteLocationButton} ${editLocationButton}
+            <div class = "iw-edit-button">
+              ${deleteLocationButton} ${editLocationButton}
+            </div>
         </infoWindowContent>`
     });
     let infowindow=new google.maps.InfoWindow({
@@ -311,12 +313,11 @@ function addNewMarker() {
     draggable: true,
     icon: 'marker_red+.png',
     new: true,
-    animation: google.maps.Animation.BOUNCE,
     infoWindowContent:
     `<infoWindowContent class = "windowWrapper">
       <section class = "newMarker">
-        <fieldset class = "newMarker">
-          <form id = "newMarker">
+
+          <form class = "newMarker" id = "newMarker">
             <p class = newMarkerCoords></p>
             <input type = "text" id = "newMarkerTitle" name = "newTitle" placeholder = "Title...">
             <input type = "text" id = "newMarkerDescription" name = "newDescription" placeholder = "Description...">
@@ -328,10 +329,10 @@ function addNewMarker() {
               <option value = "Sink">Sink</option>
               <option value = "Filtering Location (ie stream)">Filtering Location (i.e. stream)</option>
             </select>
-            <button id = "postButton">Post New Location!</button>
+            <button id = "postButton" type = "submit">Post New Location!</button>
           </form>
           <button id = "cancel">Cancel</button>
-        </fieldset>
+
       </section>
     </infoWindowContent>`
   });
@@ -349,13 +350,9 @@ function addNewMarker() {
     STATE.current.infoWindow=infowindow;
   });
   STATE.current.marker.setMap(STATE.map);
-  $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.current.marker.position.lat()}, 
-  ${STATE.current.marker.position.lng()}`);
   google.maps.event.addListener(STATE.current.marker,'drag',function() {
     STATE.current.marker.lat = STATE.current.marker.position.lat();
     STATE.current.marker.lng = STATE.current.marker.position.lng();
-    $('.newMarkerCoords').text(`New Marker Coordinates: ${STATE.current.marker.position.lat()}, 
-    ${STATE.current.marker.position.lng()}`);
   });
   infowindow.addListener('closeclick', function() {
     resetCurrent();
