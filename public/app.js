@@ -684,18 +684,15 @@ $(window).on('load', function() {
     event.preventDefault();
     let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
     console.log(originalTitle);
-    let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
+    let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(43, document.getElementById('infoWindowDescription').innerHTML.length);
     let windowContent = {
       content: `
       <div class = "windowWrapper">
         <section class = "editMarker">
             <form class = "editForm">
-              <p class = editMarkerCoords></p>
-              <input type = "text" id = "editMarkerTitle" name = "newTitle" placeholder = "${originalTitle}">
-              <input type = "text" id = "editMarkerDescription" name = "newDescription" placeholder = "${originalDescription}">
-              <select type = "text" id = "editMarkerType" name = "newType">
-                ${optionGenerator()}
-              </select>
+              <input type = "text" class = "editMarkerField" id = "editMarkerTitle" name = "newTitle" placeholder = "${originalTitle}">
+              <input type = "text" class = "editMarkerField" id = "editMarkerDescription" name = "newDescription" placeholder = "${originalDescription}">
+              <select type = "text" class = "editMarkerField" id = "editMarkerType" name = "newType">${optionGenerator()}</select>
               <button class = "submitChanges">Submit</button>
             </form>
         </section>
