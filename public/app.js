@@ -566,7 +566,8 @@ $(window).on('load', function() {
       $('#loginUser').val(),
       $('#loginPassword').val()
     )
-      .then(checkLoginStatus,
+      .then(
+        checkLoginStatus,
         getServerData().then(addMarkersToMap)
       ); 
   });
