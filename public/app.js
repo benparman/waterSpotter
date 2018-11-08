@@ -17,8 +17,8 @@ const STATE = {
 function checkLoginStatus() {
   if (sessionStorage.currentUser) {
     STATE.loginStatus = true;
-    console.log('User Logged In: ', STATE.loginStatus);
-    $('.welcomeUser').html(`Hi, ${sessionStorage.currentUser}!`)
+    console.log('User Logged In: ', STATE.loginStatus, `"${sessionStorage.currentUser}"`);
+    $('.welcomeUser').html(`Hi, ${sessionStorage.currentUser}!`);
     $('.loginStatus').html('<a class = "logoutButton" href = "">Log Out</a>');
     $('.postLocation').show();
     $('.signup').hide();
@@ -554,13 +554,35 @@ $(window).on('load', function() {
   })
 
   $('header').on('click', '#myLocation-button', event => {
-  event.preventDefault();
+    event.preventDefault();
     getLocation()
       .then(function(){
         STATE.map.panTo(STATE.current.location);
       });
   });
-
+  $('.js-user-form').on('submit', '.login-form', event => {
+    event.preventDefault();
+    loginUser(
+      $('#loginUser').val(),
+      $('#loginPassword').val()
+    )
+      .then(checkLoginStatus,
+        getServerData().then(addMarkersToMap)
+      ); 
+  });
+  $('.links').on('click', '.logoutButton', function(event){
+    event.preventDefault();
+    if (sessionStorage.currentUser) {
+      sessionStorage.removeItem('accessToken');
+      sessionStorage.removeItem('currentUser');
+    }
+    $('.postLocation').hide();
+    resetCurrent();
+    checkLoginStatus();
+    getServerData().then(
+      addMarkersToMap
+    );
+  });
   $('.links').on('click', '.signup', function(event) {
     event.preventDefault();
     $('.js-user-form').html(
@@ -573,7 +595,7 @@ $(window).on('load', function() {
       <button class="close-logIn-signIn-form" type = "button">Cancel</button>
       <p class="signupMessage"></p>
       </form>`
-      )
+    )
     $('.js-user-form').show();
     $('#map').css('opacity', .4);
     $('#map').css('pointer-events', 'none');
@@ -614,30 +636,8 @@ $(window).on('load', function() {
   $('.js-user-form').on('click', '.dismiss', function(event) {
     event.preventDefault();
     $('.js-user-form').hide();
-      // $('.signup-form').hide();
-      $('#map').css('pointer-events', 'auto');
-      $('#map').css('opacity', 1);
-  })
-  $('.js-user-form').on('submit', '.login-form', event => {
-    event.preventDefault();
-    loginUser(
-      $('#loginUser').val(),
-      $('#loginPassword').val()
-    )
-      .then(
-        checkLoginStatus,
-        getServerData().then(initMap)
-      ); 
-  });
-  $('.links').on('click', '.logoutButton', function(event){
-    event.preventDefault();
-    if (sessionStorage.currentUser) {
-      sessionStorage.removeItem('accessToken');
-      sessionStorage.removeItem('currentUser');
-    }
-    $('.postLocation').hide();
-    checkLoginStatus();
-    getServerData().then(initMap);
+    $('#map').css('pointer-events', 'auto');
+    $('#map').css('opacity', 1);
   });
   $('header').on('click', '.postLocation', event => {
     event.preventDefault();
