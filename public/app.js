@@ -15,24 +15,50 @@ const STATE = {
 };
 //--------- Set STATE.loginStatus -------
 function checkLoginStatus() {
-  if (sessionStorage.currentUser) {
-    STATE.loginStatus = true;
-    console.log('User Logged In: ', STATE.loginStatus, `"${sessionStorage.currentUser}"`);
-    $('.welcomeUser').html(`Hi, ${sessionStorage.currentUser}!`);
-    $('.loginStatus').html('<a class = "logoutButton" href = "">Log Out</a>');
-    $('.postLocation').show();
-    $('.signup').hide();
-  }
-  else {
-    STATE.loginStatus = false;
-    console.log('User Logged In: ', STATE.loginStatus);
-    $('.welcomeUser').html('');
-    $('.loginStatus').html('<a class="showLoginForm" href="#">Log In</a>');
-    $('.postLocation').hide();
-    $('.signup').show();
-    $('.loginPageOnly').hide();
-  }
+  return new Promise(function(resolve, reject) {
+    if (sessionStorage.currentUser) {
+      resolve(
+        STATE.loginStatus = true,
+        console.log('User Logged In: ', STATE.loginStatus, `"${sessionStorage.currentUser}"`),
+        $('.welcomeUser').html(`Hi, ${sessionStorage.currentUser}!`),
+        $('.loginStatus').html('<a class = "logoutButton" href = "">Log Out</a>'),
+        $('.postLocation').show(),
+        $('.signup').hide()
+      );
+    }
+    else {
+      reject(
+        STATE.loginStatus = false,
+        console.log('User Logged In: ', STATE.loginStatus),
+        $('.welcomeUser').html(''),
+        $('.loginStatus').html('<a class="showLoginForm" href="#">Log In</a>'),
+        $('.postLocation').hide(),
+        $('.signup').show(),
+        $('.loginPageOnly').hide()
+      );
+    }
+  });
 }
+
+// function checkLoginStatus() {
+//   if (sessionStorage.currentUser) {
+//     STATE.loginStatus = true;
+//     console.log('User Logged In: ', STATE.loginStatus, `"${sessionStorage.currentUser}"`);
+//     $('.welcomeUser').html(`Hi, ${sessionStorage.currentUser}!`);
+//     $('.loginStatus').html('<a class = "logoutButton" href = "">Log Out</a>');
+//     $('.postLocation').show();
+//     $('.signup').hide();
+//   }
+//   else {
+//     STATE.loginStatus = false;
+//     console.log('User Logged In: ', STATE.loginStatus);
+//     $('.welcomeUser').html('');
+//     $('.loginStatus').html('<a class="showLoginForm" href="#">Log In</a>');
+//     $('.postLocation').hide();
+//     $('.signup').show();
+//     $('.loginPageOnly').hide();
+//   }
+// }
 //---------- Reset State.current --------
 function resetCurrent() {
   console.log('resetcurrent ran');
@@ -378,7 +404,7 @@ function registerUser(username, firsName, lastName, password) {
       // $('.signup-form').hide();
       $('.signup-form').html(
         `<p class="signupMessage">Success!  You may now log in as "${username}"</p>
-        <button class="dismiss">Dismiss</button>`)
+        <button class="dismiss">Dismiss</button>`);
       // $('#map').css('pointer-events', 'auto');
       // $('#map').css('opacity', 1);
     },
@@ -409,6 +435,7 @@ function loginUser(username, password) {
       $('.js-user-form').hide();
       $('#map').css('pointer-events', 'auto');
       $('#map').css('opacity', 1);
+      checkLoginStatus().then(addMarkersToMap());
     },
     error: function(res) {
       console.log(res);
@@ -416,7 +443,7 @@ function loginUser(username, password) {
       $('.loginMessage').html('Incorrect username or password.')
     }
   };
-  checkLoginStatus();
+  // checkLoginStatus();
   return $.ajax(settings);
 }
 //----------- get protected data -----------
@@ -565,11 +592,12 @@ $(window).on('load', function() {
     loginUser(
       $('#loginUser').val(),
       $('#loginPassword').val()
-    )
-      .then(
-        checkLoginStatus,
-        getServerData().then(addMarkersToMap)
-      ); 
+    );
+      // .then(
+      //   checkLoginStatus().then(
+      //     getServerData().then(addMarkersToMap)
+      //   )
+      // );
   });
   $('.links').on('click', '.logoutButton', function(event){
     event.preventDefault();
