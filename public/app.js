@@ -522,7 +522,7 @@ function optionGenerator(origTitle, origDescription, origType) {
 function updateLocation(authToken, id, title, description, type){
   console.log(`Updated Location --- ID: ${id}, TITLE: ${title}, DESCRIPTION: ${description}, TYPE: ${type}`);
   if (id === null || title === null || description === null || type === null) {
-    console.log('ERRROR! All fields must have a value!');
+    console.log('ERROR! All fields must have a value!');
   }
   const settings = {
     url: `api/locations/${id}`,
@@ -654,7 +654,8 @@ $(window).on('load', function() {
     event.preventDefault();
     STATE.current.infoWindow.close();
     resetCurrent();
-  })
+  });
+
   $('#map').on('submit', '#newMarker', event => {
     event.preventDefault();
     if ($('#newMarkerTitle').val().length > 0) {
@@ -665,16 +666,19 @@ $(window).on('load', function() {
         STATE.current.marker.lat,
         STATE.current.marker.lng,
         $('#newMarkerType').val()
-      );
-      STATE.mapMarkers.forEach(function(mapMarker) {
-        mapMarker.setMap();
-      });
-      STATE.mapMarkers = [],
-      getServerData()
-        .then(addMarkersToMap);
-    }
+      )
+        .then(
+          STATE.mapMarkers.forEach(function(mapMarker) {
+            mapMarker.setMap();
+          }),
+          STATE.mapMarkers = [],
+          getServerData()
+            .then(addMarkersToMap)
+        );
+    }      
     resetCurrent();
   });
+
   $('#map').on('click', '#deleteButton',event => {
     event.preventDefault();
     console.log('delete button clicked');
@@ -701,8 +705,8 @@ $(window).on('load', function() {
       <div class = "windowWrapper">
         <section class = "editMarker">
             <form class = "editForm">
-              <input type = "text" class = "editMarkerField" id = "editMarkerTitle" name = "newTitle" placeholder = "${originalTitle}">
-              <input type = "text" class = "editMarkerField" id = "editMarkerDescription" name = "newDescription" placeholder = "${originalDescription}">
+              <input type = "text" class = "editMarkerField" id = "editMarkerTitle" name = "newTitle" val ="${originalTitle}" placeholder = "${originalTitle}">
+              <input type = "text" class = "editMarkerField" id = "editMarkerDescription" name = "newDescription" val = "${originalDescription}" placeholder = "${originalDescription}">
               <select type = "text" class = "editMarkerField" id = "editMarkerType" name = "newType">${optionGenerator()}</select>
               <button class = "submitChanges">Submit</button>
             </form>
@@ -719,6 +723,7 @@ $(window).on('load', function() {
     });
     STATE.current.infoWindow.open(STATE.map, STATE.current.marker);
   });
+
   $('#map').on('submit', '.editMarker', event=> {
     event.preventDefault();
     $('#map').removeClass('editMarker');
@@ -729,12 +734,14 @@ $(window).on('load', function() {
       $('#map #editMarkerDescription').val(), 
       $('#map #editMarkerType').val()
     ).then(
-      resetCurrent,
-      getServerData().then(function(res){
-        console.log('post getServerData response: ',res);
-        addMarkersToMap();
-      })
+      STATE.mapMarkers.forEach(function(mapMarker) {
+        mapMarker.setMap();
+      }),
+      STATE.mapMarkers = [],
+      getServerData()
+        .then(addMarkersToMap)
     );
+    resetCurrent();
   });
 
   //----------- Set and resize map height -----------
