@@ -197,16 +197,19 @@ div > div:nth-child(1) > div:nth-child(4) {
 }
 #infoWindowTitle {
   color:black;
-  font-size: 14px;
+  font-size: 16px;
   font-family: roboto;
-  font-weight: bold;
 }
 #infoWindowDescription {
   position: relative;
   margin: 5px 0;
+  max-height: 68px;
+}
+.windowWrapper {
+  position: static;
 }
 p.infoWindow {
-  margin: 5px 0;
+  font-size: 12px;
 }
 .iw-bold {
   font-weight: bold;

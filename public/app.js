@@ -271,15 +271,15 @@ function addMarkersToMap() {
       icon: generateMarkerIcons(location), //REFERENCE: Icon RGB Value: 0:225:225, or #00e1ff,
       animation: google.maps.Animation.DROP,
       infoWindowContent:
-      `<infoWindowContent class = "windowWrapper">
-          <h2 class = "infoWindow" id = "infoWindowTitle">${location.title}</h2>
-          <p class = "infoWindow" id = "infoWindowDescription"><span class = "iw-bold">Description:</span>  ${location.description}</p>
-          <p class = "infoWindow" id = "infoWindowContributor"><span class = "iw-bold">Contributor:</span> ${location.contributor}</p>
-          <p class = "infoWindow" id = "infoWindowType"><span class = "iw-bold">Type:</span> ${location.type}</p>
-            <div class = "iw-edit-button">
-              ${deleteLocationButton} ${editLocationButton}
-            </div>
-        </infoWindowContent>`
+      `<div class = "windowWrapper">
+        <h2 class="infoWindow" id="infoWindowTitle">${location.title}</h2>
+        <p class="infoWindow" id="infoWindowDescription"><span class="iw-bold">Description:  </span>${location.description}</p>
+        <p class="infoWindow" id="infoWindowContributor"><span class="iw-bold">Contributor:  </span>${location.contributor}</p>
+        <p class="infoWindow" id="infoWindowType"><span class="iw-bold">Type:  </span>${location.type}</p>
+          <div class="iw-edit-button">
+            ${deleteLocationButton} ${editLocationButton}
+          </div>
+        </div>`
     });
     let infowindow=new google.maps.InfoWindow({
       content: marker.infoWindowContent,
@@ -314,7 +314,7 @@ function addNewMarker() {
     icon: 'marker_red+.png',
     new: true,
     infoWindowContent:
-    `<infoWindowContent class = "windowWrapper">
+    `<div class = "windowWrapper">
       <section class = "newMarker">
 
           <form class = "newMarker" id = "newMarker">
@@ -334,7 +334,7 @@ function addNewMarker() {
           <button id = "cancel">Cancel</button>
 
       </section>
-    </infoWindowContent>`
+    </div>`
   });
   let infowindow=new google.maps.InfoWindow({
     content: STATE.current.marker.infoWindowContent,
@@ -680,16 +680,15 @@ $(window).on('load', function() {
           .then(addMarkersToMap);
       }); 
   });
-  $('#map').on('click', '.editButton', event => {
+  $('#map').on('click', '#editButton', event => {
     event.preventDefault();
     let originalTitle = document.getElementById('infoWindowTitle').innerHTML;
     console.log(originalTitle);
     let originalDescription = document.getElementById('infoWindowDescription').innerHTML.slice(13, document.getElementById('infoWindowDescription').innerHTML.length);
     let windowContent = {
       content: `
-      <infoWindowContent class = "windowWrapper">
+      <div class = "windowWrapper">
         <section class = "editMarker">
-          <fieldset class = "editFields">
             <form class = "editForm">
               <p class = editMarkerCoords></p>
               <input type = "text" id = "editMarkerTitle" name = "newTitle" placeholder = "${originalTitle}">
@@ -699,9 +698,8 @@ $(window).on('load', function() {
               </select>
               <button class = "submitChanges">Submit</button>
             </form>
-          </fieldset>
         </section>
-      </infowindowContent>
+      </div>
     `
     };
     STATE.current.infoWindow.close();
