@@ -15,7 +15,7 @@ const STATE = {
 };
 //--------- Set STATE.loginStatus -------
 function checkLoginStatus() {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function(resolve) {
     if (sessionStorage.currentUser) {
       resolve(
         STATE.loginStatus = true,
@@ -27,38 +27,16 @@ function checkLoginStatus() {
       );
     }
     else {
-      reject(
-        STATE.loginStatus = false,
-        console.log('User Logged In: ', STATE.loginStatus),
-        $('.welcomeUser').html(''),
-        $('.loginStatus').html('<a class="showLoginForm" href="#">Log In</a>'),
-        $('.postLocation').hide(),
-        $('.signup').show(),
-        $('.loginPageOnly').hide()
-      );
+      STATE.loginStatus = false;
+      console.log('User Logged In: ', STATE.loginStatus);
+      $('.welcomeUser').html('');
+      $('.loginStatus').html('<a class="showLoginForm" href="#">Log In</a>');
+      $('.postLocation').hide();
+      $('.signup').show();
+      $('.loginPageOnly').hide();
     }
   });
 }
-
-// function checkLoginStatus() {
-//   if (sessionStorage.currentUser) {
-//     STATE.loginStatus = true;
-//     console.log('User Logged In: ', STATE.loginStatus, `"${sessionStorage.currentUser}"`);
-//     $('.welcomeUser').html(`Hi, ${sessionStorage.currentUser}!`);
-//     $('.loginStatus').html('<a class = "logoutButton" href = "">Log Out</a>');
-//     $('.postLocation').show();
-//     $('.signup').hide();
-//   }
-//   else {
-//     STATE.loginStatus = false;
-//     console.log('User Logged In: ', STATE.loginStatus);
-//     $('.welcomeUser').html('');
-//     $('.loginStatus').html('<a class="showLoginForm" href="#">Log In</a>');
-//     $('.postLocation').hide();
-//     $('.signup').show();
-//     $('.loginPageOnly').hide();
-//   }
-// }
 //---------- Reset State.current --------
 function resetCurrent() {
   console.log('resetcurrent ran');
