@@ -624,7 +624,10 @@ $(window).on('load', function() {
       $('#loginUser').val(),
       $('#loginPassword').val()
     )
-      .then(checkLoginStatus); 
+      .then(
+        checkLoginStatus,
+        getServerData().then(initMap)
+      ); 
   });
   $('.links').on('click', '.logoutButton', function(event){
     event.preventDefault();
@@ -634,6 +637,7 @@ $(window).on('load', function() {
     }
     $('.postLocation').hide();
     checkLoginStatus();
+    getServerData().then(initMap);
   });
   $('header').on('click', '.postLocation', event => {
     event.preventDefault();
