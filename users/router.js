@@ -72,8 +72,8 @@ users.post('/', jsonParser, (req, res) => {
       code: 422,
       reason: 'ValidationError',
       message: tooSmallField
-        ? `must be at least ${sizedFields[tooSmallField].min} character(s) long`
-        : `must be at most ${sizedFields[tooLargeField].max} characters(s) long`,
+        ? `Must be at least ${sizedFields[tooSmallField].min} characters long`
+        : `Must be at most ${sizedFields[tooLargeField].max} characters long`,
       location: tooSmallField || tooLargeField
     });
   }
