@@ -8,3 +8,5 @@ deploy:
   app: young-reef-15784
   on:
     repo: benparman/waterSpotter
+    branches:
+    only: master
