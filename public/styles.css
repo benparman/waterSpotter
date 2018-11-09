@@ -79,6 +79,7 @@ button {
 .links a {
   text-decoration: none;
   color: #00c1ff;
+  margin-left: 5px;
 } 
 .welcomeUser {
   color: white;
@@ -88,6 +89,9 @@ button {
   right: 1px;
   top: 20px;
   width: 96px;
+}
+.hiddenDivider {
+  display: none;
 }
 .searchLocation {
   text-align: center;
@@ -129,6 +133,10 @@ button {
 }
 .postLocation {
   display: none;
+}
+
+button.postLocation {
+  margin: 5px 0;
 }
 
 .userField {

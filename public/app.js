@@ -23,7 +23,8 @@ function checkLoginStatus() {
         $('.welcomeUser').html(`Hi, ${sessionStorage.currentUser}!`),
         $('.loginStatus').html('<a class = "logoutButton" href = "">Log Out</a>'),
         $('.postLocation').show(),
-        $('.signup').hide()
+        $('.signup').hide(),
+        $('.hiddenDivider').css('display', 'initial')
       );
     }
     else {
@@ -34,6 +35,7 @@ function checkLoginStatus() {
       $('.postLocation').hide();
       $('.signup').show();
       $('.loginPageOnly').hide();
+      $('.hiddenDivider').css('display', 'none');
     }
   });
 }
@@ -383,8 +385,6 @@ function registerUser(username, firsName, lastName, password) {
       $('.signup-form').html(
         `<p class="signupMessage">Success!  You may now log in as "${username}"</p>
         <button class="dismiss">Dismiss</button>`);
-      // $('#map').css('pointer-events', 'auto');
-      // $('#map').css('opacity', 1);
     },
     error: function(res) {
       $('.signupMessage').html(`${res.responseJSON.location} ${res.responseJSON.message}`);
@@ -555,11 +555,13 @@ $(window).on('load', function() {
 
   $('header').on('submit', '.searchLocation', event => {
     event.preventDefault();
+    resetCurrent();
     geoCodeLocation($('.searchTerms').val(), STATE.markerLocations);
-  })
+  });
 
   $('header').on('click', '#myLocation-button', event => {
     event.preventDefault();
+    resetCurrent();
     getLocation()
       .then(function(){
         STATE.map.panTo(STATE.current.location);
@@ -571,11 +573,6 @@ $(window).on('load', function() {
       $('#loginUser').val(),
       $('#loginPassword').val()
     );
-      // .then(
-      //   checkLoginStatus().then(
-      //     getServerData().then(addMarkersToMap)
-      //   )
-      // );
   });
   $('.links').on('click', '.logoutButton', function(event){
     event.preventDefault();
