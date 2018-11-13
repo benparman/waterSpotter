@@ -113,41 +113,41 @@ function initMap() {
     center: STATE.defaultLocation,
     styles: [
       {
-          "featureType": "all",
-          "elementType": "geometry.fill",
-          "stylers": [
-              {
-                  "color": "#ebebeb"
-              }
-          ]
-      },
-      {
-          "featureType": "landscape.man_made",
-          "elementType": "geometry.fill",
-          "stylers": [
-              {
-                  "color": "#d6d2cc"
-              }
-          ]
-      },
-      {
-        "featureType": "transit",
-        "elementType": "all",
-        "stylers": [
-            {
-                "visibility": "off"
-            }
-        ]
-    },
-    {
-      "featureType": "poi",
-      "elementType": "all",
-      "stylers": [
+        'featureType': 'all',
+        'elementType': 'geometry.fill',
+        'stylers': [
           {
-              "visibility": "off"
+            'color': '#ebebeb'
           }
-      ]
-  },
+        ]
+      },
+      {
+        'featureType': 'landscape.man_made',
+        'elementType': 'geometry.fill',
+        'stylers': [
+          {
+            'color': '#d6d2cc'
+          }
+        ]
+      },
+      {
+        'featureType': 'transit',
+        'elementType': 'all',
+        'stylers': [
+          {
+            'visibility': 'off'
+          }
+        ]
+      },
+      {
+        'featureType': 'poi',
+        'elementType': 'all',
+        'stylers': [
+          {
+            'visibility': 'off'
+          }
+        ]
+      },
       // {
       //     "featureType": "poi",
       //     "elementType": "geometry.fill",
@@ -159,69 +159,69 @@ function initMap() {
       //     ]
       // },
       {
-          "featureType": "road.highway",
-          "elementType": "geometry.fill",
-          "stylers": [
-              {
-                  "color": "#8b1b41"
-              }
-          ]
+        'featureType': 'road.highway',
+        'elementType': 'geometry.fill',
+        'stylers': [
+          {
+            'color': '#8b1b41'
+          }
+        ]
       },
       {
-          "featureType": "road.highway",
-          "elementType": "geometry.stroke",
-          "stylers": [
-              {
-                  "color": "#8b1b41"
-              },
-              {
-                  "lightness": "50"
-              }
-          ]
+        'featureType': 'road.highway',
+        'elementType': 'geometry.stroke',
+        'stylers': [
+          {
+            'color': '#8b1b41'
+          },
+          {
+            'lightness': '50'
+          }
+        ]
       },
       {
-          "featureType": "road.arterial",
-          "elementType": "geometry.fill",
-          "stylers": [
-              {
-                  "color": "#fcd27f"
-              }
-          ]
+        'featureType': 'road.arterial',
+        'elementType': 'geometry.fill',
+        'stylers': [
+          {
+            'color': '#fcd27f'
+          }
+        ]
       },
       {
-          "featureType": "road.arterial",
-          "elementType": "geometry.stroke",
-          "stylers": [
-              {
-                  "color": "#fcd27f"
-              },
-              {
-                  "lightness": "50"
-              }
-          ]
+        'featureType': 'road.arterial',
+        'elementType': 'geometry.stroke',
+        'stylers': [
+          {
+            'color': '#fcd27f'
+          },
+          {
+            'lightness': '50'
+          }
+        ]
       },
       {
-          "featureType": "water",
-          "elementType": "geometry.fill",
-          "stylers": [
-              {
-                  "color": "#12202f"
-              },
-              {
-                  "gamma": "2.00"
-              }
-          ]
+        'featureType': 'water',
+        'elementType': 'geometry.fill',
+        'stylers': [
+          {
+            'color': '#12202f'
+          },
+          {
+            'gamma': '2.00'
+          }
+        ]
       },
       {
-          "featureType": "water",
-          "elementType": "labels.text.fill",
-          "stylers": [
-              {
-                  "lightness": "100"
-              }
-          ]
+        'featureType': 'water',
+        'elementType': 'labels.text.fill',
+        'stylers': [
+          {
+            'lightness': '100'
+          }
+        ]
       }
-  ],
+    ],
     mapTypeControlOptions: {
       style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
       mapTypeIds: ['terrain', 'satellite'],
@@ -418,7 +418,7 @@ function loginUser(username, password) {
     error: function(res) {
       console.log(res);
       console.log('Login Failed!');
-      $('.loginMessage').html('Incorrect username or password.')
+      $('.loginMessage').html('Incorrect username or password.');
     }
   };
   // checkLoginStatus();
@@ -599,7 +599,7 @@ $(window).on('load', function() {
       <button class="close-logIn-signIn-form" type = "button">Cancel</button>
       <p class="signupMessage"></p>
       </form>`
-    )
+    );
     $('.js-user-form').show();
     $('#map').css('opacity', .4);
     $('#map').css('pointer-events', 'none');
@@ -615,18 +615,18 @@ $(window).on('load', function() {
         <button class="close-logIn-signIn-form" type = "button">Cancel</button>
         <p class="loginMessage"></p>
       </form>`
-    )
+    );
     $('.js-user-form').show();
     $('#map').css('opacity', .4);
     $('#map').css('pointer-events', 'none');
-  })
+  });
 
   $('.js-user-form').on('click', '.close-logIn-signIn-form',function(event) {
     event.preventDefault();
     $('.js-user-form').hide();
     $('#map').css('opacity', 1);
     $('#map').css('pointer-events', 'auto');
-  })
+  });
 
   $('.js-user-form').on('submit', '.signup-form', event => {
     event.preventDefault();
@@ -743,16 +743,17 @@ $(window).on('load', function() {
 
   //----------- Set and resize map height -----------
   let headerHeight = $('header').height();
-  console.log(headerHeight);
-  let borderWidth = parseInt($('#map').css('border-width'), 10) * 4;
-  console.log(borderWidth);
-  let newMapHeight = $(window).height() - headerHeight - borderWidth;
+  let footerHeight = $('footer').height();
+  let borderWidth = parseInt($('#map').css('border-width'), 10) * 2;
+  let newMapHeight = $(window).height() - headerHeight - footerHeight - borderWidth;
   console.log(newMapHeight);
   $('body').height('100vh');
   $('#map').height(newMapHeight);
   $(window).resize(function(){
     headerHeight = $('header').height();
-    newMapHeight = $(window).height() - headerHeight - borderWidth;
+    footerHeight = $('footer').height();
+    borderWidth = parseInt($('#map').css('border-width'), 10) * 2;
+    newMapHeight = $(window).height() - headerHeight - footerHeight - borderWidth;
     $('#map').height(newMapHeight);
     $('body').height('100vh');
   });

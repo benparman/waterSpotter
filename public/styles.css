@@ -237,6 +237,27 @@ p.infoWindow {
 #editMarkerType {
   width: 120px;
 }
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  height: 25px;
+  background-color: rgba(49, 68, 84, .95); 
+  height: 26px;
+}
+.footerLinks {
+  display: inline;
+}
+.footerLinks h1 {
+  display: inline;
+  color: rgb(0, 190, 255);
+  margin: 0 15px;
+  font-size: 14px;
+}
+
 /* --------------------------------------- */
 @media only screen and (min-width : 500px) {
   .links {
