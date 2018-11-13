@@ -234,9 +234,9 @@ function initMap() {
 //--------- Generate Marker Icons ------------
 function generateMarkerIcons(location){
   if (location.type === 'Drinking Fountain') {
-    return 'drinkingFountain.png';
+    return 'drinkingfountain.png';
   } else if (location.type === 'Spigot') {
-    return 'drinkingWater.png';
+    return 'drinkingwater.png';
   } else if (location.type === 'Freeze Proof Hydrant') {
     return 'waterwellpump.png';
   } else if (location.type === 'Natural Spring') {
