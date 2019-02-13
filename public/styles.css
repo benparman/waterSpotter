@@ -247,24 +247,31 @@ footer {
   height: 26px;
   z-index: 1;
 }
-.footerLinks {
-  display: inline;
-}
 .footerElement {
   display: inline;
   color: white;
 }
+
 #copyRight {
-  font-size: 12px;
   position: absolute;
   right: 4px;
-  bottom: 0px;
-  color: #00c2ff;
+  bottom: -10px;
+  color: rgb(0, 190, 255);
+  font-size: 16px;
+  text-decoration: none;
+  font-weight: bold;
+}
+#copyRight a {
+  color: rgb(0, 190, 255);
+  text-decoration: none
+}
+.footerLinks {
+  display: inline;
 }
 .footerLinks a {
   display: inline;
   color: rgb(0, 190, 255);
-  font-size: 14px;
+  font-size: 16px;
   text-decoration: none;
   font-weight: bold;
 }
@@ -287,6 +294,10 @@ footer {
 .aboutText {
   text-align: left;
 }
+.aboutText a{
+  color: white
+}
+
 .about p {
   color: rgb(0, 194, 255);
   /* font-weight: bold; */
